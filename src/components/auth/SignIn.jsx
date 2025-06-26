@@ -1,0 +1,91 @@
+import React from "react";
+import Login from "./Login";
+
+const SignIn = ({ onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8 md:p-10 relative">
+        <button
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          onClick={onClose}
+        >
+          ✕
+        </button>
+
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">Sign Up</h1>
+        <p className="text-center text-gray-500 mb-6">Create your account</p>
+
+        <form className="space-y-4">
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Name</label>
+            <input
+              type="text"
+              placeholder="Your Name"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Email</label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Contact no.</label>
+            <input
+              type="tel"
+              placeholder="ex: 000 0000 000"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Flat No.</label>
+            <input
+              type="text"
+              placeholder="E.g. 102B"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 transition font-medium"
+          >
+            Sign Up
+          </button>
+        </form>
+
+        <div className="text-center text-gray-700 text-sm mt-6">
+          Already have an account?{" "}
+          <span
+            onClick={<Login/>}
+            className="text-blue-900 font-semibold hover:underline cursor-pointer"
+          >
+            Log in here
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SignIn;
