@@ -86,7 +86,7 @@ const SignIn = ({onLoginSuccess}) => {
         <div className="text-center text-sm text-gray-600">
           Already have an account?{" "}
           <span
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/login')}
             className="text-gray-800 font-semibold hover:underline cursor-pointer"
           >
             Login here

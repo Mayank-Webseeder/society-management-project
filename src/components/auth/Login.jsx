@@ -7,7 +7,7 @@ const Login = ({ onLoginSuccess }) => {
   const handleSubmit =(evt)=>{
     evt.preventDefault();
     onLoginSuccess();
-    navigate('/dashboard')
+    navigate('/')
   }
 
   return (
