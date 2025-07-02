@@ -89,7 +89,7 @@ const RevenueChart = () => {
             />
             <Bar
               dataKey="lastYear"
-              fill="#aed9e0"
+              fill="#3fc1c0"
               name="Last Year"
               radius={[4, 4, 0, 0]}
             />

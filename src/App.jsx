@@ -5,32 +5,71 @@ import SignIn from "./components/auth/SignIn";
 import { useState } from "react";
 import Dashboard from "./components/dashboard/Dashboard";
 import SocietyList from "./components/societies-registerd/SocietyList";
+import DetailProfile from "./components/societies-registerd/DetailProfile";
+import VendorList from "./components/vendors/VendorList";
+import VendorDetailProfile from "./components/vendors/VendorDetailProfile";
+import VendorEditDetails from "./components/vendors/VendorEditDetails";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <Routes>
-      
       {isLoggedIn ? (
         <>
-      <Route
-          path="/"
-          element={
-            <AppLayout setIsLoggedIn={setIsLoggedIn}>
-              <Dashboard />
-            </AppLayout>
-          }
-        />
+          <Route
+            path="/"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <Dashboard />
+              </AppLayout>
+            }
+          />
 
-        <Route path="/societies" element={
-          <AppLayout setIsLoggedIn={setIsLoggedIn}>
-            <SocietyList/>
-          </AppLayout>
-        }
-        />
-       </>
-        
+          <Route
+            path="/societies"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <SocietyList />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/society-details/:id"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <DetailProfile />
+              </AppLayout>
+            }
+          />
+
+          <Route
+            path="/vendors"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <VendorList />
+              </AppLayout>
+            }
+          />
+
+          <Route
+            path="/vendor-details/:id"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <VendorDetailProfile />
+              </AppLayout>
+            }
+          />
+
+          <Route
+            path="/vendor-edit/:vendorId"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <VendorEditDetails />
+              </AppLayout>
+            }
+          />
+        </>
       ) : (
         <>
           <Route

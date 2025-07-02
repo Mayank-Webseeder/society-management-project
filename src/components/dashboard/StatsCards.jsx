@@ -16,7 +16,7 @@ const StatsCards = ({ statsData }) => {
           <div className="flex items-center gap-4">
             <p className="text-3xl font-semibold text-gray-800">{stat.value}</p>
           </div>
-          <p className="mt-4 text-center text-gray-700 text-md font-medium tracking-wide">
+          <p className="mt-4 text-center text-gray-900 text-md font-medium tracking-wide">
             {stat.title}
           </p>
         </div>

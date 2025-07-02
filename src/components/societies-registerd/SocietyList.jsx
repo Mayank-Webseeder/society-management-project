@@ -5,19 +5,23 @@ import {
   CircleAlert,
   CircleX,
   Trash2,
-  
+  Ban,
 } from "lucide-react";
 import DetailProfile from "./DetailProfile";
+import { Link, useNavigate } from "react-router-dom";
 
 const SocietyList = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("Select Status");
   const [societies, setSocieties] = useState([]);
   const [selectSociety, setSelectSociety] = useState(null);
+  const navigate = useNavigate();
 
-  // Filter drivers based on search term and status filter
   const filterSocieties = societies.filter((soc) => {
-    const matchesStatus = statusFilter === "All" || soc.status === statusFilter;
+    const matchesStatus =
+      statusFilter === "Select Status" ||
+      statusFilter === "All" ||
+      soc.status === statusFilter;
     const matchesSearch =
       soc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       soc.location.toLowerCase().includes(searchTerm.toLowerCase());
@@ -26,11 +30,11 @@ const SocietyList = () => {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case "Approved":
+      case "Active":
         return (
           <span className="flex items-center px-2 py-1 text-sm rounded-full bg-green-100 text-green-800">
             <CircleCheckBig className="w-4 h-4 mr-2" />
-            Approved
+            Active
           </span>
         );
       case "Pending":
@@ -45,6 +49,13 @@ const SocietyList = () => {
           <span className="flex items-center px-2 py-1 text-sm rounded-full bg-red-100 text-red-800">
             <CircleX className="w-4 h-4 mr-2" />
             Rejected
+          </span>
+        );
+      case "Banned":
+        return (
+          <span className="flex items-center px-2 py-1 text-sm rounded-full bg-gray-300 text-gray-800">
+            <Ban className="w-4 h-4 mr-2" />
+            Banned
           </span>
         );
       default:
@@ -64,15 +75,9 @@ const SocietyList = () => {
             id: 1,
             name: "Dolphine plaza",
             location: "Vijay Nagar, Indore",
-            status: "Approved",
+            status: "Active",
             totalJobsPosted: 25,
             activeJobs: 5,
-            contactPerson: "Devendra Ganesh Rampersaud",
-            phone: "9876543210",
-            email: "dolphine@gmail.com",
-            address: "Dolphine plaza, Vijay Nagar, Indore",
-            pincode: "452001",
-            city: "Indore",
           },
           {
             id: 2,
@@ -81,12 +86,6 @@ const SocietyList = () => {
             status: "Pending",
             totalJobsPosted: 10,
             activeJobs: 0,
-            contactPerson: "Mr.Manoj kumar",
-            phone: "7025669801",
-            email: "SunshineAp@gmail.com",
-            address: "Sunshine Apartments, Bengali Square",
-            pincode: "452001",
-            city: "Indore",
           },
           {
             id: 3,
@@ -95,40 +94,22 @@ const SocietyList = () => {
             status: "Rejected",
             totalJobsPosted: 15,
             activeJobs: 0,
-            contactPerson: "Mohan lal",
-            phone: "9876543210",
-            email: "PQR@gmail.com",
-            address: "PQR Heights,Bhawarkuan",
-            pincode: "452001",
-            city: "Indore",
           },
           {
             id: 4,
             name: "Green Valley Society",
             location: "MR 10, Indore",
-            status: "Approved",
+            status: "Active",
             totalJobsPosted: 18,
             activeJobs: 3,
-            contactPerson: "Mr.peter fernandes",
-            phone: "7000465200",
-            email: "greenV@gmail.com",
-            address: "Green Valley Society, near HDF bank",
-            pincode: "452002",
-            city: "Indore",
           },
           {
             id: 5,
             name: "Maple Residency",
             location: "Scheme No. 78, Indore",
-            status: "Approved",
+            status: "Active",
             totalJobsPosted: 30,
             activeJobs: 7,
-            contactPerson: "Ganesh Lal Dash",
-            phone: "7455459102",
-            email: "greenV@gmail.com",
-            address: "Maple Residency, 68, Mridula Heights,",
-            pincode: "	452010",
-            city: "Indore",
           },
           {
             id: 6,
@@ -137,26 +118,14 @@ const SocietyList = () => {
             status: "Pending",
             totalJobsPosted: 12,
             activeJobs: 0,
-            contactPerson: "Kamlesh Pillai",
-            phone: "349 7531216",
-            email: "greenV@gmail.com",
-            address: "Ocean View Apartments,HariPur Warangal",
-            pincode: "452011",
-            city: "Indore",
           },
           {
             id: 7,
             name: "ABC Apartments",
             location: "Palasia, Indore",
-            status: "Approved",
+            status: "Active",
             totalJobsPosted: 26,
             activeJobs: 11,
-            contactPerson: "Mukul Ramakrishnan",
-            phone: "9051250568",
-            email: "greenV@gmail.com",
-            address: "ABC Apartments, 93, Kamini Nagar,",
-            pincode: "452001",
-            city: "Indore",
           },
         ]);
       } catch (error) {
@@ -167,7 +136,6 @@ const SocietyList = () => {
   }, []);
 
   const handleViewSociety = (society) => {
-    console.log("society details ", society);
     setSelectSociety({
       ...society,
       badge: getStatusBadge(society.status),
@@ -176,10 +144,10 @@ const SocietyList = () => {
 
   const handleApprove = (id) => {
     setSocieties((prev) =>
-      prev.map((soc) => (soc.id === id ? { ...soc, status: "Approved" } : soc))
+      prev.map((soc) => (soc.id === id ? { ...soc, status: "Active" } : soc))
     );
     if (selectSociety?.id === id) {
-      setSelectSociety((prev) => ({ ...prev, status: "Approved" }));
+      setSelectSociety((prev) => ({ ...prev, status: "Active" }));
     }
   };
   const handleReject = (id) => {
@@ -188,6 +156,14 @@ const SocietyList = () => {
     );
     if (selectSociety?.id === id)
       setSelectSociety((prev) => ({ ...prev, status: "Rejected" }));
+  };
+  const handlePending = (id) => {
+    setSocieties((prev) =>
+      prev.map((soc) => (soc.id === id ? { ...soc, status: "Pending" } : soc))
+    );
+    if (setSocieties?.id === id) {
+      setSelectSociety((prev) => ({ ...prev, status: "Pending" }));
+    }
   };
 
   const handleBan = (id) => {
@@ -208,33 +184,6 @@ const SocietyList = () => {
 
   return (
     <div className="bg-white rounded-lg shadow">
-      {selectSociety && (
-        <div className="p-4 sm:p-6 border-b border-gray-200">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-            <h2 className="px-8 text-xl sm:text-lg font-semibold text-gray-800">
-              Society Detailed Profile
-            </h2>
-
-            <button
-              onClick={() => setSelectSociety(null)}
-              className="px-8 text-gray-400 hover:text-gray-600 hover:scale-110 font-bold"
-            >
-              ✕
-            </button>
-          </div>
-
-          {/* Profile Details */}
-          <DetailProfile
-            selectSociety={selectSociety}
-            onApprove={handleApprove}
-            onReject={handleReject}
-            onBan={handleBan}
-            onEdit={handleEdit}
-            onDelete={handleDeleteSociety}
-          />
-        </div>
-      )}
-
       <div className="px-4 py-4 border-b border-gray-200">
         <div className="w-full flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between xl:flex-row xl:flex-nowrap xl:items-center xl:gap-5">
           {/* Search Bar */}
@@ -258,10 +207,12 @@ const SocietyList = () => {
               onChange={(e) => setStatusFilter(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
+              <option value="Select Status">Select Status</option>
               <option value="All">All</option>
               <option value="Pending">Pending</option>
-              <option value="Approved">Approved</option>
+              <option value="Active">Active</option>
               <option value="Rejected">Rejected</option>
+              <option value="Banned">Banned</option>
             </select>
           </div>
 
@@ -307,26 +258,55 @@ const SocietyList = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filterSocieties.map((soc, index) => (
+                {filterSocieties.map((soc) => (
                   <tr key={soc.id} className="hover:bg-gray-50 transition">
-                    <td className="px-6 py-4 font-medium text-gray-900">
-                      {soc.name}
+                    <td className="px-6 py-4 font-medium text-gray-900 cursor-pointer hover:text-blue-600 hover:font-semibold transition-all duration-200">
+                      <Link to={`/society-details/${soc.id}`}>{soc.name}</Link>
                     </td>
                     <td className="px-6 py-4 text-gray-700">{soc.location}</td>
-                    <td className="px-6 py-4">{getStatusBadge(soc.status)}</td>
+                    <td className="px-6 py-4 relative">
+                      <div className="inline-block">
+                        <button
+                          onClick={() => setSelectSociety(soc)}
+                          className="flex items-center px-2 py-1 text-sm rounded-full border cursor-pointer
+                          hover:bg-gray-100 focus:outline-none"
+                        >
+                          {getStatusBadge(soc.status)}
+                        </button>
+                        {selectSociety?.id === soc.id && (
+                          <div className="absolute mt-2 bg-white border rounded shadow w-36 z-10">
+                            {["Active", "Pending", "Rejected", "Banned"]
+                              .filter(
+                                (currentStatus) => currentStatus !== soc.status
+                              )
+                              .map((statusOption) => (
+                                <button
+                                  key={statusOption}
+                                  onClick={() => {
+                                    const updater = {
+                                      Active: handleApprove,
+                                      Pending: handlePending,
+                                      Rejected: handleReject,
+                                      Banned: handleBan,
+                                    };
+                                    updater[statusOption](soc.id);
+                                    setSelectSociety(null);
+                                  }}
+                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                >
+                                  {statusOption}
+                                </button>
+                              ))}
+                          </div>
+                        )}
+                      </div>
+                    </td>
                     <td className="px-6 py-4 text-center">
                       {soc.totalJobsPosted}
                     </td>
                     <td className="px-6 py-4 text-center">{soc.activeJobs}</td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex justify-center items-center gap-6">
-                        <button
-                          onClick={() => handleViewSociety(soc)}
-                          className="text-indigo-600 hover:underline font-medium"
-                        >
-                          View
-                        </button>
-
                         <button
                           onClick={() => handleDeleteSociety(soc.id)}
                           className="text-red-500 hover:text-red-700"
