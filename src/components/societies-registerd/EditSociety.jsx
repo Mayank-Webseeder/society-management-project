@@ -1,53 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const VendorEdit = () => {
-  const { id } = useParams();
+const SocietyEdit = () => {
+  const { societyId } = useParams();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    phone: "",
+    status: "Active",
     location: "",
-    subscriptionStatus: "Active",
-    servicesProvided: "",
+    contactPerson: "",
+    phone: "",
+    email: "",
+    address: "",
+    city: "",
+    pincode: "",
   });
 
   useEffect(() => {
-    const dummyData = {
-      id,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      phone: "+91-9876543210",
+    const data = {
+      name: "Ocean View Apartments",
+      status: "Active",
       location: "Indore",
-      subscriptionStatus: "Active",
-      servicesProvided: ["Plumbing", "Electrical"],
+      contactPerson: "Ravi Kumar",
+      phone: "9876543210",
+      email: "ravi.kumar@example.com",
+      address: "Sector 45, Gurugram",
+      city: "Gurugram",
+      pincode: "122003",
     };
-    setFormData({
-      ...dummyData,
-      servicesProvided: dummyData.servicesProvided.join(", "),
-    });
-  }, [id]);
+    setFormData(data);
+  }, [societyId]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updatedData = {
-      ...formData,
-      servicesProvided: formData.servicesProvided
-        .split(",")
-        .map((s) => s.trim()),
-    };
-    console.log("Updated Vendor Data:", updatedData);
-    alert("Vendor updated successfully!");
-    navigate("/vendors");
+    console.log("Updated Data:", formData);
+    navigate("/societies");
   };
 
   return (
@@ -57,7 +53,7 @@ const VendorEdit = () => {
         {/* Top Bar - Back Button + Heading */}
         <div className="flex items-center justify-between border-b pb-4">
           <button
-            onClick={() => navigate("/vendors")}
+            onClick={() => navigate("/societies")}
             className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-md gap-1"
           >
             <svg
@@ -78,64 +74,73 @@ const VendorEdit = () => {
           </button>
 
           <h1 className="text-xl font-bold text-gray-800 text-center flex-grow">
-            Edit Vendor Details
+            Edit Society Details
           </h1>
 
           <div className="w-14" />
         </div>
 
-        {/* Inner Form */}
+        {/* Inner Form Box */}
         <form
           onSubmit={handleSubmit}
           className="bg-white/90 rounded-3xl p-6 space-y-6 border border-gray-300"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-gray-700 font-medium mb-1">Name</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                Society Name
+              </label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                required
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+                required
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 font-medium mb-1">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
+              <label className="block text-gray-700 font-medium mb-1">
+                Status
+              </label>
+              <select
+                name="status"
+                value={formData.status}
                 onChange={handleChange}
-                required
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
-              />
+              >
+                <option>Active</option>
+                <option>Pending</option>
+                <option>Rejected</option>
+                <option>Banned</option>
+              </select>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-gray-700 font-medium mb-1">Phone</label>
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">Location</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                Location
+              </label>
               <input
                 type="text"
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                required
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Contact Person
+              </label>
+              <input
+                type="text"
+                name="contactPerson"
+                value={formData.contactPerson}
+                onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
               />
             </div>
@@ -144,29 +149,67 @@ const VendorEdit = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-gray-700 font-medium mb-1">
-                Subscription Status
+                Phone
               </label>
-              <select
-                name="subscriptionStatus"
-                value={formData.subscriptionStatus}
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
-              >
-                <option value="Active">Active</option>
-                <option value="Expired">Expired</option>
-              </select>
+              />
             </div>
 
             <div>
               <label className="block text-gray-700 font-medium mb-1">
-                Services Provided (comma separated)
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Address
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                City
               </label>
               <input
                 type="text"
-                name="servicesProvided"
-                value={formData.servicesProvided}
+                name="city"
+                value={formData.city}
                 onChange={handleChange}
-                placeholder="e.g. Plumbing, Electrical"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">
+                Pincode
+              </label>
+              <input
+                type="text"
+                name="pincode"
+                value={formData.pincode}
+                onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
               />
             </div>
@@ -175,7 +218,7 @@ const VendorEdit = () => {
           <div className="flex justify-end gap-4">
             <button
               type="button"
-              onClick={() => navigate("/vendors")}
+              onClick={() => navigate("/societies")}
               className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
             >
               Cancel
@@ -193,4 +236,4 @@ const VendorEdit = () => {
   );
 };
 
-export default VendorEdit;
+export default SocietyEdit;

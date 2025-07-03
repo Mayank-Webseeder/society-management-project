@@ -9,6 +9,7 @@ import DetailProfile from "./components/societies-registerd/DetailProfile";
 import VendorList from "./components/vendors/VendorList";
 import VendorDetailProfile from "./components/vendors/VendorDetailProfile";
 import VendorEditDetails from "./components/vendors/VendorEditDetails";
+import EditSociety from "./components/societies-registerd/EditSociety";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -42,6 +43,15 @@ function App() {
               </AppLayout>
             }
           />
+             <Route
+            path="/edit-society/:societyId"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <EditSociety/>
+              </AppLayout>
+            }
+          />
+          
 
           <Route
             path="/vendors"

@@ -122,15 +122,15 @@ const Dashboard = () => {
             <h4 className="text-lg sm:text-xl font-semibold text-gray-800">
               Job Post Trends
             </h4>
-            <div className="flex gap-2 bg-[#503C3C] p-1 rounded-lg">
+            <div className="flex gap-2 bg-white shadow-inner border border-gray-200 p-1 rounded-lg">
               {["Daily", "Monthly", "Yearly"].map((option) => (
                 <button
                   key={option}
                   onClick={() => setSelected(option)}
-                  className={`px-4 py-1.5 text-sm font-medium rounded-lg transition ${
+                  className={`px-4 py-2 text-sm font-medium rounded-lg transition ${
                     selected === option
-                      ? "bg-[#A87C7C] text-[#2f2222] shadow"
-                      : "text-[#d3cdcd] hover:bg-[#7c6156]"
+                      ? "bg-gray-300 text-gray-800 shadow"
+                      : "text-gray-600 hover:bg-gray-200"
                   }`}
                 >
                   {option}
