@@ -169,11 +169,6 @@ const DetailProfile = () => {
             newStatus: "Banned",
             color: "bg-[#5E686D] hover:bg-[#4C585B]",
           },
-          {
-            label: "Reject",
-            newStatus: "Rejected",
-            color: "bg-red-500 hover:bg-red-600 text-white",
-          },
         ];
       case "Banned":
         return [
