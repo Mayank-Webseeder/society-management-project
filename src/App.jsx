@@ -10,6 +10,11 @@ import VendorList from "./components/vendors/VendorList";
 import VendorDetailProfile from "./components/vendors/VendorDetailProfile";
 import VendorEditDetails from "./components/vendors/VendorEditDetails";
 import EditSociety from "./components/societies-registerd/EditSociety";
+import JobsList from "./components/jobs/JobsList";
+import JobDetailProfile from "./components/jobs/JobDetailProfile";
+import Subscription from "./components/subscription/Subscription";
+import ServicesList from "./components/services/ServicesList";
+import CategoriesList from "./components/services/catg&services/CategoriesList";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -43,15 +48,14 @@ function App() {
               </AppLayout>
             }
           />
-             <Route
+          <Route
             path="/edit-society/:societyId"
             element={
               <AppLayout setIsLoggedIn={setIsLoggedIn}>
-                <EditSociety/>
+                <EditSociety />
               </AppLayout>
             }
           />
-          
 
           <Route
             path="/vendors"
@@ -63,7 +67,7 @@ function App() {
           />
 
           <Route
-            path="/vendor-details/:id"
+            path="/vendor-details/:vendorId"
             element={
               <AppLayout setIsLoggedIn={setIsLoggedIn}>
                 <VendorDetailProfile />
@@ -79,6 +83,52 @@ function App() {
               </AppLayout>
             }
           />
+
+          <Route
+            path="/jobs"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <JobsList />
+              </AppLayout>
+            }
+          />
+
+           <Route
+            path="/job-details/:id"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <JobDetailProfile/>
+              </AppLayout>
+            }
+          />
+
+           <Route
+            path="/subscriptions"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <Subscription/>
+              </AppLayout>
+            }
+          /> 
+
+            <Route
+            path="/services-categories"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <ServicesList/>
+              </AppLayout>
+            }
+          /> 
+
+        <Route
+            path="/vendors-by-service/:id"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <CategoriesList/>
+              </AppLayout>
+            }
+          />
+          
         </>
       ) : (
         <>

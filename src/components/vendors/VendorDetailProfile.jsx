@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useVendorContext } from "../../context/VendorContext";
 import {
   PhoneCall,
   MessageSquare,
@@ -15,11 +16,12 @@ import {
 } from "lucide-react";
 
 const VendorDetailProfile = () => {
-  const { vendorId } = useParams();
   const navigate = useNavigate();
+  const { vendorId } = useParams();
+  const { vendors } = useVendorContext();
 
-  const [activeTab, setActiveTab] = useState("vendor info");
   const [vendor, setVendor] = useState(null);
+  const [activeTab, setActiveTab] = useState("vendor info");
   const [loading, setLoading] = useState(true);
 
   const getStatusBadge = (status) => {
@@ -39,6 +41,7 @@ const VendorDetailProfile = () => {
   };
 
   const getActionButtons = () => {
+    if (!vendor) return [];
     if (vendor.status === "Active") {
       return [
         {
@@ -68,121 +71,29 @@ const VendorDetailProfile = () => {
     }
   };
 
+  // Find vendor from context by matching id (convert both to string for safety)
   useEffect(() => {
-    const data = {
-      id: vendorId,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      phone: "+91-9876543210",
-      location: "Indore",
-      status: "Active",
-      subscriptionStatus: "Active",
-      servicesProvided: ["Plumbing", "Electrical"],
-      rating: 4.5,
-      totalJobsApplied: 23,
-      completedJobs: 18,
-      ongoingJobs: 2,
-      jobSuccessRate: 85, // in percentage
-      recentJobs: [
-        {
-          id: 101,
-          title: "Plumbing Repair",
-          status: "Completed",
-          price: 1500,
-          date: "2024-06-15",
-        },
-        {
-          id: 102,
-          title: "Electrical Wiring",
-          status: "Completed",
-          price: 2200,
-          date: "2024-06-18",
-        },
-        {
-          id: 103,
-          title: "AC Installation",
-          status: "Ongoing",
-          price: 3000,
-          date: "2024-06-20",
-        },
-      ],
+    setLoading(true);
+    const foundVendor = vendors.find((v) => String(v.id) === String(vendorId));
 
-      documents: [
-        {
-          name: "Aadhar Card",
-          type: "Identity Proof",
-          status: "Verified",
-          uploadedOn: "2024-05-10",
-        },
-        {
-          name: "Address Proof",
-          type: "Address Proof",
-          status: "Pending",
-          uploadedOn: "--",
-        },
-        {
-          name: "PAN Card",
-          type: "Tax Document",
-          status: "Verified",
-          uploadedOn: "2024-05-15",
-        },
-      ],
-
-      jobHistory: [
-        {
-          id: "J001",
-          title: "Leakage Fix",
-          type: "Plumbing",
-          status: "Completed",
-          price: 1200,
-          date: "2025-05-05",
-        },
-        {
-          id: "J002",
-          title: "Fan Installation",
-          type: "Electrical",
-          status: "Completed",
-          price: 800,
-          date: "2025-05-22",
-        },
-        {
-          id: "J003",
-          title: "Geyser Repair",
-          type: "Electrical",
-          status: "Ongoing",
-          price: 1500,
-          date: "2025-06-30",
-        },
-        {
-          id: "J004",
-          title: "Bathroom Fitting",
-          type: "Plumbing",
-          status: "Completed",
-          price: 2500,
-          date: "2025-07-3",
-        },
-      ],
-      subscription: {
-        plan: "Premium",
-        startDate: "2024-04-01",
-        endDate: "2025-03-31",
-        price: 5000,
-        paymentStatus: "Paid",
-        renewalDue: false,
-      },
-    };
-    setVendor(data);
+    if (foundVendor) {
+      setVendor(foundVendor);
+    } else {
+      // fallback: set dummy data or null
+      setVendor(null);
+    }
     setLoading(false);
-  }, [vendorId]);
+  }, [vendorId, vendors]);
 
   if (loading)
     return <div className="text-center py-10 text-gray-500">Loading...</div>;
+
   if (!vendor)
     return (
       <div className="text-center py-10 text-red-500">Vendor not found.</div>
     );
 
-  // for rating stars in job status
+  // For rating stars in job status
   const RatingDisplay = ({ rating }) => {
     const maxStars = 5;
     const fullStars = Math.floor(rating);
@@ -331,7 +242,7 @@ const VendorDetailProfile = () => {
                     Offered
                   </h2>
                   <ul className="list-disc ml-6 text-gray-700 text-sm space-y-1">
-                    {vendor.servicesProvided.map((service, idx) => (
+                    {vendor.servicesProvided?.map((service, idx) => (
                       <li key={idx} className="font-medium text-gray-800">
                         {service}
                       </li>
@@ -340,10 +251,10 @@ const VendorDetailProfile = () => {
                 </div>
               </div>
             )}
-            {/* documents */}
+
             {activeTab === "documents" && (
               <div className="space-y-4">
-                {vendor.documents.map((doc, idx) => (
+                {vendor.documents?.map((doc, idx) => (
                   <div
                     key={idx}
                     className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 p-4 rounded-xl shadow bg-white hover:shadow-md transition"
@@ -392,7 +303,7 @@ const VendorDetailProfile = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {vendor.jobHistory.map((job) => (
+                    {vendor.jobHistory?.map((job) => (
                       <tr
                         key={job.id}
                         className="border-t hover:bg-gray-50 transition"
@@ -424,7 +335,6 @@ const VendorDetailProfile = () => {
               </div>
             )}
 
-            {/* job status */}
             {activeTab === "job status" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Total Jobs Applied */}
@@ -566,58 +476,85 @@ const VendorDetailProfile = () => {
                     </div>
                   </div>
                 </div>
-                  <div className="flex items-center justify-center gap-3 mb-10">
-                    <h3 className="font-semibold text-gray-700 m-0 text-lg">Rating:</h3>
-                    <RatingDisplay rating={vendor.rating} />
-                  </div>
+                <div className="flex items-center justify-center gap-3 mb-10">
+                  <h3 className="font-semibold text-gray-700 m-0 text-lg">
+                    Rating:
+                  </h3>
+                  <RatingDisplay rating={vendor.rating} />
+                </div>
               </div>
             )}
 
             {activeTab === "subscription" && (
-               <div className="border rounded-2xl p-6 shadow bg-white max-w-xl mx-auto space-y-6">
+              <div className="border rounded-2xl p-6 shadow bg-white max-w-xl mx-auto space-y-6">
+                <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
+                  Subscription Details
+                </h2>
 
-    <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">Subscription Details</h2>
+                <div className="space-y-4 text-gray-800 text-base">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-700">Plan:</span>
+                    <span className="font-medium">
+                      {vendor.subscription.plan}
+                    </span>
+                  </div>
 
-    <div className="space-y-4 text-gray-800 text-base">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-600">Price:</span>
+                    <span className="font-medium">
+                      ₹{vendor.subscription.price}
+                    </span>
+                  </div>
 
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-gray-700">Plan:</span>
-        <span className="font-medium">{vendor.subscription.plan}</span>
-      </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-600">
+                      Payment Status:
+                    </span>
+                    <span
+                      className={`font-medium ${
+                        vendor.subscription.paymentStatus === "Paid"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {vendor.subscription.paymentStatus}
+                    </span>
+                  </div>
 
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-gray-600">Price:</span>
-        <span className="font-medium">₹{vendor.subscription.price}</span>
-      </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-600">
+                      Start Date:
+                    </span>
+                    <span className="font-medium">
+                      {vendor.subscription.startDate}
+                    </span>
+                  </div>
 
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-gray-600">Payment Status:</span>
-        <span className={`font-medium ${vendor.subscription.paymentStatus === "Paid" ? "text-green-600" : "text-red-600"}`}>
-          {vendor.subscription.paymentStatus}
-        </span>
-      </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-600">
+                      End Date:
+                    </span>
+                    <span className="font-medium">
+                      {vendor.subscription.endDate}
+                    </span>
+                  </div>
 
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-gray-600">Start Date:</span>
-        <span className="font-medium">{vendor.subscription.startDate}</span>
-      </div>
-
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-gray-600">End Date:</span>
-        <span className="font-medium">{vendor.subscription.endDate}</span>
-      </div>
-
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-gray-600">Renewal Due:</span>
-        <span className={`font-medium ${vendor.subscription.renewalDue ? "text-yellow-600" : "text-green-600"}`}>
-          {vendor.subscription.renewalDue ? "Yes" : "No"}
-        </span>
-      </div>
-
-    </div>
-
-  </div>
-
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-600">
+                      Renewal Due:
+                    </span>
+                    <span
+                      className={`font-medium ${
+                        vendor.subscription.renewalDue
+                          ? "text-yellow-600"
+                          : "text-green-600"
+                      }`}
+                    >
+                      {vendor.subscription.renewalDue ? "Yes" : "No"}
+                    </span>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
