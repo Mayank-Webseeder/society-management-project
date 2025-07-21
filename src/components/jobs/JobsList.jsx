@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Search, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useJobContext } from "../../context/JobContext";
 
 const JobsList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [societyFilter, setSocietyFilter] = useState("");
-  const [jobs, setJobs] = useState([]);
+  const { jobs } = useJobContext();
+
 
   const handleDelete = (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this job?");
@@ -29,74 +31,6 @@ const JobsList = () => {
 
   const uniqueSocieties = Array.from(new Set(jobs.map((job) => job.societyName)));
 
-  useEffect(() => {
-    setJobs([
-      {
-        _id: "j1",
-        societyName: "Green Valley",
-        title: "Plumbing Pipe Replacement",
-        createdAt: "2024-07-04",
-        status: "Open",
-        quotationRequired: true,
-      },
-      {
-        _id: "j2",
-        societyName: "Sunshine Residency",
-        title: "Painting Building Entrance",
-        createdAt: "2024-07-02",
-        status: "In Progress",
-        quotationRequired: true,
-      },
-      {
-        _id: "j3",
-        societyName: "Silver Heights",
-        title: "Security Camera Installation",
-        createdAt: "2024-06-28",
-        status: "Closed",
-        quotationRequired: true,
-      },
-      {
-        _id: "j4",
-        societyName: "Green Valley",
-        title: "Gym Equipment Repair",
-        createdAt: "2024-06-30",
-        status: "Open",
-        quotationRequired: false,
-      },
-      {
-        _id: "j5",
-        societyName: "Royal Heights",
-        title: "Lift Maintenance",
-        createdAt: "2024-07-04",
-        status: "Open",
-        quotationRequired: true,
-      },
-      {
-        _id: "j6",
-        societyName: "Palm County",
-        title: "Clubhouse Painting",
-        createdAt: "2024-06-30",
-        status: "Closed",
-        quotationRequired: false,
-      },
-      {
-        _id: "j7",
-        societyName: "Emerald Residency",
-        title: "Parking Area Lighting Fix",
-        createdAt: "2024-07-02",
-        status: "In Progress",
-        quotationRequired: true,
-      },
-      {
-        _id: "j8",
-        societyName: "Maple Woods",
-        title: "Boundary Wall Crack Repair",
-        createdAt: "2024-06-28",
-        status: "Open",
-        quotationRequired: false,
-      },
-    ]);
-  }, []);
 
   return (
     <div className="bg-white rounded-lg shadow">

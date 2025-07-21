@@ -1,4 +1,3 @@
-// src/context/VendorContext.jsx
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -17,7 +16,7 @@ const VendorProvider = ({ children }) => {
         location: "Indore",
         status: "Active",
         subscriptionStatus: "Active",
-        servicesProvided: ["Plumbing", "Electrical"],
+        servicesProvided: ["Plumber", "Electrical"],
         rating: 4.5,
         totalJobsApplied: 23,
         completedJobs: 18,
@@ -131,7 +130,7 @@ const VendorProvider = ({ children }) => {
         location: "Dewas",
         status: "Active",
         subscriptionStatus: "Expired",
-        servicesProvided: ["Plumbing", "Cleaning"],
+        servicesProvided: ["Plumber", "Cleaning"],
         rating: 3.9,
         totalJobsApplied: 8,
       },
@@ -158,6 +157,31 @@ const VendorProvider = ({ children }) => {
         servicesProvided: ["Gardening", "Waste Management"],
         rating: 4.3,
         totalJobsApplied: 10,
+      },
+      {
+        id: 8,
+        name: "Sneha Kapoor",
+        email: "sneha.kapoor@example.com",
+        phone: "+91-9876543211",
+        location: "Indore",
+        status: "Active",
+        subscriptionStatus: "Active",
+        servicesProvided: ["Maid Services", "Cleaning"],
+        rating: 4.6,
+        totalJobsApplied: 20,
+      },
+
+      {
+        id: 9,
+        name: "Rohit Mehta",
+        email: "rohit.mehta@example.com",
+        phone: "+91-9123456789",
+        location: "Bhopal",
+        status: "Pending",
+        subscriptionStatus: "Active",
+        servicesProvided: ["Driver on Demand", "Transport Services"],
+        rating: 4.4,
+        totalJobsApplied: 15,
       },
     ];
     setVendors(mockVendors);

@@ -1,26 +1,50 @@
 import React from "react";
 import {
-  MdKeyboardDoubleArrowUp,
-  MdKeyboardDoubleArrowDown,
+  MdPeopleAlt,
+  MdOutlineApartment,
+  MdSubscriptions,
+  MdPendingActions,
 } from "react-icons/md";
 
 const StatsCards = ({ statsData }) => {
+  const icons = [
+    MdOutlineApartment,
+    MdPendingActions,
+    MdPeopleAlt,
+    MdSubscriptions,
+  ];
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-      {statsData.map((stat, index) => (
-        <div
-          key={index}
-          style={{ backgroundColor: stat.color }}
-          className="rounded-2xl shadow p-6 flex flex-col items-center hover:shadow-lg transition-shadow duration-300"
-        >
-          <div className="flex items-center gap-4">
-            <p className="text-3xl font-semibold text-gray-800">{stat.value}</p>
+      {statsData.map((stat, index) => {
+        const Icon = icons[index % icons.length];
+
+        return (
+          <div
+            key={index}
+            className="relative rounded-3xl p-5 flex flex-col items-center justify-center shadow-md hover:shadow-lg transition-shadow duration-300 mt-3"
+            style={{
+              background: `linear-gradient(145deg, ${stat.color}E6 0%, ${stat.color}CC 100%)`,
+            }}
+          >
+            <div
+              className="absolute -top-8 rounded-full p-4 shadow-md flex items-center justify-center"
+              style={{
+                backgroundColor: stat.color,
+                boxShadow: `0 4px 10px ${stat.color}88`,
+              }}
+            >
+              <Icon size={32} className="text-white" />
+            </div>
+            <h3 className="mt-10 text-4xl font-extrabold text-gray-700 select-none">
+              {stat.value}
+            </h3>
+            <p className="mt-2 text-center text-md font-semibold text-gray-600 tracking-wide select-none">
+              {stat.title}
+            </p>
           </div>
-          <p className="mt-4 text-center text-gray-900 text-md font-medium tracking-wide">
-            {stat.title}
-          </p>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

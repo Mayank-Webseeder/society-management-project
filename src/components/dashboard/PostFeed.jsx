@@ -58,7 +58,7 @@ const PostFeed = ({selected}) => {
   };
 
   return (
-    <div className="h-64 sm:h-80">
+    <div className="h-64 sm:h-80 mt-10">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={getCharData()}

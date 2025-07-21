@@ -20,19 +20,61 @@ const ServicesList = () => {
 
   useEffect(() => {
     setServices([
-      { id: 1, name: "Plumber", category: "Home Services", status: "Active", vendorsCount: 12 },
-      { id: 2, name: "Electrician", category: "Home Services", status: "Inactive", vendorsCount: 8 },
-      { id: 3, name: "Carpenter", category: "Home Services", status: "Active", vendorsCount: 9 },
-      { id: 4, name: "CCTV Installation", category: "Security Services", status: "Inactive", vendorsCount: 4 },
-      { id: 5, name: "Maid Services", category: "Cleaning Services", status: "Active", vendorsCount: 11 },
-      { id: 6, name: "Driver on Demand", category: "Transport Services", status: "Active", vendorsCount: 5 },
-      { id: 7, name: "Gardening", category: "Outdoor Services", status: "Active", vendorsCount: 7 },
+      {
+        id: 1,
+        name: "Plumber",
+        category: "Home Services",
+        status: "Active",
+        vendorsCount: 12,
+      },
+      {
+        id: 2,
+        name: "Electrician",
+        category: "Home Services",
+        status: "Inactive",
+        vendorsCount: 8,
+      },
+      {
+        id: 3,
+        name: "Carpenter",
+        category: "Home Services",
+        status: "Active",
+        vendorsCount: 9,
+      },
+      {
+        id: 4,
+        name: "CCTV Installation",
+        category: "Security Services",
+        status: "Inactive",
+        vendorsCount: 4,
+      },
+      {
+        id: 5,
+        name: "Maid Services",
+        category: "Cleaning Services",
+        status: "Active",
+        vendorsCount: 11,
+      },
+      {
+        id: 6,
+        name: "Driver on Demand",
+        category: "Transport Services",
+        status: "Active",
+        vendorsCount: 5,
+      },
+      {
+        id: 7,
+        name: "Gardening",
+        category: "Outdoor Services",
+        status: "Active",
+        vendorsCount: 7,
+      },
     ]);
   }, []);
 
-  const handleVendorClick = (id) => {
-    navigate(`/vendors-by-service/${id}`);
-  };
+const handleVendorClick = (serviceName) => {
+  navigate(`/vendors-by-service/${encodeURIComponent(serviceName)}`);
+};
 
   const openAddModal = () => {
     setIsEditMode(false);
@@ -67,7 +109,11 @@ const ServicesList = () => {
       setServices((prev) =>
         prev.map((item) =>
           item.id === currentEditId
-            ? { ...item, ...formData, vendorsCount: parseInt(formData.vendorsCount) }
+            ? {
+                ...item,
+                ...formData,
+                vendorsCount: parseInt(formData.vendorsCount),
+              }
             : item
         )
       );
@@ -87,7 +133,9 @@ const ServicesList = () => {
   };
 
   const handleDelete = (id) => {
-    const confirmDelete = window.confirm("Do you really want to delete this item from the list?");
+    const confirmDelete = window.confirm(
+      "Do you really want to delete this item from the list?"
+    );
     if (confirmDelete) {
       setServices(services.filter((serv) => serv.id !== id));
     }
@@ -151,7 +199,9 @@ const ServicesList = () => {
                 )}
                 <span
                   className={`font-medium ${
-                    service.status === "Active" ? "text-green-700" : "text-red-700"
+                    service.status === "Active"
+                      ? "text-green-700"
+                      : "text-red-700"
                   }`}
                 >
                   {service.status}
@@ -160,7 +210,7 @@ const ServicesList = () => {
 
               {/* Vendors Count */}
               <div
-                onClick={() => handleVendorClick(service.id)}
+                onClick={() => handleVendorClick(service.name)}
                 className="w-[20%] text-center text-sm font-semibold text-slate-600 cursor-pointer hover:underline hover:text-[#00809D]"
               >
                 {service.vendorsCount} Vendors

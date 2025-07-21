@@ -1,75 +1,32 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PhoneCall, MessageSquare, CheckCircle2 } from "lucide-react";
+import { useJobContext } from "../../context/JobContext";
+import { useParams } from "react-router-dom";
 
 const JobDetailProfile = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("description");
+  const { jobs } = useJobContext();
+  const { id } = useParams();
+  const job = jobs.find((j) => j._id === id);
 
-  // Dummy Job Data
-  const [job, setJob] = useState({
-    title: "Plumbing Pipe Replacement",
-    societyName: "Green Valley",
-    status: "Open",
-    createdAt: "2024-07-04",
-    description:
-      "Pipes in Block A and Block B are leaking, causing water accumulation. Work to be completed within 3 days. Vendor to arrange material and labor.",
-    quotationRequired: true,
-    vendorApplications: [
-      {
-        _id: "v1",
-        name: "Sharma Plumbing Services",
-        contact: "+91-9876543210",
-        email: "sharma.plumbing@example.com",
-        appliedDate: "2024-07-05",
-        quotation: 15500,
-        status: "Pending",
-      },
-      {
-        _id: "v2",
-        name: "Mohan Painter",
-        contact: "+91-9123456789",
-        email: "mohan12@example.com",
-        appliedDate: "2024-07-06",
-        quotation: 14800,
-        status: "Pending",
-      },
-      {
-        _id: "v3",
-        name: "Reliable Infrastructure",
-        contact: "+91-9988776655",
-        email: "reliableinfra@example.com",
-        appliedDate: "2024-07-07",
-        quotation: 16200,
-        status: "Pending",
-      },
-    ],
-    selectedVendor: {
-      _id: "v2",
-      name: "Mohan Painter",
-      contact: "+91-9123456789",
-      email: "mohan12@example.com",
-      appliedDate: "2024-07-06",
-      quotation: 14800,
-      remarks:
-        "Vendor selected based on lowest quotation and positive reviews.",
-    },
-  });
+  if (!job) return <div className="text-center py-10">Job Not Found</div>;
 
   const handleAssignVendor = (vendor) => {
-    setJob({ ...job, selectedVendor: vendor });
     alert(`${vendor.name} has been assigned as the selected vendor.`);
     setActiveTab("selected vendor");
   };
 
-const handleDelete = () => {
-  const confirmDelete = window.confirm("Are you sure you want to delete this job?");
-  if (confirmDelete) {
-    alert("Job Deleted Successfully");
-    navigate("/jobs");
-  }
-};
-
+  const handleDelete = () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this job?"
+    );
+    if (confirmDelete) {
+      alert("Job Deleted Successfully");
+      navigate("/jobs");
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
@@ -161,7 +118,6 @@ const handleDelete = () => {
           ))}
         </div>
 
-      
         <div className="mt-6">
           {/* Description Tab */}
           {activeTab === "description" && (
@@ -371,7 +327,7 @@ const handleDelete = () => {
             </button>
 
             <button
-              onClick={(handleDelete)}
+              onClick={handleDelete}
               className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium transition"
             >
               Delete Job

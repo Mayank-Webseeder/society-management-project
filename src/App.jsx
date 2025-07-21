@@ -14,7 +14,11 @@ import JobsList from "./components/jobs/JobsList";
 import JobDetailProfile from "./components/jobs/JobDetailProfile";
 import Subscription from "./components/subscription/Subscription";
 import ServicesList from "./components/services/ServicesList";
-import CategoriesList from "./components/services/catg&services/CategoriesList";
+import VendorServicesList from "./components/services/catg&services/VendorServicesList";
+import RatingSummary from "./components/review-feedback/RatingSummary";
+import MyProfile from "./components/adminSettting/MyProfile";
+import Setting from "./components/adminSettting/Setting";
+import Reports from "./components/reports/Reports";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -93,42 +97,68 @@ function App() {
             }
           />
 
-           <Route
+          <Route
             path="/job-details/:id"
             element={
               <AppLayout setIsLoggedIn={setIsLoggedIn}>
-                <JobDetailProfile/>
+                <JobDetailProfile />
               </AppLayout>
             }
           />
 
-           <Route
+          <Route
             path="/subscriptions"
             element={
               <AppLayout setIsLoggedIn={setIsLoggedIn}>
-                <Subscription/>
-              </AppLayout>
-            }
-          /> 
-
-            <Route
-            path="/services-categories"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
-                <ServicesList/>
-              </AppLayout>
-            }
-          /> 
-
-        <Route
-            path="/vendors-by-service/:id"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
-                <CategoriesList/>
+                <Subscription />
               </AppLayout>
             }
           />
-          
+
+          <Route
+            path="/services-categories"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <ServicesList />
+              </AppLayout>
+            }
+          />
+
+          <Route
+            path="/vendors-by-service/:serviceName"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <VendorServicesList />
+              </AppLayout>
+            }
+          />
+
+          <Route
+            path="/ratings"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <RatingSummary />
+              </AppLayout>
+            }
+          />
+
+          <Route
+            path="/admin-settings"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <Setting/>
+              </AppLayout>
+            }
+          />
+
+            <Route
+            path="/reports"
+            element={
+              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+                <Reports/>
+              </AppLayout>
+            }
+          />
         </>
       ) : (
         <>
