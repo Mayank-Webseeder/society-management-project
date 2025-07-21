@@ -31,10 +31,18 @@ const StatsCards = ({ statsData }) => {
               className="absolute -top-8 rounded-full p-4 shadow-md flex items-center justify-center"
               style={{
                 backgroundColor: stat.color,
-                boxShadow: `0 4px 10px ${stat.color}88`,
+                outline: `2px solid ${stat.color}cc`,
+                outlineOffset: "4px",
               }}
             >
-              <Icon size={32} className="text-white" />
+              <Icon
+                size={28}
+                className="text-white"
+                style={{
+                  textShadow:
+                    "0 0 8px rgba(96, 165, 250, 0.9), 0 0 15px rgba(96, 165, 250, 0.7)",
+                }}
+              />
             </div>
             <h3 className="mt-10 text-4xl font-extrabold text-gray-700 select-none">
               {stat.value}
