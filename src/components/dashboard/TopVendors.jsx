@@ -1,8 +1,7 @@
 import React from "react";
 import { useVendorContext } from "../../context/VendorContext";
 import { useJobContext } from "../../context/JobContext";
-import { Briefcase } from "lucide-react";
-import { Star } from "lucide-react";
+import { Briefcase, Star } from "lucide-react";
 
 const TopVendors = () => {
   const { vendors } = useVendorContext();
@@ -13,62 +12,56 @@ const TopVendors = () => {
     .slice(0, 3);
 
   return (
-    <div className="w-full bg-white rounded-3xl shadow-xl p-6 space-y-6">
+    <div className="w-full bg-white rounded-2xl shadow p-4 sm:p-6 md:p-8 flex flex-col gap-6">
+      
       {/* Total Jobs */}
-      <div className="px-2 space-y-3">
-        <h2 className="text-lg font-semibold text-gray-900">Total Jobs Posted</h2>
-        <div className="flex items-center justify-between p-5 rounded-2xl bg-gradient-to-r from-[#e0f2f1] to-[#b2dfdb] shadow-inner">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-[#26a69a] rounded-full flex items-center justify-center text-white shadow-md">
-              <Briefcase className="w-6 h-6" />
+      <div className="space-y-3">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900">Total Jobs Posted</h2>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#e0f2f1] to-[#b2dfdb] shadow-inner">
+          <div className="flex items-center gap-4 w-full sm:w-auto">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#26a69a] rounded-full flex items-center justify-center text-white shadow-md shrink-0">
+              <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-700">Total Jobs</p>
               <p className="text-xs text-gray-500">Till Date</p>
             </div>
           </div>
-          <span
-            className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-500 select-none"
-            style={{ fontVariantNumeric: "tabular-nums" }}
-          >
+          <span className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-500 select-none tabular-nums">
             {totalJobs}
           </span>
         </div>
       </div>
-      <hr className="border-t border-gray-300" />
+
+      {/* Divider */}
+      <hr className="border-gray-300" />
 
       {/* Top Vendors */}
       <div className="space-y-4">
-        <h2 className="px-2 text-lg font-semibold text-gray-900">
-          Top Performing Vendors
-        </h2>
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900">Top Performing Vendors</h2>
         {topVendors.length === 0 ? (
-          <p className="text-gray-500">No vendors found.</p>
+          <p className="text-gray-500 text-sm">No vendors found.</p>
         ) : (
           topVendors.map((vendor, index) => (
             <div
               key={vendor.id}
-              className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-colors duration-300"
-              style={{ minHeight: "56px" }}
+              className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition duration-300"
             >
-              <div className="flex items-center gap-4">
-                <div className="w-9 h-9 flex items-center justify-center rounded-full bg-teal-500 text-white font-semibold text-base shadow-sm select-none">
+              <div className="flex items-center gap-4 w-full sm:w-auto">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-teal-500 text-white font-semibold text-sm sm:text-base shrink-0">
                   {index + 1}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900 leading-tight">
-                    {vendor.name}
-                  </p>
+                  <p className="text-sm sm:text-base font-semibold text-gray-900">{vendor.name}</p>
                   <p className="text-xs text-gray-500">{vendor.location}</p>
                 </div>
               </div>
-              <div className="text-right text-sm select-none">
-                <p className="font-semibold text-gray-800 leading-tight">
-                  {vendor.totalJobsApplied} Jobs
-                </p>
-                <div className="flex items-center justify-end gap-1 text-yellow-400 text-xs font-medium">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span>{vendor.rating.toFixed(1)}</span>
+
+              <div className="flex flex-col items-end text-sm">
+                <p className="font-semibold text-gray-800">{vendor.totalJobsApplied} Jobs</p>
+                <div className="flex items-center gap-1 text-yellow-400">
+                  <Star className="w-4 h-4 fill-yellow-400" />
+                  <span className="font-medium text-xs sm:text-sm text-gray-800">{vendor.rating.toFixed(1)}</span>
                 </div>
               </div>
             </div>

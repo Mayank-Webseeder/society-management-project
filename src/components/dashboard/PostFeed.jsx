@@ -41,76 +41,99 @@ const yearlyData = [
   { year: "2025", jobs: 2500 },
 ];
 
+const PostFeed = ({ selected }) => {
+  const getChartData = () => {
+    if (selected === "Daily") return dailyData;
+    if (selected === "Monthly") return monthlyData;
+    return yearlyData;
+  };
 
-const lineColor = "#7E6363";
-
-const PostFeed = ({selected}) => {
-        const getCharData =()=>{
-        if(selected==="Daily") return dailyData;
-        if(selected === "Monthly") return monthlyData;
-        return yearlyData;
-    };
-    
   const getXAxisKey = () => {
     if (selected === "Daily") return "day";
     if (selected === "Monthly") return "month";
     return "year";
   };
 
+  const chartData = getChartData();
+  const latest = chartData[chartData.length - 1]?.jobs || 0;
+
   return (
-    <div className="h-64 sm:h-80 mt-10">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={getCharData()}
-          margin={{ top: 20, right: 30, left: 10, bottom: 10 }}
-        >
-          <CartesianGrid
-            strokeDasharray="3 3"
-            vertical={false}
-            stroke="#E5E7EB"
-          />
+    <div className="w-full flex flex-col">
+      {/* Small Screen Card */}
+      <div className="block md:hidden p-4">
+        <div className="relative rounded-3xl p-6 bg-gradient-to-br from-[#cde6ea] to-[#8DBCC7] shadow-xl border border-white/30 overflow-hidden flex flex-col justify-between min-h-[240px] gap-4">
+          <div className="flex justify-center mb-2">
+            <span className="px-4 py-1 rounded-full text-sm font-semibold text-[#0e3d47] bg-white/50 backdrop-blur-sm border border-white/40 shadow-sm select-none">
+              {selected} Overview
+            </span>
+          </div>
 
-          <XAxis
-            dataKey={getXAxisKey()}
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "#1A120B", fontSize: 14 }}
-            padding={{ left: 35, right: 35 }}
-          />
+          <div className="flex justify-center">
+            <div className="w-24 h-24 rounded-full bg-white/40 backdrop-blur-md border border-white/60 shadow-md flex flex-col items-center justify-center text-[#0e3d47] select-none">
+              <span className="text-3xl font-extrabold drop-shadow-sm">
+                {latest}
+              </span>
+              <span className="text-[11px] font-medium">Jobs</span>
+            </div>
+          </div>
 
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "#1A120B", fontSize: 14 }}
-          />
+          <p className="text-center text-sm text-[#0e3d47] font-medium tracking-wide select-none">
+            Total Jobs in {selected}
+          </p>
 
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "#fff",
-              border: "1px solid #E5E7EB",
-              borderRadius: "10px",
-            }}
-            cursor={{ stroke: "#CBD5E1", strokeWidth: 1 }}
-          />
+          <div className="absolute -bottom-16 -left-10 w-48 h-48 rounded-full bg-white/40 blur-3xl opacity-30 pointer-events-none"></div>
+          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/30 blur-2xl opacity-20 pointer-events-none"></div>
+        </div>
+      </div>
 
-          <Line
-            type="monotone"
-            dataKey="jobs"
-            stroke={lineColor}
-            strokeWidth={2}
-            isAnimationActive={true}
-            animationDuration={2500}
-            animationEasing="ease-in-out"
-            dot={{ r: 4, fill: lineColor, stroke: "#fff", strokeWidth: 2 }}
-            activeDot={{
-              r: 6,
-              stroke: lineColor,
-              strokeWidth: 2,
-              fill: "#fff",
-            }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      {/* Large Screen Chart */}
+      <div className="hidden md:block h-72 lg:h-96 mt-4">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            margin={{ top: 20, right: 30, left: 10, bottom: 10 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="#E5E7EB"
+            />
+            <XAxis
+              dataKey={getXAxisKey()}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#374151", fontSize: 12 }}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#374151", fontSize: 12 }}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#fff",
+                border: "1px solid #E5E7EB",
+                borderRadius: "10px",
+                fontSize: "12px",
+              }}
+              cursor={{ stroke: "#CBD5E1", strokeWidth: 1 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="jobs"
+              stroke="#7E6363"
+              strokeWidth={2}
+              dot={{ r: 4, fill: "#7E6363", stroke: "#fff", strokeWidth: 2 }}
+              activeDot={{
+                r: 6,
+                fill: "#fff",
+                stroke: "#7E6363",
+                strokeWidth: 2,
+              }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

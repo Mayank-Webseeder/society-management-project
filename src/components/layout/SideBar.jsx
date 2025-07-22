@@ -1,8 +1,8 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-const SideBarLink = ({ to, icon, label, active }) => (
+const SideBarLink = ({ to, icon, label, active, collapsed }) => (
   <Link
     to={to}
     className={`flex items-center px-3 py-2 rounded-lg transition-all duration-200 group relative ${
@@ -11,14 +11,28 @@ const SideBarLink = ({ to, icon, label, active }) => (
         : "text-white hover:bg-white/10 hover:outline hover:outline-2 hover:outline-cyan-200/50 hover:outline-offset-0"
     }`}
   >
-    <span className="mr-3 text-lg">{icon}</span>
-    <span>{label}</span>
+    <div className={`flex ${collapsed ? "justify-center w-full" : "mr-3"}`}>
+      <span className="text-lg">{icon}</span>
+    </div>
+    {!collapsed && <span>{label}</span>}
   </Link>
 );
 
 const SideBar = () => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const handleSize = () => {
+      const showBar = window.innerWidth < 800;
+      setCollapsed(showBar);
+    };
+
+    handleSize();
+    window.addEventListener("resize", handleSize);
+    return () => window.removeEventListener("resize", handleSize);
+  }, []);
+
   const menuItems = [
     {
       to: "/",
@@ -218,11 +232,19 @@ const SideBar = () => {
     >
       <div className="flex items-center justify-between p-4 border-b border-white/10 mb-8">
         {!collapsed && (
-          <span className="px-2 text-xl font-bold tracking-wide">
-            Welcome!
-          </span>
+          <span className="px-2 text-xl font-bold tracking-wide">Welcome!</span>
         )}
-        <button onClick={() => setCollapsed(!collapsed)} className="hover:scale-105 transition">
+        <button
+          onClick={() => {
+            if (window.innerWidth >= 800) {
+              setCollapsed(!collapsed);
+            }
+          }}
+          disabled={window.innerWidth < 800}
+          className={`hover:scale-105 transition ${
+            window.innerWidth < 800 ? "opacity-40 cursor-not-allowed" : ""
+          }`}
+        >
           {collapsed ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -260,7 +282,7 @@ const SideBar = () => {
         <nav className="flex flex-col space-y-2">
           {menuItems.map((item) => (
             <SideBarLink
-             key={item.to}
+              key={item.to}
               to={item.to}
               icon={item.icon}
               label={item.label}
