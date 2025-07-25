@@ -142,13 +142,10 @@ const handleVendorClick = (serviceName) => {
   };
 
   return (
-    <div className="p-6 bg-[#F8F9FA] min-h-screen">
-      <div className="bg-white rounded-3xl shadow-md border border-gray-200 p-6">
+    <div className="bg-white rounded-lg shadow">
+      <div className="px-4 py-4 border-b border-gray-200">
         {/* Heading */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-[#2E2E2E]">
-            Available Services & Associated Vendors
-          </h2>
+        <div className="flex justify-end items-center mb-4">
           <button
             onClick={openAddModal}
             className="bg-[#00809D] text-white px-4 py-2 rounded-lg text-sm shadow-sm hover:bg-[#006f86]"

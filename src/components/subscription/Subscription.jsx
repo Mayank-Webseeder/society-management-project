@@ -35,49 +35,44 @@ const Subscription = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <Star className="w-6 h-6 text-yellow-500" /> Subscription Management
-      </h1>
-
-      {/* Card Options */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {cards.map((card) => (
-          <div
-            key={card.key}
-            onClick={() => setActiveCard(card.key)}
-            className={`p-6 h-40 flex flex-col justify-center items-center text-center rounded-lg cursor-pointer transition transform
-         bg-gradient-to-br ${
-           activeCard === card.key
-             ? `${card.bg} ${card.border} shadow-xl`
-             : `from-white to-gray-50 border border-gray-200 shadow hover:shadow-lg hover:border ${
-                 card.key === "plans"
-                   ? "hover:border-blue-300"
-                   : card.key === "vendor"
-                   ? "hover:border-green-300"
-                   : "hover:border-purple-300"
-               }`
-         }`}
-          >
-            {card.icon}
-            <h2 className="text-lg font-semibold text-gray-800 mb-1">
-              {card.label}
-            </h2>
-            <div className="w-12 h-1 bg-blue-200 mb-2 rounded-full" />
-            <p className="text-sm text-gray-500 max-w-[200px]">{card.quote}</p>
-          </div>
-        ))}
+<div className="bg-white rounded-lg shadow p-6">
+  {/* Card Options */}
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {cards.map((card) => (
+      <div
+        key={card.key}
+        onClick={() => setActiveCard(card.key)}
+        className={`p-6 h-40 flex flex-col justify-center items-center text-center rounded-lg cursor-pointer transition transform
+     bg-gradient-to-br ${
+       activeCard === card.key
+         ? `${card.bg} ${card.border} shadow-xl`
+         : `from-white to-gray-50 border border-gray-200 shadow hover:shadow-lg hover:border ${
+             card.key === "plans"
+               ? "hover:border-blue-300"
+               : card.key === "vendor"
+               ? "hover:border-green-300"
+               : "hover:border-purple-300"
+           }`
+     }`}
+      >
+        {card.icon}
+        <h2 className="text-lg font-semibold text-gray-800 mb-1">
+          {card.label}
+        </h2>
+        <div className="w-12 h-1 bg-blue-200 mb-2 rounded-full" />
+        <p className="text-sm text-gray-500 max-w-[200px]">{card.quote}</p>
       </div>
+    ))}
+  </div>
 
-      {/* Section Details */}
-      <div className="mt-8">
-        {activeCard === "plans" && <SubscriptionPlans />}
+  {/* Section Details */}
+  <div className="mt-4">
+    {activeCard === "plans" && <SubscriptionPlans />}
+    {activeCard === "vendor" && <VendorSubscriptions />}
+    {activeCard === "revenue" && <RevenueBreakdown />}
+  </div>
+</div>
 
-        {activeCard === "vendor" && <VendorSubscriptions />}
-
-        {activeCard === "revenue" && <RevenueBreakdown />}
-      </div>
-    </div>
   );
 };
 

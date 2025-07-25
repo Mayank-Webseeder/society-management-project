@@ -29,7 +29,7 @@ const VendorDetailProfile = () => {
     if (status === "Active") bgColor = "bg-green-100 text-green-700";
     else if (status === "Pending") bgColor = "bg-yellow-100 text-yellow-700";
     else if (status === "Rejected") bgColor = "bg-red-100 text-red-700";
-    else if (status === "Ban") bgColor = "bg-red-100 text-red-700";
+    else if (status === "Disabled") bgColor = "bg-red-100 text-red-700";
 
     return (
       <span
@@ -45,12 +45,12 @@ const VendorDetailProfile = () => {
     if (vendor.status === "Active") {
       return [
         {
-          label: "Ban Vendor",
-          newStatus: "Ban",
+          label: "Disable Vendor",
+          newStatus: "Disabled",
           color: "bg-red-600 hover:bg-red-700",
         },
       ];
-    } else if (vendor.status === "Ban") {
+    } else if (vendor.status === "Disabled") {
       return [
         {
           label: "Activate Vendor",
@@ -71,7 +71,6 @@ const VendorDetailProfile = () => {
     }
   };
 
-  // Find vendor from context by matching id (convert both to string for safety)
   useEffect(() => {
     setLoading(true);
     const foundVendor = vendors.find((v) => String(v.id) === String(vendorId));
@@ -79,7 +78,6 @@ const VendorDetailProfile = () => {
     if (foundVendor) {
       setVendor(foundVendor);
     } else {
-      // fallback: set dummy data or null
       setVendor(null);
     }
     setLoading(false);
@@ -93,7 +91,7 @@ const VendorDetailProfile = () => {
       <div className="text-center py-10 text-red-500">Vendor not found.</div>
     );
 
-  // For rating stars in job status
+  // rating stars in job status
   const RatingDisplay = ({ rating }) => {
     const maxStars = 5;
     const fullStars = Math.floor(rating);
@@ -119,12 +117,11 @@ const VendorDetailProfile = () => {
     vendor.status === "Pending" || vendor.status === "Rejected";
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
-      {/* Back button and title */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white rounded-lg shadow border border-gray-200">
+      <div className="flex items-center justify-between mt-3 px-3">
         <button
           onClick={() => navigate("/vendors")}
-          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-lg gap-1"
+          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-md gap-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +129,7 @@ const VendorDetailProfile = () => {
             viewBox="0 0 24 24"
             strokeWidth="2"
             stroke="currentColor"
-            className="w-6 h-6"
+            className="w-4 h-4"
           >
             <path
               strokeLinecap="round"
@@ -142,10 +139,6 @@ const VendorDetailProfile = () => {
           </svg>
           Back
         </button>
-        <h1 className="text-2xl font-bold text-center flex-grow text-gray-900">
-          Vendor Detail Profile
-        </h1>
-        <div className="w-20" />
       </div>
 
       {isProfileHidden ? (
@@ -153,12 +146,11 @@ const VendorDetailProfile = () => {
           Vendor profile is not available.
         </div>
       ) : (
-        <div className="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-200">
-          {/* Header */}
-          <div className="flex justify-between items-start border-b pb-4 sticky top-0 bg-white z-20">
+        <div className="px-4 py-6 space-y-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
             <div>
               <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="text-2xl font-bold text-gray-800">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
                   {vendor.name}
                 </h2>
                 {getStatusBadge(vendor.status)}
@@ -168,20 +160,46 @@ const VendorDetailProfile = () => {
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <button className="flex items-center gap-2 px-3 py-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 text-sm font-medium">
-                <PhoneCall className="w-4 h-4" />
-                Call
+            {/* action Buttons */}
+            <div className="flex flex-wrap sm:flex-wrap md:flex-nowrap lg:flex-nowrap justify-end gap-2 pt-4 md:pt-0 sticky bottom-0 bg-white z-20">
+              {getActionButtons().map(({ label, newStatus, color }) => (
+                <button
+                  key={label}
+                  onClick={() => handleChangeStatus(newStatus)}
+                  className={`${color} px-4 py-2 rounded text-white text-sm font-semibold whitespace-nowrap`}
+                >
+                  {label}
+                </button>
+              ))}
+
+              <button
+                onClick={() => navigate(`/vendor-edit/${vendor.id}`)}
+                className="p-2 rounded bg-blue-100 text-blue-600 hover:bg-blue-200 text-sm font-medium w-fit lg:px-4 lg:py-2 lg:flex lg:items-center lg:gap-2"
+              >
+                <Pencil className="w-4 h-4" />
+                <span className="hidden lg:inline">Edit Profile</span>
               </button>
-              <button className="flex items-center gap-2 px-3 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200 text-sm font-medium">
-                <MessageSquare className="w-4 h-4" />
-                Message
+
+              <button
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "Are you sure you want to delete this vendor?"
+                    )
+                  ) {
+                    navigate("/vendors");
+                  }
+                }}
+                className="p-2 rounded bg-red-100 text-red-600 hover:bg-red-200 text-sm font-medium w-fit lg:px-4 lg:py-2 lg:flex lg:items-center lg:gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span className="hidden lg:inline">Delete Vendor</span>
               </button>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-4 border-b sticky top-16 bg-white z-20">
+          <div className="flex flex-wrap gap-2 border-b sticky top-[64px] bg-white z-20 px-1 sm:px-0">
             {[
               "vendor info",
               "documents",
@@ -192,10 +210,10 @@ const VendorDetailProfile = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 font-medium capitalize ${
+                className={`px-3 py-2 font-medium capitalize text-sm sm:text-base whitespace-nowrap ${
                   activeTab === tab
                     ? "border-b-2 border-blue-500 text-blue-600"
-                    : "text-gray-600"
+                    : "text-gray-600 hover:text-blue-600"
                 }`}
               >
                 {tab}
@@ -207,12 +225,7 @@ const VendorDetailProfile = () => {
           <div className="min-h-32 mt-4">
             {activeTab === "vendor info" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Contact Info */}
                 <div className="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-100">
-                  <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-700 mb-2">
-                    <FileUser className="text-blue-600 w-5 h-5" /> Contact
-                    Information
-                  </h2>
                   <div className="space-y-3 text-gray-700 text-sm">
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4 text-gray-500" />
@@ -252,6 +265,7 @@ const VendorDetailProfile = () => {
               </div>
             )}
 
+            {/* Documents */}
             {activeTab === "documents" && (
               <div className="space-y-4">
                 {vendor.documents?.map((doc, idx) => (
@@ -266,7 +280,7 @@ const VendorDetailProfile = () => {
                       <div className="text-gray-500 text-sm">{doc.type}</div>
                     </div>
 
-                    <div className="text-gray-600 text-sm mt-3 md:mt-0 md:text-center">
+                    <div className="text-gray-600 text-sm mt-3 md:mt-0 md:text-center whitespace-nowrap">
                       <span className="font-medium text-gray-700">
                         Uploaded On:
                       </span>{" "}
@@ -276,11 +290,11 @@ const VendorDetailProfile = () => {
                     </div>
 
                     <div
-                      className={`px-3 py-1 text-sm font-semibold rounded-full ${
+                      className={`px-3 py-1 text-sm font-semibold rounded-full mt-3 md:mt-0 ${
                         doc.status === "Verified"
                           ? "bg-green-100 text-green-700"
                           : "bg-yellow-100 text-yellow-700"
-                      } mt-3 md:mt-0`}
+                      }`}
                     >
                       {doc.status}
                     </div>
@@ -289,17 +303,18 @@ const VendorDetailProfile = () => {
               </div>
             )}
 
+            {/* Job History */}
             {activeTab === "job history" && (
               <div className="overflow-x-auto border rounded-lg shadow">
-                <table className="min-w-full text-left text-sm">
+                <table className="min-w-full text-left text-sm border-collapse">
                   <thead className="bg-gray-50 text-gray-700">
                     <tr>
-                      <th className="px-4 py-3">Job ID</th>
-                      <th className="px-4 py-3">Title</th>
-                      <th className="px-4 py-3">Type</th>
-                      <th className="px-4 py-3">Price (₹)</th>
-                      <th className="px-4 py-3">Status</th>
-                      <th className="px-4 py-3">Date</th>
+                      <th className="px-4 py-3 whitespace-nowrap">Job ID</th>
+                      <th className="px-4 py-3 whitespace-nowrap">Title</th>
+                      <th className="px-4 py-3 whitespace-nowrap">Type</th>
+                      <th className="px-4 py-3 whitespace-nowrap">Price (₹)</th>
+                      <th className="px-4 py-3 whitespace-nowrap">Status</th>
+                      <th className="px-4 py-3 whitespace-nowrap">Date</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -308,13 +323,19 @@ const VendorDetailProfile = () => {
                         key={job.id}
                         className="border-t hover:bg-gray-50 transition"
                       >
-                        <td className="px-4 py-2">{job.id}</td>
-                        <td className="px-4 py-2 font-medium text-gray-800">
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          {job.id}
+                        </td>
+                        <td className="px-4 py-2 font-medium text-gray-800 whitespace-nowrap">
                           {job.title}
                         </td>
-                        <td className="px-4 py-2">{job.type}</td>
-                        <td className="px-4 py-2">₹{job.price}</td>
-                        <td className="px-4 py-2">
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          {job.type}
+                        </td>
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          ₹{job.price}
+                        </td>
+                        <td className="px-4 py-2 whitespace-nowrap">
                           <span
                             className={`px-2 py-1 text-xs font-semibold rounded-full ${
                               job.status === "Completed"
@@ -327,7 +348,9 @@ const VendorDetailProfile = () => {
                             {job.status}
                           </span>
                         </td>
-                        <td className="px-4 py-2 text-gray-600">{job.date}</td>
+                        <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                          {job.date}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -335,9 +358,9 @@ const VendorDetailProfile = () => {
               </div>
             )}
 
+            {/* Job Status */}
             {activeTab === "job status" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Total Jobs Applied */}
                 <div className="flex items-center gap-4 bg-white p-6 rounded-2xl shadow border border-gray-100">
                   <div className="w-16 h-16 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full text-xl font-bold">
                     {vendor.totalJobsApplied}
@@ -476,7 +499,9 @@ const VendorDetailProfile = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-center gap-3 mb-10">
+
+                {/* Rating */}
+                <div className="flex items-center justify-center gap-3 mb-10 col-span-full">
                   <h3 className="font-semibold text-gray-700 m-0 text-lg">
                     Rating:
                   </h3>
@@ -485,13 +510,14 @@ const VendorDetailProfile = () => {
               </div>
             )}
 
+            {/* Subscription */}
             {activeTab === "subscription" && (
-              <div className="border rounded-2xl p-6 shadow bg-white max-w-xl mx-auto space-y-6">
-                <h2 className="text-2xl font-semibold text-gray-800 text-center mb-4">
+              <div className="border rounded-2xl p-6 shadow bg-white max-w-xl w-full">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">
                   Subscription Details
                 </h2>
 
-                <div className="space-y-4 text-gray-800 text-base">
+                <div className="space-y-2 text-gray-800 text-base">
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-gray-700">Plan:</span>
                     <span className="font-medium">
@@ -556,39 +582,6 @@ const VendorDetailProfile = () => {
                 </div>
               </div>
             )}
-          </div>
-
-          {/* Bottom Buttons */}
-          <div className="flex justify-end gap-6 border-t pt-4 sticky bottom-0 bg-white z-20">
-            {getActionButtons().map(({ label, newStatus, color }) => (
-              <button
-                key={label}
-                onClick={() => handleChangeStatus(newStatus)}
-                className={`${color} px-4 py-2 rounded text-white text-sm font-semibold`}
-              >
-                {label}
-              </button>
-            ))}
-            <button
-              onClick={() => navigate(`/vendor-edit/${vendor.id}`)}
-              className="px-4 py-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 text-sm font-semibold flex items-center gap-2"
-            >
-              <Pencil className="w-4 h-4" />
-              Edit Profile
-            </button>
-            <button
-              onClick={() => {
-                if (
-                  window.confirm("Are you sure you want to delete this vendor?")
-                ) {
-                  navigate("/vendors");
-                }
-              }}
-              className="px-4 py-2 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm font-semibold flex items-center gap-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete Vendor
-            </button>
           </div>
         </div>
       )}

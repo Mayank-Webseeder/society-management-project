@@ -51,144 +51,146 @@ const VendorEdit = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <div className="max-w-4xl mx-auto bg-gray-50 rounded-lg shadow-xl p-6 space-y-8 border border-gray-200">
-        
-        {/* Top Bar - Back Button + Heading */}
-        <div className="flex items-center justify-between border-b pb-4">
-          <button
-            onClick={() => navigate("/vendors")}
-            className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-md gap-1"
+    <div className="bg-white rounded-lg shadow border border-gray-200 p-6 mx-auto">
+      {/* Top Bar */}
+      <div className="flex items-center justify-between mb-6">
+        <button
+          onClick={() => navigate("/vendors")}
+          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm gap-1"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-4 h-4"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-              />
-            </svg>
-            Back
-          </button>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+            />
+          </svg>
+          Back
+        </button>
 
-          <h1 className="text-xl font-bold text-gray-800 text-center flex-grow">
-            Edit Vendor Details
-          </h1>
+        <h1 className="text-xl font-bold text-gray-800 text-center flex-grow">
+          Edit Vendor Details
+        </h1>
 
-          <div className="w-14" />
+        <div className="w-14" />
+      </div>
+
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white/90 rounded-3xl p-4 space-y-6 border border-gray-300"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+            />
+          </div>
         </div>
 
-        {/* Inner Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white/90 rounded-3xl p-6 space-y-6 border border-gray-300"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
-              />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Phone
+            </label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+            />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">Phone</label>
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">Location</label>
-              <input
-                type="text"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
-              />
-            </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Location
+            </label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+            />
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Subscription Status
-              </label>
-              <select
-                name="subscriptionStatus"
-                value={formData.subscriptionStatus}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
-              >
-                <option value="Active">Active</option>
-                <option value="Expired">Expired</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Services Provided (comma separated)
-              </label>
-              <input
-                type="text"
-                name="servicesProvided"
-                value={formData.servicesProvided}
-                onChange={handleChange}
-                placeholder="e.g. Plumbing, Electrical"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => navigate("/vendors")}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Subscription Status
+            </label>
+            <select
+              name="subscriptionStatus"
+              value={formData.subscriptionStatus}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-[#00809D] text-white rounded hover:bg-[#237688]"
-            >
-              Save Changes
-            </button>
+              <option value="Active">Active</option>
+              <option value="Expired">Expired</option>
+            </select>
           </div>
-        </form>
-      </div>
+
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Services Provided
+            </label>
+            <input
+              type="text"
+              name="servicesProvided"
+              value={formData.servicesProvided}
+              onChange={handleChange}
+              placeholder="e.g. Plumbing, Electrical"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#5187ac]"
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-4">
+          <button
+            type="button"
+            onClick={() => navigate("/vendors")}
+            className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-[#00809D] text-white rounded hover:bg-[#237688]"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

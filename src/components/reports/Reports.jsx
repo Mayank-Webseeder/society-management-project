@@ -16,12 +16,9 @@ const Reports = () => {
   ];
 
   return (
-    <div className="p-6 space-y-6 bg-[#f9fafb] min-h-screen">
+    <div className="bg-white rounded-xl p-6 shadow">
       {/* Page Heading */}
-      <h1 className="text-3xl font-bold text-gray-800">📊 Reports Dashboard</h1>
-
-      {/* Horizontal Tabs */}
-      <div className="flex gap-4 overflow-x-auto border-b pb-2">
+      <div className="flex gap-4 overflow-x-auto border-b pb-2 mb-6">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -41,7 +38,7 @@ const Reports = () => {
       </div>
 
       {/* Report Component Rendering */}
-      <div className="bg-white rounded-xl p-6 shadow">
+      
         {activeTab === "society" && (
           <div>
             <SocietyReport/>
@@ -66,7 +63,7 @@ const Reports = () => {
           </div>
         )}
       </div>
-    </div>
+   
   );
 };
 export default Reports;

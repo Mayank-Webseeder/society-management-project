@@ -50,180 +50,178 @@ const MyProfile = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-8 bg-white p-10 rounded-2xl shadow-2xl border border-gray-100 max-w-5xl mx-auto"
-    >
-      {/* Heading */}
-      <div className="text-center mb-6">
-        <h2 className="text-3xl font-bold text-gray-800">Admin Profile</h2>
-        <p className="text-gray-500 mt-2">
-          Manage your account settings and profile information
-        </p>
-      </div>
-
-      {/* Profile Image */}
-      <div className="flex flex-col items-center gap-4">
-        <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-gray-300 shadow-md hover:shadow-lg transition group">
-          {profilePic ? (
-            <img
-              src={profilePic}
-              alt="Profile Preview"
-              className="w-full h-full object-cover group-hover:opacity-80 transition"
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-500 text-5xl font-bold">
-              A
-            </div>
-          )}
-        </div>
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="text-sm text-gray-600"
+  <form
+    onSubmit={handleSubmit}
+    className="space-y-6 px-1 sm:px-3 md:px-4" 
+  >
+    {/* Profile Image */}
+  <div className="flex flex-col items-center gap-4">
+    <div className="relative w-36 h-36 rounded-full overflow-hidden border-4 border-gray-300 shadow-md hover:shadow-lg transition group">
+      {profilePic ? (
+        <img
+          src={profilePic}
+          alt="Profile Preview"
+          className="w-full h-full object-cover group-hover:opacity-80 transition"
         />
-        <p className="text-xs text-gray-500">Max size 2MB • JPG, PNG</p>
+      ) : (
+        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-500 text-5xl font-bold">
+          A
+        </div>
+      )}
+    </div>
+    <input
+      type="file"
+      accept="image/*"
+      onChange={handleImageChange}
+      className="text-sm text-gray-600"
+    />
+    <p className="text-xs text-gray-500">Max size 2MB • JPG, PNG</p>
+  </div>
+
+  {/* Form Inputs */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Left Column */}
+    <div className="space-y-6">
+      <div>
+        <label className="block mb-1 text-sm font-semibold text-gray-800">
+          First Name
+        </label>
+        <input
+          name="firstName"
+          type="text"
+          placeholder="Admin"
+          value={formData.firstName}
+          onChange={handleChange}
+          className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
+        />
       </div>
 
-      {/* Form Inputs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-800">
-            First Name
-          </label>
-          <input
-            name="firstName"
-            type="text"
-            placeholder="Admin"
-            value={formData.firstName}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-800">
-            Last Name
-          </label>
-          <input
-            name="lastName"
-            type="text"
-            placeholder="Manager"
-            value={formData.lastName}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-800">
-            Email
-          </label>
-          <input
-            name="email"
-            type="email"
-            value={formData.email}
-            disabled
-            className="w-full border rounded-lg px-4 py-3 font-medium bg-gray-100 text-gray-500 cursor-not-allowed shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-800">
-            Phone
-          </label>
-          <input
-            name="phone"
-            type="tel"
-            placeholder="+91 99999 12345"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block mb-1 text-sm font-semibold text-gray-800">
-            Bio
-          </label>
-          <textarea
-            name="bio"
-            rows={3}
-            placeholder="System Administrator at Admin Panel Pvt Ltd."
-            value={formData.bio}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 font-medium resize-none placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-800">
-            Country
-          </label>
-          <input
-            name="address.country"
-            type="text"
-            placeholder="India"
-            value={formData.address.country}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-800">
-            State / City
-          </label>
-          <input
-            name="address.state"
-            type="text"
-            placeholder="Madhya Pradesh / Indore"
-            value={formData.address.state}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-semibold text-gray-800">
-            Pincode
-          </label>
-          <input
-            name="address.pincode"
-            type="text"
-            placeholder="452001"
-            value={formData.address.pincode}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
-          />
-        </div>
-
-        <div className="md:col-span-2">
-          <label className="block mb-1 text-sm font-semibold text-gray-800">
-            Detailed Address
-          </label>
-          <textarea
-            name="address.details"
-            rows={2}
-            placeholder="Street, Building, Landmark..."
-            value={formData.address.details}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-3 font-medium resize-none placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
-          />
-        </div>
+      <div>
+        <label className="block mb-1 text-sm font-semibold text-gray-800">
+          Email
+        </label>
+        <input
+          name="email"
+          type="email"
+          value={formData.email}
+          disabled
+          className="w-full border rounded-lg px-4 py-3 font-medium bg-gray-100 text-gray-500 cursor-not-allowed shadow-sm"
+        />
       </div>
 
-      {/* Submit */}
-      <div className="text-right pt-6">
-        <button
-          type="submit"
-          className="bg-[#6f8a93] hover:bg-[#5b7078] transition text-white font-bold px-8 py-3 rounded-lg shadow-lg"
-        >
-          Save Profile
-        </button>
+      <div>
+        <label className="block mb-1 text-sm font-semibold text-gray-800">
+          Country
+        </label>
+        <input
+          name="address.country"
+          type="text"
+          placeholder="India"
+          value={formData.address.country}
+          onChange={handleChange}
+          className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
+        />
       </div>
+
+      <div>
+        <label className="block mb-1 text-sm font-semibold text-gray-800">
+          Pincode
+        </label>
+        <input
+          name="address.pincode"
+          type="text"
+          placeholder="452001"
+          value={formData.address.pincode}
+          onChange={handleChange}
+          className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
+        />
+      </div>
+    </div>
+
+    {/* Right Column */}
+    <div className="space-y-6">
+      <div>
+        <label className="block mb-1 text-sm font-semibold text-gray-800">
+          Last Name
+        </label>
+        <input
+          name="lastName"
+          type="text"
+          placeholder="Manager"
+          value={formData.lastName}
+          onChange={handleChange}
+          className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 text-sm font-semibold text-gray-800">
+          Phone
+        </label>
+        <input
+          name="phone"
+          type="tel"
+          placeholder="+91 99999 12345"
+          value={formData.phone}
+          onChange={handleChange}
+          className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 text-sm font-semibold text-gray-800">
+          State / City
+        </label>
+        <input
+          name="address.state"
+          type="text"
+          placeholder="Madhya Pradesh / Indore"
+          value={formData.address.state}
+          onChange={handleChange}
+          className="w-full border rounded-lg px-4 py-3 font-medium placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
+        />
+      </div>
+    </div>
+
+    {/* Bio (Full Width) */}
+    <div className="md:col-span-2">
+      <label className="block mb-1 text-sm font-semibold text-gray-800">
+        Bio
+      </label>
+      <textarea
+        name="bio"
+        rows={3}
+        placeholder="System Administrator at Admin Panel Pvt Ltd."
+        value={formData.bio}
+        onChange={handleChange}
+        className="w-full border rounded-lg px-4 py-3 font-medium resize-none placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
+      />
+    </div>
+
+    <div className="md:col-span-2">
+      <label className="block mb-1 text-sm font-semibold text-gray-800">
+        Detailed Address
+      </label>
+      <textarea
+        name="address.details"
+        rows={2}
+        placeholder="Street, Building, Landmark..."
+        value={formData.address.details}
+        onChange={handleChange}
+        className="w-full border rounded-lg px-4 py-3 font-medium resize-none placeholder-gray-400 focus:ring-2 focus:ring-[#6f8a93] focus:outline-none shadow-sm"
+      />
+    </div>
+  </div>
+
+  {/* Submit */}
+  <div className="text-right">
+    <button
+      type="submit"
+      className="bg-[#447D9B] hover:bg-[#3e7390] transition text-white font-bold px-8 py-3 rounded-lg shadow-lg"
+    >
+      Save Profile
+    </button>
+  </div>
     </form>
   );
 };

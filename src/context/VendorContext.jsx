@@ -205,11 +205,12 @@ const VendorProvider = ({ children }) => {
     );
   };
 
-  const handleBan = (id) => {
-    setVendors((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, status: "Banned" } : v))
-    );
-  };
+ const handleDisable = (id) => {
+  setVendors((prev) =>
+    prev.map((v) => (v.id === id ? { ...v, status: "Disabled" } : v))
+  );
+};
+
 
   const handleDeleteVendor = (id) => {
     if (window.confirm("Are you sure you want to delete this vendor?")) {
@@ -225,7 +226,7 @@ const VendorProvider = ({ children }) => {
         handleApprove,
         handleReject,
         handlePending,
-        handleBan,
+        handleDisable,
         handleDeleteVendor,
       }}
     >

@@ -112,10 +112,10 @@ const DetailProfile = () => {
       </div>
     );
   }
-
   const getStatusBadge = (status) => {
     const baseClasses =
       "inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium select-none";
+
     switch (status) {
       case "Active":
         return (
@@ -138,7 +138,7 @@ const DetailProfile = () => {
       case "Banned":
         return (
           <span className={`${baseClasses} bg-gray-300 text-gray-700`}>
-            <Ban className="w-4 h-4" /> Banned
+            <Ban className="w-4 h-4" /> Disabled
           </span>
         );
       default:
@@ -153,7 +153,9 @@ const DetailProfile = () => {
   const handleChangeStatus = (newStatus) => {
     if (
       window.confirm(
-        `Are you sure you want to change status to "${newStatus}"?`
+        `Are you sure you want to change status to "${
+          newStatus === "Banned" ? "Disabled" : newStatus
+        }"?`
       )
     ) {
       setSociety((prev) => ({ ...prev, status: newStatus }));
@@ -165,7 +167,7 @@ const DetailProfile = () => {
       case "Active":
         return [
           {
-            label: "Ban",
+            label: "Disable",
             newStatus: "Banned",
             color: "bg-[#5E686D] hover:bg-[#4C585B]",
           },
@@ -223,12 +225,12 @@ const DetailProfile = () => {
   );
 
   return (
-    <div className="max-w-6xl mx-auto px-2 py-6">
-      {/* Back Button + Heading */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white rounded-lg shadow border border-gray-200">
+      {/* Top bar */}
+      <div className="flex items-center justify-between mt-3 px-3">
         <button
           onClick={() => navigate("/societies")}
-          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-lg gap-1"
+          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-md px-2 sm:px-4"
           aria-label="Go Back"
         >
           <svg
@@ -237,7 +239,7 @@ const DetailProfile = () => {
             viewBox="0 0 24 24"
             strokeWidth="2"
             stroke="currentColor"
-            className="w-6 h-6"
+            className="w-4 h-4 mr-1"
           >
             <path
               strokeLinecap="round"
@@ -247,21 +249,14 @@ const DetailProfile = () => {
           </svg>
           Back
         </button>
-
-        <h1 className="text-2xl font-bold text-center flex-grow text-gray-900">
-          Society Detail Profile
-        </h1>
-
-        {/* Empty div to balance flex space */}
-        <div className="w-20" />
       </div>
 
-      <div className="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-200">
-        {/* Header */}
-        <div className="flex justify-between items-start border-b pb-4 sticky top-0 bg-white z-20">
+      {/* Main Details */}
+      <div className="px-4 sm:px-6 py-6 space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
           <div>
             <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="text-2xl font-bold text-gray-800">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
                 {society.name}
               </h2>
               {getStatusBadge(society.status)}
@@ -269,58 +264,71 @@ const DetailProfile = () => {
             <div className="text-gray-500 text-sm mt-1">{society.location}</div>
           </div>
 
-          <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-3 py-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 text-sm font-medium">
-              <PhoneCall className="w-4 h-4" />
-              Call
+          {/* Action Buttons */}
+          <div className="flex flex-wrap sm:flex-wrap md:flex-nowrap lg:flex-nowrap justify-end gap-2 pt-4 md:pt-0 sticky bottom-0 bg-white z-20">
+            {getActionButtons().map(({ label, newStatus, color }) => (
+              <button
+                key={label}
+                onClick={() => handleChangeStatus(newStatus)}
+                className={`${color} px-4 py-2 rounded text-white text-sm font-semibold whitespace-nowrap`}
+              >
+                {label}
+              </button>
+            ))}
+
+            <button
+              onClick={() => navigate(`/edit-society/${society.id}`)}
+              className="p-2 rounded bg-blue-100 text-blue-600 hover:bg-blue-200 text-sm font-medium w-fit lg:px-4 lg:py-2 lg:flex lg:items-center lg:gap-2"
+            >
+              <Pencil className="w-4 h-4" />
+              <span className="hidden lg:inline">Edit Profile</span>
             </button>
-            <button className="flex items-center gap-2 px-3 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200 text-sm font-medium">
-              <MessageSquare className="w-4 h-4" />
-              Message
+            <button
+              onClick={() => {
+                if (
+                  window.confirm(
+                    "Are you sure you want to delete this society?"
+                  )
+                ) {
+                  navigate("/societies");
+                }
+              }}
+              className="p-2 rounded bg-red-100 text-red-600 hover:bg-red-200 text-sm font-medium w-fit lg:px-4 lg:py-2 lg:flex lg:items-center lg:gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span className="hidden lg:inline">Delete Vendor</span>
             </button>
           </div>
-       </div>
+        </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 border-b sticky top-16 bg-white z-10">
-          <button
-            onClick={() => setActiveTab("basic info")}
-            className={`px-4 py-2 font-medium ${
-              activeTab === "basic info"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-600"
-            }`}
-          >
-            Basic Info
-          </button>
-          <button
-            onClick={() => setActiveTab("jobDetails")}
-            className={`px-4 py-2 font-medium ${
-              activeTab === "jobDetails"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-600"
-            }`}
-          >
-            Job Details
-          </button>
-          <button
-            onClick={() => setActiveTab("jobStatus")}
-            className={`px-4 py-2 font-medium ${
-              activeTab === "jobStatus"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-600"
-            }`}
-          >
-            Job Status
-          </button>
+        <div className="flex flex-wrap gap-0 sm:gap-2 border-b sticky top-[64px] bg-white z-20 px-1 sm:px-0">
+          {["basic info", "jobDetails", "jobStatus"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-2 text-sm sm:text-base font-medium ${
+                activeTab === tab
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-600"
+              }`}
+            >
+              {tab === "basic info"
+                ? "Basic Info"
+                : tab === "jobDetails"
+                ? "Job Details"
+                : "Job Status"}
+            </button>
+          ))}
         </div>
 
         {/* Main Content */}
         <div className="min-h-32 mt-4">
           {activeTab === "basic info" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-100">
-                <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-700 mb-2">
+              {/* Contact Info */}
+              <div className="bg-white rounded-2xl shadow p-5 sm:p-6 space-y-4 border border-gray-100">
+                <h2 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-gray-700">
                   <FileUser className="text-blue-600 w-5 h-5" />
                   Contact Information
                 </h2>
@@ -346,8 +354,9 @@ const DetailProfile = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-100">
-                <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-700 mb-2">
+              {/* Address */}
+              <div className="bg-white rounded-2xl shadow p-5 sm:p-6 space-y-4 border border-gray-100">
+                <h2 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-gray-700">
                   <MapPinHouse className="text-blue-600 w-5 h-5" />
                   Address Details
                 </h2>
@@ -368,20 +377,25 @@ const DetailProfile = () => {
 
           {activeTab === "jobDetails" && (
             <div className="overflow-x-auto rounded-lg shadow-sm border border-gray-200">
-              <table className="min-w-full bg-white">
-                <thead className="bg-gray-50">
+              <table className="min-w-full bg-white text-sm">
+                <thead className="bg-gray-50 text-gray-600">
                   <tr>
-                    <th className="text-left px-4 py-3 border-b">Job ID</th>
-                    <th className="text-left px-4 py-3 border-b">Title</th>
-                    <th className="text-left px-4 py-3 border-b">Type</th>
-                    <th className="text-left px-4 py-3 border-b">
-                      Posted Date
-                    </th>
-                    <th className="text-left px-4 py-3 border-b">Status</th>
-                    <th className="text-left px-4 py-3 border-b">
-                      Assigned Vendor
-                    </th>
-                    <th className="text-left px-4 py-3 border-b">Price</th>
+                    {[
+                      "Job ID",
+                      "Title",
+                      "Type",
+                      "Posted Date",
+                      "Status",
+                      "Assigned Vendor",
+                      "Price",
+                    ].map((th) => (
+                      <th
+                        key={th}
+                        className="text-left px-4 py-3 border-b whitespace-nowrap"
+                      >
+                        {th}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -420,9 +434,10 @@ const DetailProfile = () => {
           )}
 
           {activeTab === "jobStatus" && (
-            <section className="bg-white rounded-xl shadow-md p-6 max-w-xl mx-auto">
-              <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-700 mb-6">
-                <ListTodo className="text-blue-600 w-5 h-5" /> Job Status
+            <section className="bg-white rounded-xl shadow-md p-5 sm:p-6 max-w-xl mx-auto">
+              <h2 className="flex items-center gap-2 text-md font-semibold text-gray-700 mb-6">
+                <ListTodo className="text-blue-600 w-5 h-5" />
+                Job Status
               </h2>
               <ProgressBar
                 label="Total Jobs"
@@ -444,40 +459,6 @@ const DetailProfile = () => {
               />
             </section>
           )}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex justify-end gap-6 border-t pt-4 sticky bottom-0 bg-white z-20">
-          {getActionButtons().map(({ label, newStatus, color }) => (
-            <button
-              key={label}
-              onClick={() => handleChangeStatus(newStatus)}
-              className={`${color} px-4 py-2 rounded text-white text-sm font-semibold`}
-            >
-              {label}
-            </button>
-          ))}
-
-          <button
-            onClick={() => navigate(`/edit-society/${society.id}`)}
-            className="px-4 py-2 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 text-sm font-semibold flex items-center gap-2"
-          >
-            <Pencil className="w-4 h-4" />
-            Edit Profile
-          </button>
-          <button
-            onClick={() => {
-              if (
-                window.confirm("Are you sure you want to delete this society?")
-              ) {
-                navigate("/societies");
-              }
-            }}
-            className="px-4 py-2 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm font-semibold flex items-center gap-2"
-          >
-            <Trash2 className="w-4 h-4" />
-            Delete Society
-          </button>
         </div>
       </div>
     </div>

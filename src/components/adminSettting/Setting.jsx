@@ -2,39 +2,38 @@ import React, { useState } from "react";
 import MyProfile from "./MyProfile";
 import SecurityForm from "./SecurityForm";
 
+const tabs = [
+  { key: "profile", label: "Profile Info" },
+  { key: "security", label: "Security Settings" },
+];
+
 const Setting = () => {
   const [activeTab, setActiveTab] = useState("profile");
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10 space-y-8">
+    <div className="bg-white rounded-lg shadow border border-gray-200">
       {/* Tabs */}
-      <div className="flex justify-center">
-        <div className="inline-flex rounded-xl bg-gray-100 p-1 shadow-inner">
-          <button
-            onClick={() => setActiveTab("profile")}
-            className={`px-7 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
-              activeTab === "profile"
-                ? "bg-[#6f8a93] text-white shadow-md scale-[1.02]"
-                : "bg-[#f9fafb] text-gray-800 hover:bg-gray-100 border border-gray-300"
-            }`}
-          >
-            Profile Information
-          </button>
-          <button
-            onClick={() => setActiveTab("security")}
-            className={`px-7 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
-              activeTab === "security"
-                ? "bg-[#6f8a93] text-white shadow-md scale-[1.02]"
-                : "bg-[#f9fafb] text-gray-800 hover:bg-gray-100 border border-gray-300"
-            }`}
-          >
-            Security Settings
-          </button>
+      <div className="px-6 pt-5 border-b border-gray-100">
+        <div className="flex space-x-8">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`relative pb-2 text-md font-semibold transition-all duration-300 hover:text-[#0D5EA6] ${
+                activeTab === tab.key ? "text-[#0D5EA6]" : "text-[#548cab]"
+              }`}
+            >
+              {tab.label}
+              {activeTab === tab.key && (
+                <span className="absolute left-0 bottom-0 h-[2px] w-full bg-[#0D5EA6] rounded-full transition-all duration-300" />
+              )}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Form Content */}
-      <div>
+      {/* Content */}
+      <div className="px-6 py-6">
         {activeTab === "profile" && <MyProfile />}
         {activeTab === "security" && <SecurityForm />}
       </div>

@@ -47,89 +47,92 @@ const GrowthTrend = ({ societies, vendors }) => {
   }, [societies, vendors]);
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="w-full max-w-[800px] bg-white rounded-xl shadow-lg p-6">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">
-          Growth Trend
-        </h3>
+   <div className="w-full">
+  <div className="max-w-4xl bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+        <div className="mb-5">
+          <h3 className="text-xl font-semibold text-gray-800">Growth Trend</h3>
+          <p className="text-sm text-gray-500">
+            Monthly overview of new registrations
+          </p>
+        </div>
+
         <ResponsiveContainer width="100%" height={320}>
           <AreaChart
             data={chartData}
-            margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
           >
             <defs>
-              <linearGradient id="colorSociety" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#7E3AF2" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#7E3AF2" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="colorVendor" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8} />
+              <linearGradient id="societyFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.4} />
                 <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="vendorFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10B981" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
               </linearGradient>
             </defs>
 
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid
+              strokeDasharray="4 4"
+              vertical={false}
+              stroke="#E5E7EB"
+            />
             <XAxis
               dataKey="month"
-              tick={{ fontSize: 12, fill: "#4B5563" }}
-              padding={{ left: 20, right: 20 }}
+              tick={{ fontSize: 12, fill: "#6B7280" }}
+              padding={{ left: 10, right: 10 }}
             />
             <YAxis
-              tick={{ fontSize: 12, fill: "#4B5563" }}
+              tick={{ fontSize: 12, fill: "#6B7280" }}
               allowDecimals={false}
               domain={[0, "dataMax + 5"]}
             />
-
             <Tooltip
+              contentStyle={{
+                backgroundColor: "#fff",
+                border: "1px solid #E5E7EB",
+                borderRadius: "8px",
+                fontSize: "14px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+              }}
+              labelStyle={{ color: "#111827", fontWeight: "500" }}
               formatter={(value, name) => [
                 value,
                 name === "societies" ? "New Societies" : "New Vendors",
               ]}
-              labelFormatter={(label) => label}
             />
+
             <Area
-              type="basis"
+             type="cardinal"
               dataKey="societies"
-              stroke="#7E3AF2"
-              fillOpacity={1}
-              fill="url(#colorSociety)"
-              strokeWidth={2}
-              activeDot={{ r: 6, strokeWidth: 2, stroke: "#5B21B6" }}
+              stroke="#3B82F6"
+              strokeWidth={1}
+              fill="url(#societyFill)"
+              activeDot={{ r: 5, strokeWidth: 2, stroke: "#2563EB" }}
             />
             <Area
-              type="basis"
+              type="cardinal"
               dataKey="vendors"
-              stroke="#3B82F6"
-              fillOpacity={1}
-              fill="url(#colorVendor)"
-              strokeWidth={2}
-              activeDot={{ r: 6, strokeWidth: 2, stroke: "#2563EB" }}
+              stroke="#10B981"
+              strokeWidth={1}
+              fill="url(#vendorFill)"
+              activeDot={{ r: 5, strokeWidth: 2, stroke: "#059669" }}
             />
           </AreaChart>
         </ResponsiveContainer>
 
-        <div className="flex justify-center gap-8 mt-4 text-gray-700 text-sm select-none">
+        <div className="flex justify-end gap-6 mt-5 text-sm text-gray-700">
           <div className="flex items-center gap-2">
-            <span
-              className="w-4 h-4 rounded-full"
-              style={{ backgroundColor: "#7E3AF2" }}
-            />
+            <span className="w-3 h-3 rounded-full bg-[#3B82F6]" />
             New Societies
           </div>
           <div className="flex items-center gap-2">
-            <span
-              className="w-4 h-4 rounded-full"
-              style={{ backgroundColor: "#3B82F6" }}
-            />
+            <span className="w-3 h-3 rounded-full bg-[#10B981]" />
             New Vendors
           </div>
         </div>
       </div>
-
     </div>
-      
-     
-  
   );
 };
 

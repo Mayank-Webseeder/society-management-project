@@ -29,12 +29,11 @@ const JobDetailProfile = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
-      {/* Back Button & Title */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-white rounded-lg shadow border border-gray-2006">
+      <div className="flex items-center justify-between mt-3 px-3">
         <button
           onClick={() => navigate("/jobs")}
-          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-lg gap-1"
+          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-md gap-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +41,7 @@ const JobDetailProfile = () => {
             viewBox="0 0 24 24"
             strokeWidth="2"
             stroke="currentColor"
-            className="w-6 h-6"
+            className="w-4 h-4"
           >
             <path
               strokeLinecap="round"
@@ -52,20 +51,15 @@ const JobDetailProfile = () => {
           </svg>
           Back
         </button>
-
-        <h1 className="text-2xl font-bold text-center flex-grow text-gray-900">
-          Job Detail Profile
-        </h1>
-
         <div className="w-20" />
       </div>
 
       {/* Main Card */}
-      <div className="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-200">
+      <div className="px-6 py-6 space-y-4">
         {/* Sticky Header */}
         <div className="flex justify-between items-start border-b pb-4 sticky top-0 bg-white z-20">
           <div>
-            <div className="px-3 flex items-center gap-8 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
               <h2 className="text-2xl font-bold text-gray-800">{job.title}</h2>
               <span
                 className={`px-6 py-2 rounded-full text-xs font-medium ${
@@ -84,16 +78,24 @@ const JobDetailProfile = () => {
             </div>
           </div>
 
-          <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-3 py-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 text-sm font-medium">
-              <PhoneCall className="w-4 h-4" />
-              Call
+         {/* Bottom Actions */}
+          <div className="flex justify-end gap-4 mt-8 pt-2">
+            <button
+              onClick={() => alert("Job Closed")}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium transition"
+            >
+              Close Job
             </button>
-            <button className="flex items-center gap-2 px-3 py-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200 text-sm font-medium">
-              <MessageSquare className="w-4 h-4" />
-              Message
+
+            <button
+              onClick={handleDelete}
+              className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium transition"
+            >
+              Delete Job
             </button>
           </div>
+
+
         </div>
 
         {/* Tabs */}
@@ -316,23 +318,6 @@ const JobDetailProfile = () => {
               )}
             </div>
           )}
-
-          {/* Bottom Actions */}
-          <div className="flex justify-end gap-4 mt-8 border-t pt-4">
-            <button
-              onClick={() => alert("Job Closed")}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium transition"
-            >
-              Close Job
-            </button>
-
-            <button
-              onClick={handleDelete}
-              className="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium transition"
-            >
-              Delete Job
-            </button>
-          </div>
         </div>
       </div>
     </div>

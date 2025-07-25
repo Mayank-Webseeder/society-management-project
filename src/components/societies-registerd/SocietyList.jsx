@@ -8,12 +8,14 @@ import {
   Ban,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import AddSociety from "./AddSociety";
 
 const SocietyList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("Select Status");
   const [societies, setSocieties] = useState([]);
   const [selectSociety, setSelectSociety] = useState(null);
+  const [showSocietyForm, setShowSocietyForm] = useState(false);
 
   const filterSocieties = societies.filter((soc) => {
     const matchesStatus =
@@ -49,9 +51,10 @@ const SocietyList = () => {
       case "Banned":
         return (
           <span className="flex items-center px-2 py-1 text-sm rounded-full bg-gray-300 text-gray-800">
-            <Ban className="w-4 h-4 mr-2" /> Banned
+            <Ban className="w-4 h-4 mr-2" /> Disabled
           </span>
         );
+
       default:
         return (
           <span className="flex items-center px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">
@@ -152,15 +155,21 @@ const SocietyList = () => {
     }
   };
 
+  const handleAddSociety = (newSociety) => {
+  setSocieties((prev) => [...prev, { id: Date.now(), ...newSociety }]);
+  setShowSocietyForm(false);
+};
+
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="px-4 py-4 border-b border-gray-200">
-        <div className="px-5 flex flex-col sm:flex-row sm:items-center gap-10">
-          <div className="relative w-full sm:w-1/3">
+        <div className="px-5 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center mt-4">
+          {/* Search Input */}
+          <div className="relative w-full sm:w-[45%] lg:w-[30%]">
             <input
               type="text"
               placeholder="Search society by name or location..."
-              className="w-full pl-9 px-4 py-2 border border-gray-300 rounded focus:outline-none"
+              className="w-full pl-10 pr-4 py-2 lg:py-3 border border-gray-300 rounded focus:outline-none text-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -169,90 +178,245 @@ const SocietyList = () => {
             </div>
           </div>
 
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full sm:w-40 px-4 py-2 border border-gray-300 rounded"
-          >
-            <option value="Select Status">Select Status</option>
-            <option value="All">All</option>
-            <option value="Pending">Pending</option>
-            <option value="Active">Active</option>
-            <option value="Rejected">Rejected</option>
-            <option value="Banned">Banned</option>
-          </select>
+          {/* Status Filter */}
+          <div className="w-full sm:w-[30%] lg:w-[20%]">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full px-4 py-2 lg:py-3 border border-gray-300 rounded text-sm"
+            >
+              <option value="Select Status">Select Status</option>
+              <option value="Active">Active</option>
+              <option value="Pending">Pending</option>
+              <option value="Rejected">Rejected</option>
+              <option value="ActiveJobs">Active Jobs</option>
+              <option value="Banned">Disabled</option>
+            </select>
+          </div>
 
-          <div className="text-lg font-semibold">
+          {/* Total Count */}
+          <div className="w-full sm:w-auto text-lg font-semibold text-gray-700">
             Total Societies:{" "}
-            <span className="text-green-600">{filterSocieties.length}</span>
+            <span className="text-green-600 font-bold">
+              {filterSocieties.length}
+            </span>
+          </div>
+
+          {/* add society */}
+          <div className="w-full sm:w-auto sm:ml-auto flex justify-end">
+            <button
+              onClick={() => setShowSocietyForm(true)}
+              className="bg-[#57a0b8] text-black px-3 lg:px-4 py-2 lg:py-2.5 rounded-lg text-xs lg:text-sm font-medium hover:bg-[#6dabbc] transition focus:outline-none focus:ring-2 focus:ring-[#68b9d5] focus:ring-offset-1"
+            >
+              + Add Society
+            </button>
           </div>
         </div>
+
+        {showSocietyForm && (
+          <AddSociety onClose={() => setShowSocietyForm(false)} onAddSociety={handleAddSociety} />
+        )}
 
         {filterSocieties.length === 0 ? (
           <div className="text-center py-4 text-gray-500">
             No societies found.
           </div>
         ) : (
-          <div className="overflow-x-auto bg-white rounded-3xl shadow border border-gray-200 mt-5">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-[#adccd6]">
-                <tr>
-                  <th className="px-6 py-3 text-left font-semibold">Name</th>
-                  <th className="px-6 py-3 text-left font-semibold">
-                    Location
-                  </th>
-                  <th className="px-6 py-3 text-left font-semibold">Status</th>
-                  <th className="px-6 py-3 text-center font-semibold">
-                    Total Jobs
-                  </th>
-                  <th className="px-6 py-3 text-center font-semibold">
-                    Active Jobs
-                  </th>
-                  <th className="px-6 py-3 text-center font-semibold">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filterSocieties.map((soc) => (
-                  <tr key={soc.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-black-800 hover:text-blue-700">
-                      <Link to={`/society-details/${soc.id}`}>{soc.name}</Link>
-                    </td>
-                    <td className="px-6 py-4">{soc.location}</td>
-                    <td className="px-6 py-4 relative">
-                      <div className="inline-block">
+          <>
+            <div className="hidden md:block overflow-x-auto bg-white rounded-3xl shadow border border-gray-200 mt-5">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-[#adccd6]">
+                  <tr>
+                    <th className="px-6 py-3 text-left font-semibold md:text-sm lg:text-base">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left font-semibold md:text-sm lg:text-base">
+                      Location
+                    </th>
+                    <th className="px-6 py-3 text-center font-semibold md:text-sm lg:text-base">
+                      Total Jobs
+                    </th>
+                    <th className="px-6 py-3 text-center font-semibold md:text-sm lg:text-base">
+                      Active Jobs
+                    </th>
+                    <th className="px-10 py-3 text-left font-semibold md:text-sm lg:text-base">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-center font-semibold md:text-sm lg:text-base">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody className="divide-y divide-gray-100">
+                  {filterSocieties.map((soc) => (
+                    <tr key={soc.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 md:text-sm lg:text-base font-medium text-black-800 hover:text-blue-700">
+                        <Link to={`/society-details/${soc.id}`}>
+                          {soc.name}
+                        </Link>
+                      </td>
+                      <td className="px-6 py-4 md:text-sm lg:text-base">
+                        {soc.location}
+                      </td>
+
+                      <td className="px-6 py-4 text-center md:text-sm lg:text-base">
+                        {soc.totalJobsPosted}
+                      </td>
+                      <td className="px-14 py-4 md:text-sm lg:text-base">
+                        {soc.activeJobs}
+                      </td>
+
+                      <td className="px-6 py-4 relative md:text-sm lg:text-base">
+                        <div className="inline-block">
+                          <button
+                            onClick={() => setSelectSociety(soc)}
+                            className="flex items-center px-2 py-1 text-sm rounded-full border hover:bg-gray-100"
+                          >
+                            {getStatusBadge(soc.status)}
+                          </button>
+                          {selectSociety?.id === soc.id && (
+                            <div className="absolute mt-2 bg-white border rounded shadow w-36 z-10">
+                              {soc.status === "Active" && (
+                                <button
+                                  onClick={() => {
+                                    handleBan(soc.id);
+                                    setSelectSociety(null);
+                                  }}
+                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                >
+                                  Disable
+                                </button>
+                              )}
+
+                              {soc.status === "Banned" && (
+                                <button
+                                  onClick={() => {
+                                    handleApprove(soc.id);
+                                    setSelectSociety(null);
+                                  }}
+                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                >
+                                  Active
+                                </button>
+                              )}
+                              {soc.status === "Rejected" && (
+                                <button
+                                  onClick={() => {
+                                    handleApprove(soc.id);
+                                    setSelectSociety(null);
+                                  }}
+                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                >
+                                  Approve
+                                </button>
+                              )}
+                              {soc.status === "Pending" && (
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      handleApprove(soc.id);
+                                      setSelectSociety(null);
+                                    }}
+                                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      handleReject(soc.id);
+                                      setSelectSociety(null);
+                                    }}
+                                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                  >
+                                    Reject
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </td>
+
+                      <td className="px-6 py-4 text-center md:text-sm lg:text-base">
                         <button
-                          onClick={() => setSelectSociety(soc)}
-                          className="flex items-center px-2 py-1 text-sm rounded-full border hover:bg-gray-100"
+                          onClick={() => handleDeleteSociety(soc.id)}
+                          className="text-red-500 hover:text-red-700"
                         >
-                          {getStatusBadge(soc.status)}
+                          <Trash2 className="w-4 h-4" />
                         </button>
-                        {selectSociety?.id === soc.id && (
-                          <div className="absolute mt-2 bg-white border rounded shadow w-36 z-10">
-                            {soc.status === "Active" && (
-                              <button
-                                onClick={() => {
-                                  handleBan(soc.id);
-                                  setSelectSociety(null);
-                                }}
-                                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                              >
-                                Ban
-                              </button>
-                            )}
-                            {soc.status === "Banned" && (
-                              <button
-                                onClick={() => {
-                                  handleApprove(soc.id); // Active means Approve
-                                  setSelectSociety(null);
-                                }}
-                                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                              >
-                                Active
-                              </button>
-                            )}
-                            {soc.status === "Rejected" && (
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* in card for small screen */}
+            <div className="space-y-4 mt-5 md:hidden">
+              {filterSocieties.map((soc) => (
+                <div
+                  key={soc.id}
+                  className="bg-white border rounded-lg shadow p-4 flex flex-col gap-3"
+                >
+                  {/* Name + Location */}
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <Link
+                        to={`/society-details/${soc.id}`}
+                        className="text-lg font-semibold text-blue-700 hover:underline"
+                      >
+                        {soc.name}
+                      </Link>
+                      <div className="text-sm text-gray-600">
+                        {soc.location}
+                      </div>
+                    </div>
+                    {/* Status Badge + Menu */}
+                    <div className="relative">
+                      <button
+                        onClick={() => setSelectSociety(soc)}
+                        className="px-2 py-1 border rounded-full text-sm hover:bg-gray-100"
+                      >
+                        {getStatusBadge(soc.status)}
+                      </button>
+                      {selectSociety?.id === soc.id && (
+                        <div className="absolute right-0 mt-2 bg-white border rounded shadow w-36 z-20">
+                          {soc.status === "Active" && (
+                            <button
+                              onClick={() => {
+                                handleBan(soc.id);
+                                setSelectSociety(null);
+                              }}
+                              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                            >
+                              Disable
+                            </button>
+                          )}
+                          {soc.status === "Banned" && (
+                            <button
+                              onClick={() => {
+                                handleApprove(soc.id);
+                                setSelectSociety(null);
+                              }}
+                              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                            >
+                              Active
+                            </button>
+                          )}
+                          {soc.status === "Rejected" && (
+                            <button
+                              onClick={() => {
+                                handleApprove(soc.id);
+                                setSelectSociety(null);
+                              }}
+                              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {soc.status === "Pending" && (
+                            <>
                               <button
                                 onClick={() => {
                                   handleApprove(soc.id);
@@ -262,50 +426,47 @@ const SocietyList = () => {
                               >
                                 Approve
                               </button>
-                            )}
-                            {soc.status === "Pending" && (
-                              <>
-                                <button
-                                  onClick={() => {
-                                    handleApprove(soc.id);
-                                    setSelectSociety(null);
-                                  }}
-                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    handleReject(soc.id);
-                                    setSelectSociety(null);
-                                  }}
-                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                                >
-                                  Reject
-                                </button>
-                              </>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-center">
+                              <button
+                                onClick={() => {
+                                  handleReject(soc.id);
+                                  setSelectSociety(null);
+                                }}
+                                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                              >
+                                Reject
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between text-sm text-gray-700">
+                    <div>
+                      <span className="font-medium">Total Jobs:</span>{" "}
                       {soc.totalJobsPosted}
-                    </td>
-                    <td className="px-6 py-4 text-center">{soc.activeJobs}</td>
-                    <td className="px-6 py-4 text-center">
-                      <button
-                        onClick={() => handleDeleteSociety(soc.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                    <div>
+                      <span className="font-medium">Active Jobs:</span>{" "}
+                      {soc.activeJobs}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => handleDeleteSociety(soc.id)}
+                      className="text-red-500 hover:text-red-700 flex items-center gap-1 text-sm"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

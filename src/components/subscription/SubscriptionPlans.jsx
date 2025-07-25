@@ -88,8 +88,8 @@ const SubscriptionPlans = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center mt-10">
-        <h3 className="text-xl font-bold text-gray-800 px-10">
+      <div className="flex justify-between items-center">
+        <h3 className="text-xl font-bold text-gray-800 px-8">
           Available Plans
         </h3>
         <button

@@ -58,7 +58,7 @@ const RevenueBreakdown = () => {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl font-bold text-gray-800">Revenue Breakdown</h3>
+      <h3 className="text-xl font-bold text-gray-800 px-8">Revenue Breakdown</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Revenue */}

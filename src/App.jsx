@@ -14,7 +14,7 @@ import JobsList from "./components/jobs/JobsList";
 import JobDetailProfile from "./components/jobs/JobDetailProfile";
 import Subscription from "./components/subscription/Subscription";
 import ServicesList from "./components/services/ServicesList";
-import VendorServicesList from "./components/services/catg&services/VendorServicesList";
+import VendorServicesList from "./components/services/VendorServicesList";
 import RatingSummary from "./components/review-feedback/RatingSummary";
 import MyProfile from "./components/adminSettting/MyProfile";
 import Setting from "./components/adminSettting/Setting";
@@ -146,16 +146,16 @@ function App() {
             path="/admin-settings"
             element={
               <AppLayout setIsLoggedIn={setIsLoggedIn}>
-                <Setting/>
+                <Setting />
               </AppLayout>
             }
           />
 
-            <Route
+          <Route
             path="/reports"
             element={
               <AppLayout setIsLoggedIn={setIsLoggedIn}>
-                <Reports/>
+                <Reports />
               </AppLayout>
             }
           />

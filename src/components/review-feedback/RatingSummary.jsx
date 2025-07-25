@@ -153,40 +153,40 @@ const RatingSummary = () => {
     : reviews;
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-md max-w-6xl mx-auto">
-      <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg mx-auto mb-14">
-  <div className="relative flex w-full bg-gray-200 rounded-full p-1 shadow-inner overflow-hidden">
-    <button
-      onClick={() => setActiveTab("review")}
-      className={`w-1/2 text-center px-3 py-2 text-sm sm:text-base font-semibold transition-all duration-300 z-10 relative ${
-        activeTab === "review"
-          ? "text-white"
-          : "text-gray-700 hover:text-[#5F85DB]"
-      }`}
-    >
-      Reviews
-    </button>
+<div className="p-6 bg-white rounded-xl shadow-md mx-auto">
+  <div className="w-full flex justify-center mb-10">
+    <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg">
+      <div className="relative flex w-full bg-gray-200 rounded-full p-1 shadow-inner overflow-hidden">
+        <button
+          onClick={() => setActiveTab("review")}
+          className={`w-1/2 text-center px-3 py-2 text-sm sm:text-base font-semibold transition-all duration-300 z-10 relative ${
+            activeTab === "review"
+              ? "text-white"
+              : "text-gray-700 hover:text-[#5F85DB]"
+          }`}
+        >
+          Reviews
+        </button>
 
-    <button
-      onClick={() => setActiveTab("average")}
-      className={`w-1/2 text-center px-3 py-2 text-sm sm:text-base font-semibold transition-all duration-300 z-10 relative ${
-        activeTab === "average"
-          ? "text-white"
-          : "text-gray-700 hover:text-[#5F85DB]"
-      }`}
-    >
-      Avg Ratings
-    </button>
+        <button
+          onClick={() => setActiveTab("average")}
+          className={`w-1/2 text-center px-3 py-2 text-sm sm:text-base font-semibold transition-all duration-300 z-10 relative ${
+            activeTab === "average"
+              ? "text-white"
+              : "text-gray-700 hover:text-[#5F85DB]"
+          }`}
+        >
+          Avg Ratings
+        </button>
 
-    {/* Sliding pill background */}
-    <span
-      className={`absolute top-0 left-0 h-full w-1/2 bg-[#00A8CC] rounded-full transition-all duration-300 ${
-        activeTab === "average" ? "translate-x-full" : ""
-      }`}
-    />
+        <span
+          className={`absolute top-0 left-0 h-full w-1/2 bg-[#00A8CC] rounded-full transition-all duration-300 ${
+            activeTab === "average" ? "translate-x-full" : ""
+          }`}
+        />
+      </div>
+    </div>
   </div>
-</div>
-
 
       {activeTab === "review" && (
         <>
