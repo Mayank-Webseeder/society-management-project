@@ -11,7 +11,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-const AddSociety = ({ onClose }) => {
+const AddSociety = ({ onClose, onAddSociety }) => {
   // Form state
   const [formData, setFormData] = useState({
     societyName: "",
@@ -55,7 +55,13 @@ const AddSociety = ({ onClose }) => {
       return;
     }
     // Here you can send formData to backend API
-    console.log("Submitting:", formData);
+     const newSociety = {
+    ...formData,
+    location: formData.city, 
+  };
+
+    onAddSociety(newSociety);
+    console.log("new society", formData);
     alert("Society added successfully!");
     onClose();
   };

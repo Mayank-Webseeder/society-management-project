@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Search, Trash2, Star, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useVendorContext } from "../../context/VendorContext";
+import AddVendor from "./AddVendor";
 
 const VendorList = () => {
   const {
@@ -10,29 +11,50 @@ const VendorList = () => {
     handleReject,
     handleDisable,
     handleDeleteVendor,
+    handleAddVendor,
   } = useVendorContext();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [subscriptionFilter, setSubscriptionFilter] = useState("");
   const [selectVendor, setSelectVendor] = useState(null);
+  const [showSocietyForm, setShowSocietyForm] = useState(false);
+  const [serviceFilter, setServiceFilter] = useState("");
 
+  const addNewVendor = (vendorData) => {
+    handleAddVendor(vendorData);
+  };
   const filteredVendors = vendors.filter((vendor) => {
-    const matchesSearch =
-      vendor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vendor.location.toLowerCase().includes(searchTerm.toLowerCase());
+    const name = vendor.name || "";
+    const location = vendor.location || "";
+    const services = vendor.services || [];
 
+    //  Search by name or location
+    const matchesSearch =
+      name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      location.toLowerCase().includes(searchTerm.toLowerCase());
+
+    //  Status Filter
     const matchesStatus =
       statusFilter === "" ||
       statusFilter === "All" ||
       vendor.status === statusFilter;
 
+    // Subscription Filter
     const matchesSubscription =
       subscriptionFilter === "" ||
       subscriptionFilter === "All" ||
       vendor.subscriptionStatus === subscriptionFilter;
 
-    return matchesSearch && matchesStatus && matchesSubscription;
+    //  Services Filter
+    const matchesService =
+      serviceFilter === "" ||
+      serviceFilter === "All" ||
+      services.includes(serviceFilter);
+
+    return (
+      matchesSearch && matchesStatus && matchesSubscription && matchesService
+    );
   });
 
   const getStatusBadge = (status) => {
@@ -73,23 +95,23 @@ const VendorList = () => {
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="px-4 py-4 border-b border-gray-200">
-        <div className="w-full flex flex-col gap-4 xl:flex-row xl:flex-nowrap xl:items-center xl:gap-6">
-          {/* Search Input */}
-          <div className="relative w-full xl:w-[45%]">
-            <input
-              type="text"
-              placeholder="Search vendor by name or location..."
-              className="w-full pl-10 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <div className="absolute left-3 top-2.5 text-gray-400">
-              <Search className="h-5 w-5" />
+        <div className="w-full flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between xl:gap-6">
+          {/* Left part: Search + filters + total vendors */}
+          <div className="px-3 flex flex-col gap-4 xl:flex-row xl:items-center xl:gap-4 xl:flex-grow">
+            <div className="relative w-full xl:w-[40%]">
+              <input
+                type="text"
+                placeholder="Search vendor by name or location..."
+                className="w-full pl-10 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <div className="absolute left-3 top-2.5 text-gray-400">
+                <Search className="h-5 w-5" />
+              </div>
             </div>
-          </div>
 
-          <div className="w-full flex flex-col gap-4 md:flex-col xl:flex-row xl:items-center xl:gap-4 xl:w-[55%] xl:flex-nowrap">
-            <div className="w-full flex flex-wrap gap-4 xl:flex-nowrap">
+            <div className="flex flex-wrap gap-4 xl:flex-nowrap xl:items-center xl:flex-grow">
               {/* Status Filter */}
               <select
                 value={statusFilter}
@@ -119,14 +141,30 @@ const VendorList = () => {
             </div>
 
             {/* Total Vendors */}
-            <div className="text-md font-medium whitespace-nowrap md:text-right xl:ml-auto">
+            <div className="text-md font-medium whitespace-nowrap md:text-right xl:ml-6">
               Total Vendors:{" "}
               <span className="text-green-600 font-semibold">
                 {filteredVendors.length}
               </span>
             </div>
           </div>
+
+          <div className="w-full sm:w-auto flex justify-end xl:w-auto xl:ml-4">
+            <button
+              onClick={() => setShowSocietyForm(true)}
+              className="bg-[#57a0b8] text-black px-3 lg:px-4 py-2 lg:py-2.5 rounded-lg text-xs lg:text-sm font-medium hover:bg-[#6dabbc] transition focus:outline-none focus:ring-2 focus:ring-[#68b9d5] focus:ring-offset-1"
+            >
+              + Add Society
+            </button>
+          </div>
         </div>
+
+        {showSocietyForm && (
+          <AddVendor
+            onClose={() => setShowSocietyForm(false)}
+            onAddVendor={handleAddVendor}
+          />
+        )}
 
         {/* Table */}
         {filteredVendors.length === 0 ? (
@@ -180,11 +218,11 @@ const VendorList = () => {
                             " ..."}
                       </td>
                       <td className="px-6 py-4 text-center flex justify-center items-center gap-1">
-                        {vendor.rating}
+                        {vendor.rating > 0 ? vendor.rating : 0}
                         <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                       </td>
                       <td className="px-6 py-4 text-center">
-                        {vendor.totalJobsApplied}
+                        {vendor.totalJobsApplied ?? "-"}
                       </td>
 
                       <td className="px-6 py-4 relative">

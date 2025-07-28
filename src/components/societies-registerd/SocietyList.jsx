@@ -155,15 +155,23 @@ const SocietyList = () => {
     }
   };
 
-  const handleAddSociety = (newSociety) => {
-  setSocieties((prev) => [...prev, { id: Date.now(), ...newSociety }]);
+ const handleAddSociety = (newSociety) => {
+  const societyWithDefaults = {
+    id: Date.now(),
+    name: newSociety.societyName,
+    location: newSociety.location,
+    status: "Active",
+    totalJobsPosted: 0,
+    activeJobs: 0,
+  };
+
+  setSocieties((prev) => [...prev, societyWithDefaults]);
   setShowSocietyForm(false);
 };
-
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="px-4 py-4 border-b border-gray-200">
-        <div className="px-5 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center mt-4">
+        <div className="px-3 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
           {/* Search Input */}
           <div className="relative w-full sm:w-[45%] lg:w-[30%]">
             <input

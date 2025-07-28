@@ -1,74 +1,123 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { HiOutlineMailOpen } from "react-icons/hi";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
-const Login = ({ onLoginSuccess }) => {
+const Login = () => {
   const navigate = useNavigate();
+  const { handleLogin } = useAuth();
 
-  const handleSubmit =(evt)=>{
-    evt.preventDefault();
-    onLoginSuccess();
-    navigate('/')
-  }
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    console.log("Trying login with:", formData.email, formData.password);
+
+    const res = await handleLogin(formData);
+
+    if (res) {
+      toast.success("Login successful!");
+      navigate("/");
+    } else {
+      setError("Invalid credentials");
+      toast.error("Login failed");
+    }
+
+    setLoading(false);
+  };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-300">
-      <div className="relative bg-white shadow-xl rounded-xl p-8 sm:p-10 w-full max-w-sm space-y-6 border border-gray-200">
-        
-        {/* <button
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition"
-        >
-          ✕
-        </button> */}
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
+  <div className="relative flex flex-col m-6 space-y-8 bg-white/40 shadow-2xl rounded-2xl md:flex-row md:space-y-0 w-full max-w-sm sm:max-w-md md:max-w-lg">
+    <div className="flex flex-col justify-center items-center w-full px-6 py-10 sm:px-10 md:p-14">
+      <h1 className="mb-2 font-bold text-3xl md:text-4xl text-center text-[#00809D]">
+        Login
+      </h1>
+      <p className="text-sm sm:text-base text-gray-600 pb-5 text-center">
+        Secure access to your society’s command center
+      </p>
 
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h1>
-          <p className="text-gray-500 text-sm">Please enter your details to login</p>
+      <form
+        className="flex flex-col gap-4 items-center w-full"
+        onSubmit={handleSubmit}
+      >
+        <div className="relative w-full max-w-sm">
+          <div className="absolute top-3 left-1 px-2 flex items-center justify-center text-[#00809D]">
+            <HiOutlineMailOpen />
+          </div>
+          <input
+            className="w-full pl-10 pr-4 py-2 border rounded-xl placeholder:text-gray-500 shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#4FC3DC] transition duration-200"
+            type="email"
+            placeholder="Your Email"
+            required
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-2">
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Email</label>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent transition"
-            />
+        <div className="relative w-full max-w-sm">
+          <div className="absolute top-3 left-1 px-2 flex items-center justify-center text-[#00809D]">
+            <RiLockPasswordFill />
           </div>
+          <input
+            className="w-full pl-10 pr-4 py-2 border rounded-xl placeholder:text-gray-500 shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#4FC3DC] transition duration-200"
+            type="password"
+            placeholder="Password"
+            required
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+          />
+        </div>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Password</label>
-            <input
-              type="password"
-              placeholder="*******"
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 focus:border-transparent transition"
-            />
-          </div>
+        <div className="flex items-center justify-between w-full max-w-sm">
+          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+            <input type="checkbox" className="accent-[#00809D]" />
+            Remember me
+          </label>
+          <p className="italic text-sm text-gray-700 hover:underline cursor-pointer">
+            Forgot password?
+          </p>
+        </div>
 
-          <div className="text-right">
-            <a href="#" className="text-sm text-gray-600 hover:underline">Forgot password?</a>
-          </div>
+        {error && <p className="text-sm text-red-600">{error}</p>}
 
-          <button
-            type="submit"
-            className="w-full bg-gray-800 hover:bg-gray-900 text-white py-2 rounded-md font-medium transition"
-          >
-            Log In
-          </button>
-        </form>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full max-w-sm text-center rounded-lg font-semibold bg-[#00809D] text-white hover:scale-105 hover:bg-[#037892] py-2 hover:shadow-lg transition-all duration-300 cursor-pointer disabled:opacity-50"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
 
-        <div className="text-center text-sm text-gray-600">
-          Don't have an account?{" "}
+        <div className="text-center text-slate-800 text-sm sm:text-base pt-4">
+          Not a member?{" "}
           <span
-            onClick={() => navigate('/signup')}
-            className="text-gray-800 font-semibold hover:underline cursor-pointer"
+            onClick={() => navigate("/signup")}
+            className="text-[#00809D] font-semibold hover:underline cursor-pointer"
           >
             Sign up here
           </span>
         </div>
-      </div>
+      </form>
     </div>
+  </div>
+</div>
+
   );
 };
 

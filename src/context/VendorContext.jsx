@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const VendorContext = createContext();
@@ -205,17 +204,38 @@ const VendorProvider = ({ children }) => {
     );
   };
 
- const handleDisable = (id) => {
-  setVendors((prev) =>
-    prev.map((v) => (v.id === id ? { ...v, status: "Disabled" } : v))
-  );
-};
-
+  const handleDisable = (id) => {
+    setVendors((prev) =>
+      prev.map((v) => (v.id === id ? { ...v, status: "Disabled" } : v))
+    );
+  };
 
   const handleDeleteVendor = (id) => {
     if (window.confirm("Are you sure you want to delete this vendor?")) {
       setVendors((prev) => prev.filter((v) => v.id !== id));
     }
+  };
+
+  const handleDeleteSociety = (id) => {
+    if (window.confirm("Are you sure you want to delete this society?")) {
+      setSocieties((prev) => prev.filter((soc) => soc.id !== id));
+    }
+  };
+
+  const handleAddVendor = (newVendor) => {
+    setVendors((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        name: newVendor.vendorName,
+        email: newVendor.email,
+        phone: newVendor.phone,
+        location: newVendor.location,
+        servicesProvided: newVendor.servicesProvided,
+        status: newVendor.status,
+        subscriptionStatus: newVendor.subscriptionStatus,
+      },
+    ]);
   };
 
   return (
@@ -228,6 +248,7 @@ const VendorProvider = ({ children }) => {
         handlePending,
         handleDisable,
         handleDeleteVendor,
+        handleAddVendor,
       }}
     >
       {children}

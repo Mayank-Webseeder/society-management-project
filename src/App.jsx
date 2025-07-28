@@ -1,8 +1,10 @@
 import { Route, Routes, Navigate } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "./context/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
 import AppLayout from "./components/layout/AppLayout";
 import Login from "./components/auth/Login";
 import SignIn from "./components/auth/SignIn";
-import { useState } from "react";
 import Dashboard from "./components/dashboard/Dashboard";
 import SocietyList from "./components/societies-registerd/SocietyList";
 import DetailProfile from "./components/societies-registerd/DetailProfile";
@@ -16,161 +18,191 @@ import Subscription from "./components/subscription/Subscription";
 import ServicesList from "./components/services/ServicesList";
 import VendorServicesList from "./components/services/VendorServicesList";
 import RatingSummary from "./components/review-feedback/RatingSummary";
-import MyProfile from "./components/adminSettting/MyProfile";
 import Setting from "./components/adminSettting/Setting";
 import Reports from "./components/reports/Reports";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { token } = useAuth();
 
   return (
-    <Routes>
-      {isLoggedIn ? (
-        <>
-          <Route
-            path="/"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+    <>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignIn />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+
+        {/* Protected routes */}
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <Dashboard />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/societies"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/societies"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <SocietyList />
               </AppLayout>
-            }
-          />
-          <Route
-            path="/society-details/:id"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/society-details/:id"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <DetailProfile />
               </AppLayout>
-            }
-          />
-          <Route
-            path="/edit-society/:societyId"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/edit-society/:societyId"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <EditSociety />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/vendors"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/vendors"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <VendorList />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/vendor-details/:vendorId"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/vendor-details/:vendorId"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <VendorDetailProfile />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/vendor-edit/:vendorId"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/vendor-edit/:vendorId"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <VendorEditDetails />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/jobs"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/jobs"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <JobsList />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/job-details/:id"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/job-details/:id"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <JobDetailProfile />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/subscriptions"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/subscriptions"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <Subscription />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/services-categories"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/services-categories"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <ServicesList />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/vendors-by-service/:serviceName"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/vendors-by-service/:serviceName"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <VendorServicesList />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/ratings"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/ratings"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <RatingSummary />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/admin-settings"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/admin-settings"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <Setting />
               </AppLayout>
-            }
-          />
+            </PrivateRoute>
+          }
+        />
 
-          <Route
-            path="/reports"
-            element={
-              <AppLayout setIsLoggedIn={setIsLoggedIn}>
+        <Route
+          path="/reports"
+          element={
+            <PrivateRoute>
+              <AppLayout>
                 <Reports />
               </AppLayout>
-            }
-          />
-        </>
-      ) : (
-        <>
-          <Route
-            path="/login"
-            element={<Login onLoginSuccess={() => setIsLoggedIn(true)} />}
-          />
-          <Route path="/signup" element={<SignIn />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </>
-      )}
-    </Routes>
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+
+      <ToastContainer />
+    </>
   );
 }
 
