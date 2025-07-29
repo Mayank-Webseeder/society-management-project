@@ -127,7 +127,7 @@ const SignIn = () => {
               </div>
 
               <div className="py-2 relative">
-                <div className="absolute top-5 left-1 px-2 flex items-center justify-center text-[#00809D]">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#00809D]">
                   <FaVenusMars />
                 </div>
                 <select
@@ -135,7 +135,7 @@ const SignIn = () => {
                   value={formData.gender}
                   onChange={handleChange}
                   required
-                  className={`w-full py-2 ps-12 pe-3 border rounded-xl shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#44b1ca] transition-all duration-200 ${
+                  className={`w-full appearance-none py-2 pl-10 pr-8 border rounded-xl shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#44b1ca] transition-all duration-200 ${
                     formData.gender === "" ? "text-gray-500" : "text-black"
                   }`}
                 >
@@ -149,7 +149,7 @@ const SignIn = () => {
               </div>
 
               <div className="py-2 relative">
-                <div className="absolute top-5 left-1 px-2 flex items-center justify-center text-[#00809D]">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#00809D]">
                   <MdApartment />
                 </div>
                 <select
@@ -157,7 +157,7 @@ const SignIn = () => {
                   value={formData.department}
                   onChange={handleChange}
                   required
-                  className={`w-full py-2 ps-12 pe-3 border rounded-xl shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#44b1ca] transition-all duration-200 ${
+                  className={`w-full appearance-none py-2 pl-10 pr-8 border rounded-xl shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#44b1ca] transition-all duration-200 ${
                     formData.gender === "" ? "text-gray-500" : "text-black"
                   }`}
                 >
@@ -172,7 +172,7 @@ const SignIn = () => {
               </div>
 
               <div className="py-2 relative">
-                <div className="absolute top-5 left-1 px-2 flex items-center justify-center text-[#00809D]">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#00809D]">
                   <RiUserStarFill />
                 </div>
                 <select
@@ -180,7 +180,7 @@ const SignIn = () => {
                   value={formData.subrole}
                   onChange={handleChange}
                   required
-                  className={`w-full py-2 ps-12 pe-3 border rounded-xl shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#44b1ca] transition-all duration-200 ${
+                  className={`w-full appearance-none py-2 pl-10 pr-8 border rounded-xl shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#44b1ca] transition-all duration-200 ${
                     formData.gender === "" ? "text-gray-500" : "text-black"
                   }`}
                 >
