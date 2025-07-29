@@ -63,11 +63,10 @@ const SignIn = () => {
           },
         }
       );
-      
+
       const data = res.data;
 
       if (res.status === 200 || res.status === 201) {
-
         toast.success(data.msg || "Registration successful");
         setTimeout(() => {
           navigate("/login");
@@ -136,7 +135,7 @@ const SignIn = () => {
                   value={formData.gender}
                   onChange={handleChange}
                   required
-                  className={`w-full p-2 border rounded-xl px-12 shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#4FC3DC] transition-all duration-200 ${
+                  className={`w-full py-2 ps-12 pe-3 border rounded-xl shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#44b1ca] transition-all duration-200 ${
                     formData.gender === "" ? "text-gray-500" : "text-black"
                   }`}
                 >
@@ -158,7 +157,7 @@ const SignIn = () => {
                   value={formData.department}
                   onChange={handleChange}
                   required
-                  className={`w-full p-2 border rounded-xl px-12 shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#4FC3DC] transition-all duration-200 ${
+                  className={`w-full py-2 ps-12 pe-3 border rounded-xl shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#44b1ca] transition-all duration-200 ${
                     formData.gender === "" ? "text-gray-500" : "text-black"
                   }`}
                 >
@@ -181,7 +180,7 @@ const SignIn = () => {
                   value={formData.subrole}
                   onChange={handleChange}
                   required
-                  className={`w-full p-2 border rounded-xl px-12 shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#4FC3DC] transition-all duration-200 ${
+                  className={`w-full py-2 ps-12 pe-3 border rounded-xl shadow-md border-[#37AFE1] focus:outline-none focus:ring-2 focus:ring-[#44b1ca] transition-all duration-200 ${
                     formData.gender === "" ? "text-gray-500" : "text-black"
                   }`}
                 >
