@@ -7,6 +7,7 @@ import { FaVenusMars } from "react-icons/fa";
 import { MdApartment } from "react-icons/md";
 import { RiUserStarFill } from "react-icons/ri";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -33,31 +34,40 @@ const SignIn = () => {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
 
-     if (formData.password !== formData.confirmPassword) {
-    alert('Passwords do not match!');
-    return;
-  }
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
 
-  if (!formData.terms) {
-    alert("Please agree to the terms before submitting.");
-    return;
-  }
+    if (!formData.terms) {
+      alert("Please agree to the terms before submitting.");
+      return;
+    }
+
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      gender: formData.gender,
+      department: formData.department,
+      subrole: formData.subrole,
+      password: formData.password,
+    };
 
     try {
-      const response = await fetch(
+      const res = await axios.post(
         "https://society-services-backend.onrender.com/api/admin/signup",
+        payload,
         {
-          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
         }
       );
+      
+      const data = res.data;
 
-      const data = await response.json();
+      if (res.status === 200 || res.status === 201) {
 
-      if (response.ok) {
         toast.success(data.msg || "Registration successful");
         setTimeout(() => {
           navigate("/login");
@@ -66,7 +76,9 @@ const SignIn = () => {
         toast.error(data.error || "Registration failed");
       }
     } catch (error) {
-      toast.error("Network error, please try again");
+      const errMsg =
+        error.response?.data?.error || "Network error, please try again";
+      toast.error(errMsg);
       console.error(error);
     }
   };

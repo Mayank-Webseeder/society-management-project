@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Pencil, PlusCircle} from "lucide-react";
+import { Pencil, PlusCircle } from "lucide-react";
 import { CiTrash } from "react-icons/ci";
+
 const SubscriptionPlans = () => {
   const [plans, setPlans] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -20,28 +21,6 @@ const SubscriptionPlans = () => {
         price: 499,
         duration: "Monthly",
         features: ["Upto 5 Job Posts", "Basic Support", "Dashboard Access"],
-      },
-      {
-        _id: "plan2",
-        name: "Pro Plan",
-        price: 1299,
-        duration: "Quarterly",
-        features: [
-          "Unlimited Job Posts",
-          "Priority Support",
-          "Advanced Analytics",
-        ],
-      },
-      {
-        _id: "plan3",
-        name: "Premium Plan",
-        price: 3999,
-        duration: "Yearly",
-        features: [
-          "All Features Included",
-          "Dedicated Support",
-          "Revenue Insights",
-        ],
       },
     ]);
   }, []);
@@ -63,11 +42,11 @@ const SubscriptionPlans = () => {
 
   const handleSave = () => {
     const newPlan = {
-      _id: editingPlan ? editingPlan._id : Date.now(),
+      _id: editingPlan ? editingPlan._id : `plan_${Date.now()}`,
       name: formData.name,
-      price: formData.price,
+      price: Number(formData.price),
       duration: formData.duration,
-      features: formData.features.split(",").map((ftur) => ftur.trim()),
+      features: formData.features.split(",").map((ft) => ft.trim()),
     };
 
     if (editingPlan) {
@@ -78,13 +57,12 @@ const SubscriptionPlans = () => {
     setShowModal(false);
   };
 
-  const handleOnDelete =(id)=>{
-    const confirm = window.confirm("Do you want to remove this plan ??")
-    if(confirm){
-        setPlans(plans.filter((plan)=>plan._id !==id));
-        alert ("One plan removed");
+  const handleOnDelete = (id) => {
+    if (window.confirm("Do you want to remove this plan?")) {
+      setPlans(plans.filter((plan) => plan._id !== id));
+      alert("Plan removed");
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -100,46 +78,53 @@ const SubscriptionPlans = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {plans.map((plan) => (
-          <div
-            key={plan._id}
-            className="p-6 h-72 flex flex-col justify-between bg-gradient-to-br from-white to-gray-50 rounded-e-3xl shadow-lg hover:shadow-2xl transition transform hover:scale-105 border border-gray-200 space-y-4"
-          >
-            <div className="flex justify-between items-center">
-              <h4 className="text-xl font-bold text-gray-800">{plan.name}</h4>
+      {plans.length === 0 ? (
+        <div className="text-center text-gray-500">
+          No plans available. Please add a plan.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-6">
+          {plans.map((plan) => (
+            <div
+              key={plan._id}
+              className="p-6 h-72 flex flex-col justify-between bg-gradient-to-br from-white to-gray-50 rounded-e-3xl shadow-lg hover:shadow-2xl transition transform hover:scale-105 border border-gray-200 space-y-4"
+            >
+              <div className="flex justify-between items-center">
+                <h4 className="text-xl font-bold text-gray-800">{plan.name}</h4>
 
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => handleOpenModal(plan)}
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  <Pencil className="w-5 h-4" />
-                </button>
-                <button onClick={()=>handleOnDelete(plan._id)} 
-                 className="text-red-600 hover:text-red-700">
-                  <CiTrash className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleOpenModal(plan)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    <Pencil className="w-5 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleOnDelete(plan._id)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <CiTrash className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
-            </div>
 
-            <div>
-              <div className="text-3xl font-bold text-gray-700 mb-1">
-                ₹{plan.price}
+              <div>
+                <div className="text-3xl font-bold text-gray-700 mb-1">
+                  ₹{plan.price}
+                </div>
+                <div className="text-gray-500 text-sm">{plan.duration}</div>
               </div>
-              <div className="text-gray-500 text-sm">{plan.duration}</div>
+
+              <ul className="mt-2 space-y-1 text-gray-600 text-sm list-disc list-inside">
+                {plan.features.map((feature, idx) => (
+                  <li key={idx}>{feature}</li>
+                ))}
+              </ul>
             </div>
+          ))}
+        </div>
+      )}
 
-            <ul className="mt-2 space-y-1 text-gray-600 text-sm list-disc list-inside">
-              {plan.features.map((feature, idx) => (
-                <li key={idx}>{feature}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg space-y-4 w-full max-w-md">
@@ -174,13 +159,13 @@ const SubscriptionPlans = () => {
               className="w-full border p-2 rounded"
             />
             <textarea
-              placeholder="Features that you offer in your plan (comma separated)"
+              placeholder="Features (comma separated)"
               value={formData.features}
               onChange={(e) =>
                 setFormData({ ...formData, features: e.target.value })
               }
               className="w-full border p-2 rounded"
-            ></textarea>
+            />
 
             <div className="flex justify-end gap-3">
               <button
