@@ -37,34 +37,35 @@ const RevenueBreakdown = () => {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-xl font-bold text-gray-800 px-8">Revenue Breakdown</h3>
+      <h3 className="text-xl font-bold text-gray-800 px-8">
+        Revenue Breakdown
+      </h3>
 
       <div className="flex gap-6">
-  {/* Total Revenue */}
-  <div className="w-4/5 max-w-sm p-6 rounded-3xl border border-indigo-200 bg-gradient-to-tr from-indigo-50 to-purple-100 shadow-lg flex flex-col justify-center items-center hover:shadow-2xl transition-transform duration-300">
-    <h4 className="text-lg font-semibold text-indigo-700 mb-2 tracking-wide">
-      Total Revenue
-    </h4>
-    <div className="text-5xl font-extrabold bg-gradient-to-r from-indigo-700 to-purple-600 text-transparent bg-clip-text">
-      <CountUp end={plan.value} duration={3} separator="," prefix="₹" />
-    </div>
-  </div>
+        {/* Total Revenue */}
+        <div className="w-4/5 max-w-sm p-6 rounded-3xl border border-indigo-200 bg-gradient-to-tr from-indigo-50 to-purple-100 shadow-lg flex flex-col justify-center items-center hover:shadow-2xl transition-transform duration-300">
+          <h4 className="text-lg font-semibold text-indigo-700 mb-2 tracking-wide">
+            Total Revenue
+          </h4>
+          <div className="text-5xl font-extrabold bg-gradient-to-r from-indigo-700 to-purple-600 text-transparent bg-clip-text">
+            <CountUp end={plan.value} duration={3} separator="," prefix="₹" />
+          </div>
+        </div>
 
-  {/* Active Users */}
-  <div className="w-4/5 max-w-sm p-6 rounded-3xl border border-yellow-300 bg-gradient-to-tr from-yellow-50 to-yellow-100 shadow-md flex flex-col justify-center items-center hover:shadow-xl transition-transform duration-300 relative">
-    <div className="absolute -top-6 bg-yellow-400 rounded-full p-3 shadow-lg">
-      <UserCheck size={28} className="text-white" />
-    </div>
-    <h4 className="mt-6 text-lg font-semibold text-yellow-700 mb-1 tracking-wide">
-      Active Users
-    </h4>
-    <div className="text-2xl font-bold text-yellow-800">
-      {plan.activeUsers.toLocaleString()}
-    </div>
-    <div className="text-lg text-yellow-700 mt-1">users</div>
-  </div>
-</div>
-
+        {/* Active Users */}
+        <div className="w-4/5 max-w-sm p-6 rounded-3xl border border-yellow-300 bg-gradient-to-tr from-yellow-50 to-yellow-100 shadow-md flex flex-col justify-center items-center hover:shadow-xl transition-transform duration-300 relative">
+          <div className="absolute -top-6 bg-yellow-400 rounded-full p-3 shadow-lg">
+            <UserCheck size={28} className="text-white" />
+          </div>
+          <h4 className="mt-6 text-lg font-semibold text-yellow-700 mb-1 tracking-wide">
+            Active Users
+          </h4>
+          <div className="text-2xl font-bold text-yellow-800">
+            {plan.activeUsers.toLocaleString()}
+          </div>
+          <div className="text-lg text-yellow-700 mt-1">users</div>
+        </div>
+      </div>
 
       {/* Monthly Revenue Trend */}
       <div className="p-6 rounded-2xl shadow-lg bg-white mt-6">

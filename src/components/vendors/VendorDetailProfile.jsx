@@ -518,12 +518,7 @@ const VendorDetailProfile = () => {
                 </h2>
 
                 <div className="space-y-2 text-gray-800 text-base">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-700">Plan:</span>
-                    <span className="font-medium">
-                      {vendor.subscription.plan}
-                    </span>
-                  </div>
+
 
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-gray-600">Price:</span>
