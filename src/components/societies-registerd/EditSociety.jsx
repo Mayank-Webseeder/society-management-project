@@ -50,7 +50,7 @@ const SocietyEdit = () => {
     <div className="bg-white rounded-lg shadow border border-gray-200 p-4 sm:p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <button
-          onClick={() => navigate("/societies")}
+          onClick={() => navigate(-1)}
           className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm gap-1"
         >
           <svg

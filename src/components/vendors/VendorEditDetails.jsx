@@ -55,7 +55,7 @@ const VendorEdit = () => {
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-6">
         <button
-          onClick={() => navigate("/vendors")}
+          onClick={() => navigate(-1)}
           className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm gap-1"
         >
           <svg

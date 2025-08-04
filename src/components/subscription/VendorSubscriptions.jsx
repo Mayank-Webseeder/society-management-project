@@ -8,6 +8,7 @@ import {
   CalendarCheck,
   CreditCard,
   Download,
+   User,
 } from "lucide-react";
 import { IoCloudDownloadOutline } from "react-icons/io5";
 import axios from "axios";
@@ -255,19 +256,20 @@ const VendorSubscriptions = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-bold text-gray-800 px-8">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <h3 className="text-2xl font-bold text-gray-800">
           Vendor Subscriptions
         </h3>
         <button
           onClick={exportCSV}
-          className="mr-6 flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg bg-[#44a59f] text-gray-800 hover:bg-[#76bcb8] border border-[#3D8D7A] transition"
+          className="flex items-center justify-center gap-2 text-sm font-medium px-4 py-2 rounded-lg bg-[#44a59f] text-white hover:bg-[#76bcb8] border border-[#3D8D7A] transition shadow-sm"
         >
-          <IoCloudDownloadOutline className="w-4 h-4" /> Export CSV
+          <IoCloudDownloadOutline className="w-5 h-5" /> Export CSV
         </button>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* in table for large screen */}
+       <div className="hidden lg:block overflow-x-auto">
         <table className="min-w-full bg-white rounded-2xl shadow-xl overflow-hidden">
           <thead className="bg-[#e3f3e7] text-green-700 text-md">
             <tr>
@@ -280,7 +282,6 @@ const VendorSubscriptions = () => {
               <th className="px-5 py-4 text-center">Cancel</th>
             </tr>
           </thead>
-
           <tbody>
             {subscriptions.map((sub, index) => (
               <tr
@@ -316,7 +317,7 @@ const VendorSubscriptions = () => {
                 </td>
                 <td className="px-5 py-4 text-center">
                   <button
-                    className="px-3 py-1 text-blue-700 rounded-full text-sm font-medium hover:underline transition flex items-center gap-1"
+                    className="px-3 py-1 text-blue-700 rounded-full text-sm font-medium hover:underline transition flex items-center gap-1 mx-auto"
                     onClick={async () => {
                       const vendorId = sub.vendorId || sub.vendor || sub._id;
                       const historyData = await fetchSubscriptionHistory(
@@ -330,15 +331,15 @@ const VendorSubscriptions = () => {
                       });
                     }}
                   >
-                    <Eye className="w-3 h-3" /> View
+                    <Eye className="w-4 h-4" /> View
                   </button>
                 </td>
                 <td className="px-5 py-4 text-center">
                   <button
-                    className="px-3 py-1 text-red-700 rounded-full text-sm font-medium hover:underline transition flex items-center gap-1"
+                    className="px-3 py-1 text-red-700 rounded-full text-sm font-medium hover:underline transition flex items-center gap-1 mx-auto"
                     onClick={() => handleCancel(sub._id)}
                   >
-                    <XCircle className="w-3 h-3" /> Cancel
+                    <XCircle className="w-4 h-4" /> Cancel
                   </button>
                 </td>
               </tr>
@@ -346,6 +347,91 @@ const VendorSubscriptions = () => {
           </tbody>
         </table>
       </div>
+
+       {/* cards for small screen */}
+   <div className="block lg:hidden space-y-5">
+  {subscriptions.map((sub) => (
+    <div
+      key={sub._id}
+      className="bg-white border border-gray-200 rounded-2xl shadow-md p-5 hover:shadow-xl transition"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <User className="w-4 h-4 text-gray-500" />
+            {sub.vendorName || "N/A"}
+          </h3>
+        </div>
+        <span
+          className={`text-xs px-3 py-1 rounded-full font-semibold ${
+            sub.subscriptionStatus === "Active"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-600 line-through"
+          }`}
+        >
+          {sub.subscriptionStatus}
+        </span>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t mt-4 mb-3" />
+
+      {/* Details */}
+      <div className="grid grid-cols-2 gap-4 text-sm text-gray-700">
+        <div className="space-y-1">
+          <p className="text-gray-500">Start Date</p>
+          <p className="font-medium">{sub.startDate || "N/A"}</p>
+        </div>
+        <div className="space-y-1">
+          <p className="text-gray-500">End Date</p>
+          <p className="font-medium">{sub.endDate || "N/A"}</p>
+        </div>
+        <div className="col-span-2 space-y-1">
+          <p className="text-gray-500">Payment Status</p>
+          <p
+            className={`font-semibold ${
+              sub.paymentStatus === "Paid"
+                ? "text-green-700"
+                : "text-red-700"
+            }`}
+          >
+            {sub.paymentStatus || "N/A"}
+          </p>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="mt-5 flex justify-end gap-3">
+        <button
+          className="flex items-center gap-1.5 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 px-4 py-1.5 rounded-lg transition"
+          onClick={() => handleCancel(sub._id)}
+        >
+          <XCircle className="w-4 h-4" /> Cancel
+        </button>
+
+        <button
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white text-gray-800 font-semibold text-sm px-4 py-2 hover:bg-gray-100 hover:border-gray-400 transition-shadow shadow-sm hover:shadow-md active:scale-[0.98] active:shadow-sm focus:outline-none focus:ring-1"
+          onClick={async () => {
+            const vendorId = sub.vendorId || sub.vendor || sub._id;
+            const historyData = await fetchSubscriptionHistory(vendorId);
+            setPaymentModal({
+              open: true,
+              payment: sub.paymentDetails,
+              vendorInfo: { vendorName: sub.vendorName },
+              history: historyData,
+            });
+          }}
+        >
+          <Eye className="w-4 h-4" /> View Details
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+
 
       {paymentModal.open && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">

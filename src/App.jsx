@@ -4,7 +4,6 @@ import { useAuth } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import AppLayout from "./components/layout/AppLayout";
 import Login from "./components/auth/Login";
-import SignIn from "./components/auth/SignIn";
 import Dashboard from "./components/dashboard/Dashboard";
 import SocietyList from "./components/societies-registerd/SocietyList";
 import DetailProfile from "./components/societies-registerd/DetailProfile";
@@ -31,7 +30,6 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignIn />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
 
         {/* Protected routes */}

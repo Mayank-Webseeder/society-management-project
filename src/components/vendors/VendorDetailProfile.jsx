@@ -120,7 +120,7 @@ const VendorDetailProfile = () => {
     <div className="bg-white rounded-lg shadow border border-gray-200">
       <div className="flex items-center justify-between mt-3 px-3">
         <button
-          onClick={() => navigate("/vendors")}
+          onClick={() => navigate(-1)}
           className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-md gap-1"
         >
           <svg
@@ -199,7 +199,7 @@ const VendorDetailProfile = () => {
           </div>
 
           {/* Tabs */}
-          <div className="flex flex-wrap gap-2 border-b sticky top-[64px] bg-white z-20 px-1 sm:px-0">
+          <div className="flex flex-wrap gap-2 border-b bg-white px-1 sm:px-0">
             {[
               "vendor info",
               "documents",
@@ -518,8 +518,6 @@ const VendorDetailProfile = () => {
                 </h2>
 
                 <div className="space-y-2 text-gray-800 text-base">
-
-
                   <div className="flex justify-between items-center">
                     <span className="font-semibold text-gray-600">Price:</span>
                     <span className="font-medium">

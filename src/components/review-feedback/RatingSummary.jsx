@@ -19,7 +19,6 @@ const RatingSummary = () => {
       rating: 5,
       comment: "Very professional and quick service.",
       createdAt: "2025-07-08T10:12:00Z",
-      adminReply: "",
     },
     {
       id: "rev002",
@@ -30,7 +29,6 @@ const RatingSummary = () => {
       rating: 3,
       comment: "Work was okay, could improve punctuality.",
       createdAt: "2025-07-07T14:45:00Z",
-      adminReply: "",
     },
     {
       id: "rev003",
@@ -41,7 +39,6 @@ const RatingSummary = () => {
       rating: 4,
       comment: "Good service, staff was friendly.",
       createdAt: "2025-07-06T09:18:00Z",
-      adminReply: "",
     },
     {
       id: "rev004",
@@ -52,7 +49,6 @@ const RatingSummary = () => {
       rating: 2,
       comment: "Didn't fully resolve the issue.",
       createdAt: "2025-07-05T17:23:00Z",
-      adminReply: "",
     },
     {
       id: "rev005",
@@ -63,7 +59,6 @@ const RatingSummary = () => {
       rating: 4,
       comment: "Neat work and well-behaved.",
       createdAt: "2025-07-05T11:05:00Z",
-      adminReply: "",
     },
     {
       id: "rev006",
@@ -74,22 +69,8 @@ const RatingSummary = () => {
       rating: 1,
       comment: "Rude behavior, poor service quality.",
       createdAt: "2025-07-04T16:40:00Z",
-      adminReply: "",
     },
   ]);
-
-  const handleAdminReply = (reviewId, replyText) => {
-    setReviews((prev) =>
-      prev.map((rev) =>
-        rev.id === reviewId
-          ? {
-              ...rev,
-              adminReply: replyText,
-            }
-          : rev
-      )
-    );
-  };
 
   const totalReviews = reviews.length;
   const avgRating =
@@ -153,40 +134,40 @@ const RatingSummary = () => {
     : reviews;
 
   return (
-<div className="p-6 bg-white rounded-xl shadow-md mx-auto">
-  <div className="w-full flex justify-center mb-10">
-    <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg">
-      <div className="relative flex w-full bg-gray-200 rounded-full p-1 shadow-inner overflow-hidden">
-        <button
-          onClick={() => setActiveTab("review")}
-          className={`w-1/2 text-center px-3 py-2 text-sm sm:text-base font-semibold transition-all duration-300 z-10 relative ${
-            activeTab === "review"
-              ? "text-white"
-              : "text-gray-700 hover:text-[#5F85DB]"
-          }`}
-        >
-          Reviews
-        </button>
+    <div className="p-6 bg-white rounded-xl shadow-md mx-auto">
+      <div className="w-full flex justify-center mb-10">
+        <div className="relative w-full max-w-xs sm:max-w-md md:max-w-lg">
+          <div className="relative flex w-full bg-gray-200 rounded-full p-1 shadow-inner overflow-hidden">
+            <button
+              onClick={() => setActiveTab("review")}
+              className={`w-1/2 text-center px-3 py-2 text-sm sm:text-base font-semibold transition-all duration-300 z-10 relative ${
+                activeTab === "review"
+                  ? "text-white"
+                  : "text-gray-700 hover:text-[#5F85DB]"
+              }`}
+            >
+              Reviews
+            </button>
 
-        <button
-          onClick={() => setActiveTab("average")}
-          className={`w-1/2 text-center px-3 py-2 text-sm sm:text-base font-semibold transition-all duration-300 z-10 relative ${
-            activeTab === "average"
-              ? "text-white"
-              : "text-gray-700 hover:text-[#5F85DB]"
-          }`}
-        >
-          Avg Ratings
-        </button>
+            <button
+              onClick={() => setActiveTab("average")}
+              className={`w-1/2 text-center px-3 py-2 text-sm sm:text-base font-semibold transition-all duration-300 z-10 relative ${
+                activeTab === "average"
+                  ? "text-white"
+                  : "text-gray-700 hover:text-[#5F85DB]"
+              }`}
+            >
+              Avg Ratings
+            </button>
 
-        <span
-          className={`absolute top-0 left-0 h-full w-1/2 bg-[#00A8CC] rounded-full transition-all duration-300 ${
-            activeTab === "average" ? "translate-x-full" : ""
-          }`}
-        />
+            <span
+              className={`absolute top-0 left-0 h-full w-1/2 bg-[#00A8CC] rounded-full transition-all duration-300 ${
+                activeTab === "average" ? "translate-x-full" : ""
+              }`}
+            />
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
       {activeTab === "review" && (
         <>
@@ -215,7 +196,9 @@ const RatingSummary = () => {
             </div>
 
             <div className="flex flex-col items-center justify-center border-l border-r border-gray-200 px-6">
-              <h3 className="text-2xl font-sans text-gray-700 mb-5">Total Reviews</h3>
+              <h3 className="text-2xl font-sans text-gray-700 mb-5">
+                Total Reviews
+              </h3>
               <p className="text-4xl font-bold text-gray-800">{totalReviews}</p>
             </div>
 
@@ -226,7 +209,9 @@ const RatingSummary = () => {
               <p className="text-5xl font-bold text-gray-900">
                 {avgRating.toFixed(1)}
               </p>
-              <div className="flex mt-1 space-x-1">{renderStars(avgRating)}</div>
+              <div className="flex mt-1 space-x-1">
+                {renderStars(avgRating)}
+              </div>
             </div>
           </div>
 
@@ -305,17 +290,6 @@ const RatingSummary = () => {
                       More Details →
                     </button>
                   </div>
-
-                  {review.adminReply && (
-                    <div className="mt-4 bg-gray-100 border border-gray-200 rounded-xl p-4 text-sm shadow-sm">
-                      <h4 className="text-gray-700 font-semibold mb-2 flex items-center gap-2">
-                        💬 Admin Reply :
-                      </h4>
-                      <p className="px-5 text-gray-800 leading-relaxed tracking-wide font-medium">
-                        {review.adminReply}
-                      </p>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
@@ -325,7 +299,6 @@ const RatingSummary = () => {
                 review={selectedReview}
                 setReviews={setReviews}
                 onClose={() => setSelectedReview(null)}
-                onReply={handleAdminReply}
                 renderStars={renderStars}
                 formatTimeAgo={formatTimeAgo}
               />
@@ -334,7 +307,13 @@ const RatingSummary = () => {
         </>
       )}
 
-      {activeTab === "average" && <VendorAverageRating reviews={reviews} renderStars={renderStars} formatTimeAgo={formatTimeAgo} />}
+      {activeTab === "average" && (
+        <VendorAverageRating
+          reviews={reviews}
+          renderStars={renderStars}
+          formatTimeAgo={formatTimeAgo}
+        />
+      )}
     </div>
   );
 };

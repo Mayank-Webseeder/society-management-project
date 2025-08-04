@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Search, Trash2, Star, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useVendorContext } from "../../context/VendorContext";
-import AddVendor from "./AddVendor";
 
 const VendorList = () => {
   const {
@@ -11,7 +10,6 @@ const VendorList = () => {
     handleReject,
     handleDisable,
     handleDeleteVendor,
-    handleAddVendor,
   } = useVendorContext();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,9 +19,6 @@ const VendorList = () => {
   const [showSocietyForm, setShowSocietyForm] = useState(false);
   const [serviceFilter, setServiceFilter] = useState("");
 
-  const addNewVendor = (vendorData) => {
-    handleAddVendor(vendorData);
-  };
   const filteredVendors = vendors.filter((vendor) => {
     const name = vendor.name || "";
     const location = vendor.location || "";
@@ -56,6 +51,13 @@ const VendorList = () => {
       matchesSearch && matchesStatus && matchesSubscription && matchesService
     );
   });
+
+  const statusColorMap = {
+    active: "text-green-500",
+    inactive: "text-yellow-600",
+    cancelled: "text-gray-600",
+    expired: "text-red-600",
+  };
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -135,8 +137,10 @@ const VendorList = () => {
                 className="flex-1 min-w-[120px] px-4 py-2 border border-gray-300 rounded focus:ring-blue-500"
               >
                 <option value="">All Subscriptions</option>
-                <option value="Active">Active</option>
-                <option value="Expired">Expired</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="expired">Expired</option>
               </select>
             </div>
 
@@ -148,23 +152,7 @@ const VendorList = () => {
               </span>
             </div>
           </div>
-
-          <div className="w-full sm:w-auto flex justify-end xl:w-auto xl:ml-4">
-            <button
-              onClick={() => setShowSocietyForm(true)}
-              className="bg-[#57a0b8] text-black px-3 lg:px-4 py-2 lg:py-2.5 rounded-lg text-xs lg:text-sm font-medium hover:bg-[#6dabbc] transition focus:outline-none focus:ring-2 focus:ring-[#68b9d5] focus:ring-offset-1"
-            >
-              + Add Society
-            </button>
-          </div>
         </div>
-
-        {showSocietyForm && (
-          <AddVendor
-            onClose={() => setShowSocietyForm(false)}
-            onAddVendor={handleAddVendor}
-          />
-        )}
 
         {/* Table */}
         {filteredVendors.length === 0 ? (
@@ -295,10 +283,9 @@ const VendorList = () => {
 
                       <td className="px-6 py-4">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            vendor.subscriptionStatus === "Active"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            statusColorMap[vendor.subscriptionStatus] ||
+                            "text-slate-600"
                           }`}
                         >
                           {vendor.subscriptionStatus}

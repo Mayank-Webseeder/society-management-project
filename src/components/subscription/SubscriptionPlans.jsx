@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Pencil, PlusCircle } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { CiTrash } from "react-icons/ci";
 
 const SubscriptionPlans = () => {
@@ -10,7 +10,6 @@ const SubscriptionPlans = () => {
     name: "",
     price: "",
     duration: "",
-    features: "",
   });
 
   useEffect(() => {
@@ -20,40 +19,29 @@ const SubscriptionPlans = () => {
         name: "Basic Plan",
         price: 499,
         duration: "Monthly",
-        features: ["Upto 5 Job Posts", "Basic Support", "Dashboard Access"],
       },
     ]);
   }, []);
 
-  const handleOpenModal = (plan = null) => {
+  const handleOpenModal = (plan) => {
     setEditingPlan(plan);
-    if (plan) {
-      setFormData({
-        name: plan.name,
-        price: plan.price,
-        duration: plan.duration,
-        features: plan.features.join(", "),
-      });
-    } else {
-      setFormData({ name: "", price: "", duration: "", features: "" });
-    }
+    setFormData({
+      name: plan.name,
+      price: plan.price,
+      duration: plan.duration,
+    });
     setShowModal(true);
   };
 
   const handleSave = () => {
-    const newPlan = {
-      _id: editingPlan ? editingPlan._id : `plan_${Date.now()}`,
+    const updatedPlan = {
+      ...editingPlan,
       name: formData.name,
       price: Number(formData.price),
       duration: formData.duration,
-      features: formData.features.split(",").map((ft) => ft.trim()),
     };
 
-    if (editingPlan) {
-      setPlans(plans.map((p) => (p._id === editingPlan._id ? newPlan : p)));
-    } else {
-      setPlans([...plans, newPlan]);
-    }
+    setPlans(plans.map((p) => (p._id === editingPlan._id ? updatedPlan : p)));
     setShowModal(false);
   };
 
@@ -65,72 +53,55 @@ const SubscriptionPlans = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-xl font-bold text-gray-800 px-8">
-          Available Plans
-        </h3>
-        <button
-          onClick={() => handleOpenModal(null)}
-          className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 text-sm font-medium transition"
-        >
-          <PlusCircle className="w-4 h-4" /> Add New Plan
-        </button>
-      </div>
+   <div className="py-8 max-w-4xl mx-0 space-y-8 px-0">
+  {/* Section Header */}
+  <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+    <h3 className="text-2xl font-semibold text-gray-800 tracking-wide">
+      Subscription Plan
+    </h3>
+  </div>
 
-      {plans.length === 0 ? (
-        <div className="text-center text-gray-500">
-          No plans available. Please add a plan.
+  {/* Plan Card */}
+  {plans.length === 0 ? (
+    <div className="text-left text-gray-400 italic">No plan available.</div>
+  ) : (
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200 overflow-hidden">
+      <div className="flex flex-col md:flex-row justify-between items-start p-6 gap-6">
+        {/* Left: Plan Info */}
+        <div className="flex flex-col space-y-1 md:space-y-2 text-gray-700 text-left">
+          <h4 className="text-lg font-medium">{plans[0].name}</h4>
+          <p className="text-sm text-gray-500">
+            Duration: <span className="font-normal text-gray-600">{plans[0].duration}</span>
+          </p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((plan) => (
-            <div
-              key={plan._id}
-              className="p-6 h-72 flex flex-col justify-between bg-gradient-to-br from-white to-gray-50 rounded-e-3xl shadow-lg hover:shadow-2xl transition transform hover:scale-105 border border-gray-200 space-y-4"
+
+        {/* Right: Price + Actions */}
+        <div className="flex flex-col md:items-end gap-3">
+          <div className="text-2xl font-semibold text-gray-900">₹{plans[0].price}</div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleOpenModal(plans[0])}
+              className="px-4 py-1.5 rounded-md border border-indigo-500 text-indigo-600 hover:bg-indigo-50 transition"
             >
-              <div className="flex justify-between items-center">
-                <h4 className="text-xl font-bold text-gray-800">{plan.name}</h4>
-
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => handleOpenModal(plan)}
-                    className="text-blue-500 hover:text-blue-700"
-                  >
-                    <Pencil className="w-5 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleOnDelete(plan._id)}
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    <CiTrash className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <div className="text-3xl font-bold text-gray-700 mb-1">
-                  ₹{plan.price}
-                </div>
-                <div className="text-gray-500 text-sm">{plan.duration}</div>
-              </div>
-
-              <ul className="mt-2 space-y-1 text-gray-600 text-sm list-disc list-inside">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx}>{feature}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+              Edit
+            </button>
+            <button
+              onClick={() => handleOnDelete(plans[0]._id)}
+              className="px-4 py-1.5 rounded-md border border-red-500 text-red-600 hover:bg-red-50 transition"
+            >
+              Delete
+            </button>
+          </div>
         </div>
-      )}
+      </div>
+    </div>
+  )}
+
 
       {showModal && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg space-y-4 w-full max-w-md">
-            <h3 className="text-lg font-bold text-gray-800">
-              {editingPlan ? "Edit Plan" : "Add New Plan"}
-            </h3>
+            <h3 className="text-lg font-bold text-gray-800">Edit Plan</h3>
             <input
               type="text"
               placeholder="Plan Name"
@@ -155,14 +126,6 @@ const SubscriptionPlans = () => {
               value={formData.duration}
               onChange={(e) =>
                 setFormData({ ...formData, duration: e.target.value })
-              }
-              className="w-full border p-2 rounded"
-            />
-            <textarea
-              placeholder="Features (comma separated)"
-              value={formData.features}
-              onChange={(e) =>
-                setFormData({ ...formData, features: e.target.value })
               }
               className="w-full border p-2 rounded"
             />

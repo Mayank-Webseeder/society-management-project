@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaRegFileExcel } from "react-icons/fa";
 import { FaRegFilePdf } from "react-icons/fa6";
-import { FaClipboardList } from "react-icons/fa6";
+import { FaMapMarkerAlt, FaCalendarAlt, FaClipboardList } from "react-icons/fa";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
@@ -129,49 +129,48 @@ const SocietyReport = () => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-const handleExportPDF = () => {
-  const doc = new jsPDF();
-  doc.text("Society Report", 14, 15);
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Society Report", 14, 15);
 
-  const tableData = filteredList.map((s, index) => [
-    index + 1,
-    s.name,
-    s.status,
-    s.createdAt,
-    s.location,
-    s.jobsPosted,
-  ]);
+    const tableData = filteredList.map((s, index) => [
+      index + 1,
+      s.name,
+      s.status,
+      s.createdAt,
+      s.location,
+      s.jobsPosted,
+    ]);
 
-  autoTable(doc, {
-    startY: 25,
-    head: [["#", "Name", "Status", "Created At", "Location", "Jobs Posted"]],
-    body: tableData,
-  });
+    autoTable(doc, {
+      startY: 25,
+      head: [["#", "Name", "Status", "Created At", "Location", "Jobs Posted"]],
+      body: tableData,
+    });
 
-  doc.save("society_report.pdf");
-};
+    doc.save("society_report.pdf");
+  };
 
- const handleExportExcel = () => {
-  const worksheet = XLSX.utils.json_to_sheet(
-    filteredList.map((s) => ({
-      Name: s.name,
-      Status: s.status,
-      "Created At": s.createdAt,
-      Location: s.location,
-      "Jobs Posted": s.jobsPosted,
-    }))
-  );
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Society Report");
-  XLSX.writeFile(workbook, "society_report.xlsx");
-};
-
-
+  const handleExportExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredList.map((s) => ({
+        Name: s.name,
+        Status: s.status,
+        "Created At": s.createdAt,
+        Location: s.location,
+        "Jobs Posted": s.jobsPosted,
+      }))
+    );
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Society Report");
+    XLSX.writeFile(workbook, "society_report.xlsx");
+  };
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl shadow p-4 flex flex-wrap gap-4 items-end">
-        <div>
+      {/* Filter Form */}
+      <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-wrap sm:flex-row gap-4 items-start sm:items-end">
+        <div className="w-full sm:w-auto flex-1 min-w-[150px]">
           <label className="block text-sm font-medium text-gray-700">
             From
           </label>
@@ -183,7 +182,7 @@ const handleExportPDF = () => {
             className="border rounded-md px-3 py-2 w-full"
           />
         </div>
-        <div>
+        <div className="w-full sm:w-auto flex-1 min-w-[150px]">
           <label className="block text-sm font-medium text-gray-700">To</label>
           <input
             type="date"
@@ -193,7 +192,7 @@ const handleExportPDF = () => {
             className="border rounded-md px-3 py-2 w-full"
           />
         </div>
-        <div>
+        <div className="w-full sm:w-auto flex-1 min-w-[150px]">
           <label className="block text-sm font-medium text-gray-700">
             Status
           </label>
@@ -210,7 +209,7 @@ const handleExportPDF = () => {
             <option value="banned">Banned</option>
           </select>
         </div>
-        <div>
+        <div className="w-full sm:w-auto flex-1 min-w-[150px]">
           <label className="block text-sm font-medium text-gray-700">
             Location
           </label>
@@ -225,12 +224,11 @@ const handleExportPDF = () => {
         </div>
       </div>
 
-      {/* Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-4">
-        <div className="col-span-2 md:col-span-3 lg:col-span-2">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-4">
+        <div className="col-span-1 xs:col-span-2 md:col-span-3 lg:col-span-2">
           <Card title="Total Societies" count={summary.total} big />
         </div>
-
         <Card title="Approved" count={summary.approved} />
         <Card title="Pending" count={summary.pending} />
         <Card title="Rejected" count={summary.rejected} />
@@ -239,88 +237,144 @@ const handleExportPDF = () => {
         <Card title="Inactive" count={summary.inactive} />
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow p-6">
+      {/* Table / Card View */}
+      <div className="bg-white rounded-xl shadow p-0 md:p-6">
         <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-         <FaClipboardList className="text-gray-700 text-2xl"/> Table View
+          <FaClipboardList className="text-gray-700 text-2xl" /> Table View
         </h2>
 
-        <table className="w-full text-md">
-          <thead>
-            <tr className="text-gray-700 border-b">
-              <th className="py-3 text-left px-4">Name</th>
-              <th className="py-3 text-left px-4">Status</th>
-              <th className="py-3 text-left px-4">Date</th>
-              <th className="py-3 text-left px-4">Location</th>
-              <th className="py-3 text-left px-4">Jobs Posted</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredList.length > 0 ? (
-              filteredList.map((s) => (
-                <tr
-                  key={s.id}
-                  className="bg-white border-b last:border-none hover:shadow-md hover:scale-[1.007] transition-all duration-300 rounded-md last:rounded-b-xl"
-                >
-                  <td className="px-4 py-4 font-semibold text-gray-800">
+        {/* for small screen : Card */}
+        <div className="space-y-4 md:hidden">
+          {filteredList.length > 0 ? (
+            filteredList.map((s) => (
+              <div
+                key={s.id}
+                className="rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 bg-white p-4 py-5"
+              >
+                {/* Title */}
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-lg font-semibold text-gray-800">
                     {s.name}
-                  </td>
-                  <td className="px-4 py-4">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-bold ${
-                        s.status === "approved"
-                          ? "text-green-700"
-                          : s.status === "pending"
-                          ? "text-yellow-700"
-                          : s.status === "rejected"
-                          ? "text-red-700"
-                          : s.status === "banned"
-                          ? "text-gray-700"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4 text-gray-600">{s.createdAt}</td>
-                  <td className="px-4 py-4 text-gray-600">{s.location}</td>
-                  <td className="px-8 py-4 font-bold text-gray-900">
+                  </h3>
+                  <span
+                    className={`text-xs font-semibold px-3 py-1 rounded-full ${
+                      s.status === "approved"
+                        ? "bg-green-100 text-green-700"
+                        : s.status === "pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : s.status === "rejected"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-gray-100 text-gray-700"
+                    }`}
+                  >
+                    {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
+                  </span>
+                </div>
+
+                {/* Info */}
+                <div className="space-y-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <FaCalendarAlt className="text-gray-500" />
+                    <span className="font-medium">Date:</span> {s.createdAt}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <FaMapMarkerAlt className="text-gray-500" />
+                    <span className="font-medium">Location:</span> {s.location}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <FaClipboardList className="text-gray-500" />
+                    <span className="font-medium">Jobs Posted:</span>{" "}
                     {s.jobsPosted}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No Data Found</p>
+          )}
+        </div>
+
+          {/* Large screen: Table */}
+          <div className="hidden md:block overflow-x-auto max-w-full">
+            <table className="min-w-[700px] w-full text-md">
+              <thead>
+              <tr className="text-gray-700 border-b">
+                <th className="py-3 text-left px-4">Name</th>
+                <th className="py-3 text-left px-4">Status</th>
+                <th className="py-3 text-left px-4">Date</th>
+                <th className="py-3 text-left px-4">Location</th>
+                <th className="py-3 text-left px-4">Jobs Posted</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredList.length > 0 ? (
+                filteredList.map((s) => (
+                  <tr
+                    key={s.id}
+                    className="bg-white border-b last:border-none hover:shadow-md hover:scale-[1.007] transition-all duration-300 rounded-md last:rounded-b-xl"
+                  >
+                    <td className="px-4 py-4 font-semibold text-gray-800">
+                      {s.name}
+                    </td>
+                    <td className="px-4 py-4">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-bold ${
+                          s.status === "approved"
+                            ? "text-green-700"
+                            : s.status === "pending"
+                            ? "text-yellow-700"
+                            : s.status === "rejected"
+                            ? "text-red-700"
+                            : "text-gray-700"
+                        }`}
+                      >
+                        {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-gray-600">{s.createdAt}</td>
+                    <td className="px-4 py-4 text-gray-600">{s.location}</td>
+                    <td className="px-8 py-4 font-bold text-gray-900">
+                      {s.jobsPosted}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="py-6 text-center text-gray-500">
+                    No Data Found
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5" className="py-6 text-center text-gray-500">
-                  No Data Found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Export Buttons */}
-      <div className="flex justify-end gap-3">
-              <button
-                onClick={handleExportPDF}
-                className="flex items-center gap-2 px-4 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100"
-                aria-label="Export revenue report as PDF"
-              >
-                <FaRegFilePdf className="text-red-500 text-lg" /> Export PDF
-              </button>
-              <button
-                onClick={handleExportExcel}
-                className="flex items-center gap-2 px-4 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100"
-                aria-label="Export revenue report as Excel"
-              >
-                <FaRegFileExcel className="text-green-600 text-lg" /> Export Excel
-              </button>
-            </div>
+      <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
+        <button
+          onClick={handleExportPDF}
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
+          aria-label="Export PDF"
+        >
+          <FaRegFilePdf className="text-red-500 text-xl" />
+          <span className="text-base">Export PDF</span>
+        </button>
+
+        <button
+          onClick={handleExportExcel}
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
+          aria-label="Export Excel"
+        >
+          <FaRegFileExcel className="text-green-600 text-xl" />
+          <span className="text-base">Export Excel</span>
+        </button>
+      </div>
     </div>
   );
 };
-
 const Card = ({ title, count, big }) => (
   <div
     className={`rounded-2xl bg-[#f9fafb] shadow-md ${

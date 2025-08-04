@@ -5,7 +5,7 @@ import GrowthTrend from "./GrowthTrend";
 import { FaRegFileExcel, FaRegFilePdf } from "react-icons/fa6";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import * as XLSX from "xlsx"
+import * as XLSX from "xlsx";
 
 const mockReportData = {
   societies: [
@@ -138,81 +138,75 @@ const PerformanceReport = () => {
       )
     : 0;
 
- const handleExportPDF = () => {
-  const doc = new jsPDF();
-  doc.text("Performance Report", 14, 15);
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Performance Report", 14, 15);
 
-  const summaryData = [
-    ["Total Societies", totalSocieties],
-    ["Total Vendors", totalVendors],
-    ["Total Jobs Posted", totalJobs],
-    ["Fulfillment Rate", `${fulfillmentRate}%`],
-    ["Average Response Time (hrs)", `${avgResponseTime}`],
-  ];
+    const summaryData = [
+      ["Total Societies", totalSocieties],
+      ["Total Vendors", totalVendors],
+      ["Total Jobs Posted", totalJobs],
+      ["Fulfillment Rate", `${fulfillmentRate}%`],
+      ["Average Response Time (hrs)", `${avgResponseTime}`],
+    ];
 
-  autoTable(doc, {
-    head: [["Metric", "Value"]],
-    body: summaryData,
-    startY: 25,
-  });
+    autoTable(doc, {
+      head: [["Metric", "Value"]],
+      body: summaryData,
+      startY: 25,
+    });
 
-  // Jobs Table
-  autoTable(doc, {
-    startY: doc.lastAutoTable.finalY + 10,
-    head: [["Society", "Location", "Posted At", "Status"]],
-    body: filtered.jobs.map((j) => [
-      j.society,
-      j.location,
-      j.postedAt,
-      j.status,
-    ]),
-  });
+    // Jobs Table
+    autoTable(doc, {
+      startY: doc.lastAutoTable.finalY + 10,
+      head: [["Society", "Location", "Posted At", "Status"]],
+      body: filtered.jobs.map((j) => [
+        j.society,
+        j.location,
+        j.postedAt,
+        j.status,
+      ]),
+    });
 
-  doc.save("performance-report.pdf");
-};
+    doc.save("performance-report.pdf");
+  };
 
-const handleExportExcel = () => {
-  const summarySheet = [
-    { Metric: "Total Societies", Value: totalSocieties },
-    { Metric: "Total Vendors", Value: totalVendors },
-    { Metric: "Total Jobs Posted", Value: totalJobs },
-    { Metric: "Fulfillment Rate", Value: `${fulfillmentRate}%` },
-    { Metric: "Avg Response Time (hrs)", Value: avgResponseTime },
-  ];
+  const handleExportExcel = () => {
+    const summarySheet = [
+      { Metric: "Total Societies", Value: totalSocieties },
+      { Metric: "Total Vendors", Value: totalVendors },
+      { Metric: "Total Jobs Posted", Value: totalJobs },
+      { Metric: "Fulfillment Rate", Value: `${fulfillmentRate}%` },
+      { Metric: "Avg Response Time (hrs)", Value: avgResponseTime },
+    ];
 
-  const jobsSheet = filtered.jobs.map((j) => ({
-    Society: j.society,
-    Location: j.location,
-    "Posted At": j.postedAt,
-    Status: j.status,
-  }));
+    const jobsSheet = filtered.jobs.map((j) => ({
+      Society: j.society,
+      Location: j.location,
+      "Posted At": j.postedAt,
+      Status: j.status,
+    }));
 
-  const wb = XLSX.utils.book_new();
-const summaryWS = XLSX.utils.json_to_sheet(summarySheet);
-summaryWS["!cols"] = [{ wch: 25 }, { wch: 20 }];
+    const wb = XLSX.utils.book_new();
+    const summaryWS = XLSX.utils.json_to_sheet(summarySheet);
+    summaryWS["!cols"] = [{ wch: 25 }, { wch: 20 }];
 
-const jobsWS = XLSX.utils.json_to_sheet(jobsSheet);
-jobsWS["!cols"] = [
-  { wch: 25 }, 
-  { wch: 20 }, 
-  { wch: 15 }, 
-  { wch: 15 }, 
-];
+    const jobsWS = XLSX.utils.json_to_sheet(jobsSheet);
+    jobsWS["!cols"] = [{ wch: 25 }, { wch: 20 }, { wch: 15 }, { wch: 15 }];
 
-  XLSX.utils.book_append_sheet(wb, summaryWS, "Summary");
-  XLSX.utils.book_append_sheet(wb, jobsWS, "Jobs List");
+    XLSX.utils.book_append_sheet(wb, summaryWS, "Summary");
+    XLSX.utils.book_append_sheet(wb, jobsWS, "Jobs List");
 
-  XLSX.writeFile(wb, "performance-report.xlsx");
-};
-
+    XLSX.writeFile(wb, "performance-report.xlsx");
+  };
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6">
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 bg-white p-4 rounded-xl shadow items-end">
+      <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
         {["from", "to", "location"].map((field) => (
-          <div key={field}>
-            <label className="block text-sm font-medium text-gray-700 capitalize">
+          <div key={field} className="w-full sm:w-auto min-w-[150px]">
+            <label className="block text-sm font-medium text-gray-700 capitalize mb-1">
               {field}
             </label>
             <input
@@ -222,7 +216,7 @@ jobsWS["!cols"] = [
               onChange={(e) =>
                 setFilters({ ...filters, [field]: e.target.value })
               }
-              className="border rounded-md px-3 py-2"
+              className="w-full border rounded-md px-3 py-2"
               placeholder={field === "location" ? "Enter location" : ""}
             />
           </div>
@@ -230,26 +224,33 @@ jobsWS["!cols"] = [
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card title="Total Societies" count={totalSocieties} />
-        <Card title="Total Vendors" count={totalVendors} />
-        <Card title="Total Jobs Posted" count={totalJobs} />
-        <Card title="Fulfillment Rate" count={`${fulfillmentRate}%`} />
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+        {[
+          { title: "Total Societies", count: totalSocieties },
+          { title: "Total Vendors", count: totalVendors },
+          { title: "Total Jobs Posted", count: totalJobs },
+          { title: "Fulfillment Rate", count: `${fulfillmentRate}%` },
+        ].map(({ title, count }, i) => (
+          <div key={i} className="col-span-1 lg:col-span-2">
+            <Card title={title} count={count} />
+          </div>
+        ))}
       </div>
 
       {/* Vendor Speed Indicator */}
-      <div className="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-8 justify-between items-center">
+      <div className="bg-white rounded-xl shadow p-6 flex flex-col lg:flex-row gap-8 justify-between items-center">
+        {/* Left: Response Gauge */}
         <div className="flex-1 flex flex-col items-center space-y-4 min-w-[250px]">
           <ResponseGauge avgResponseTime={avgResponseTime} />
           <p className="text-sm text-gray-600 text-center max-w-xs mb-4">
             Average hours vendors take to respond to job postings.
           </p>
         </div>
-        <div className="hidden md:block h-20 border-l border-gray-200 mx-6" />
 
-        {/* Right: Completed vs Total Jobs */}
+        <div className="hidden lg:block h-20 border-l border-gray-200 mx-6" />
+
         <div className="flex-1 flex flex-col items-center space-y-4 min-w-[280px]">
-          <h3 className="font-semibold text-gray-800 text-xl mb-14">
+          <h3 className="font-semibold text-gray-800 text-xl mt-10 lg:mt-0 mb-2 lg:mb-14">
             Job Fulfillment
           </h3>
 
@@ -259,7 +260,7 @@ jobsWS["!cols"] = [
             </p>
           </div>
 
-          <p className="text-sm font-medium text-gray-600">
+          <p className="text-sm font-medium text-gray-600 text-center">
             Successfully Closed Jobs out of Total Posted
           </p>
 
@@ -277,7 +278,7 @@ jobsWS["!cols"] = [
             ></div>
           </div>
 
-          {/* Extra Icons with labels */}
+          {/* Completed & Pending Stats */}
           <div className="flex justify-around w-full mt-4 text-gray-700 font-medium text-sm">
             <div className="flex items-center gap-1">
               <GoCheckCircle className="text-green-600 text-xl" />
@@ -306,46 +307,44 @@ jobsWS["!cols"] = [
       </div>
 
       {/* Export Buttons */}
-      <div className="flex justify-end gap-3">
+      <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
         <button
           onClick={handleExportPDF}
-          className="flex items-center gap-2 px-4 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100"
-          aria-label="Export revenue report as PDF"
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
+          aria-label="Export PDF"
         >
-          <FaRegFilePdf className="text-red-500 text-lg" /> Export PDF
+          <FaRegFilePdf className="text-red-500 text-xl" />
+          <span className="text-base">Export PDF</span>
         </button>
+
         <button
           onClick={handleExportExcel}
-          className="flex items-center gap-2 px-4 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100"
-          aria-label="Export revenue report as Excel"
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
+          aria-label="Export Excel"
         >
-          <FaRegFileExcel className="text-green-600 text-lg" /> Export Excel
+          <FaRegFileExcel className="text-green-600 text-xl" />
+          <span className="text-base">Export Excel</span>
         </button>
       </div>
     </div>
   );
 };
 
-const Card = ({ title, count, big }) => (
+const Card = ({ title, count }) => (
   <div
-    className={`rounded-2xl bg-[#f9fafb] shadow-md ${
-      big ? "py-4" : "p-4"
-    } text-center space-y-2 hover:shadow-lg transition-shadow duration-300`}
+    className="rounded-2xl bg-[#f9fafb] shadow-md p-4 text-center space-y-2 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-center min-h-[110px]"
+    style={{ width: "100%" }}
   >
-    <h3
-      className={`font-semibold ${
-        big ? "text-lg text-gray-800" : "text-md text-gray-700"
-      }`}
-    >
-      {title}
-    </h3>
-    <p
-      className={`font-bold ${
-        big ? "text-4xl text-gray-900" : "text-2xl text-gray-900"
-      }`}
-    >
-      {count}
-    </p>
+    <div className="w-full max-w-[160px] overflow-hidden">
+      <h3
+        className="truncate text-sm font-semibold text-gray-700"
+        title={title}
+      >
+        {title}
+      </h3>
+    </div>
+
+    <p className="font-bold text-xl text-gray-900">{count}</p>
   </div>
 );
 

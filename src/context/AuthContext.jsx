@@ -16,28 +16,14 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogin = async ({ token, role, subrole }) => {
     try {
-      const user = { role, subrole };
+      const userData = { role, subrole };
       setToken(token);
-      setUser(user);
+      setUser(userData);
       setTokenState(token);
-      setUserState(user);
+      setUserState(userData);
       return true;
     } catch (err) {
       console.error("Login failed:", err);
-      return false;
-    }
-  };
-
-  const handleSignup = async ({ token, role, subrole }) => {
-    try {
-      const user = { role, subrole };
-      setToken(token);
-      setUser(user);
-      setTokenState(token);
-      setUserState(user);
-      return true;
-    } catch (err) {
-      console.error("Signup failed:", err);
       return false;
     }
   };
@@ -50,9 +36,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ token, user, handleLogin, handleSignup, logout }}
-    >
+    <AuthContext.Provider value={{ token, user, handleLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

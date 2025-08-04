@@ -8,14 +8,20 @@ import {
   Ban,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import AddSociety from "./AddSociety";
-
+import { useSocietyContext } from "../../context/SocietyContext";
 const SocietyList = () => {
+  const {
+    societies,
+    setSocieties,
+    handleApprove,
+    handleReject,
+    handleBan,
+    handleDeleteSociety,
+  } = useSocietyContext();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("Select Status");
-  const [societies, setSocieties] = useState([]);
   const [selectSociety, setSelectSociety] = useState(null);
-  const [showSocietyForm, setShowSocietyForm] = useState(false);
 
   const filterSocieties = societies.filter((soc) => {
     const matchesStatus =
@@ -64,110 +70,6 @@ const SocietyList = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchSociety = async () => {
-      setSocieties([
-        {
-          id: 1,
-          name: "Dolphine plaza",
-          location: "Vijay Nagar",
-          status: "Active",
-          totalJobsPosted: 25,
-          activeJobs: 5,
-        },
-        {
-          id: 2,
-          name: "Sunshine Apartments",
-          location: "Bengali Square",
-          status: "Pending",
-          totalJobsPosted: 10,
-          activeJobs: 0,
-        },
-        {
-          id: 3,
-          name: "PQR Heights",
-          location: "Bhawarkuan",
-          status: "Rejected",
-          totalJobsPosted: 15,
-          activeJobs: 0,
-        },
-        {
-          id: 4,
-          name: "Green Valley Society",
-          location: "MR 10",
-          status: "Active",
-          totalJobsPosted: 18,
-          activeJobs: 3,
-        },
-        {
-          id: 5,
-          name: "Maple Residency",
-          location: "Scheme No. 78",
-          status: "Active",
-          totalJobsPosted: 30,
-          activeJobs: 7,
-        },
-        {
-          id: 6,
-          name: "Ocean View Apartments",
-          location: "Rajendra Nagar",
-          status: "Pending",
-          totalJobsPosted: 12,
-          activeJobs: 0,
-        },
-        {
-          id: 7,
-          name: "ABC Apartments",
-          location: "Palasia",
-          status: "Active",
-          totalJobsPosted: 26,
-          activeJobs: 11,
-        },
-      ]);
-    };
-    fetchSociety();
-  }, []);
-
-  const handleApprove = (id) => {
-    setSocieties((prev) =>
-      prev.map((soc) => (soc.id === id ? { ...soc, status: "Active" } : soc))
-    );
-  };
-  const handleReject = (id) => {
-    setSocieties((prev) =>
-      prev.map((soc) => (soc.id === id ? { ...soc, status: "Rejected" } : soc))
-    );
-  };
-  const handlePending = (id) => {
-    setSocieties((prev) =>
-      prev.map((soc) => (soc.id === id ? { ...soc, status: "Pending" } : soc))
-    );
-  };
-  const handleBan = (id) => {
-    setSocieties((prev) =>
-      prev.map((soc) => (soc.id === id ? { ...soc, status: "Banned" } : soc))
-    );
-  };
-
-  const handleDeleteSociety = (id) => {
-    if (window.confirm("Are you sure you want to delete this society?")) {
-      setSocieties((prev) => prev.filter((soc) => soc.id !== id));
-    }
-  };
-
- const handleAddSociety = (newSociety) => {
-  const societyWithDefaults = {
-    id: Date.now(),
-    name: newSociety.societyName,
-    location: newSociety.location,
-    status: "Active",
-    totalJobsPosted: 0,
-    activeJobs: 0,
-  };
-
-  setSocieties((prev) => [...prev, societyWithDefaults]);
-  setShowSocietyForm(false);
-};
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="px-4 py-4 border-b border-gray-200">
@@ -209,21 +111,7 @@ const SocietyList = () => {
               {filterSocieties.length}
             </span>
           </div>
-
-          {/* add society */}
-          <div className="w-full sm:w-auto sm:ml-auto flex justify-end">
-            <button
-              onClick={() => setShowSocietyForm(true)}
-              className="bg-[#57a0b8] text-black px-3 lg:px-4 py-2 lg:py-2.5 rounded-lg text-xs lg:text-sm font-medium hover:bg-[#6dabbc] transition focus:outline-none focus:ring-2 focus:ring-[#68b9d5] focus:ring-offset-1"
-            >
-              + Add Society
-            </button>
-          </div>
         </div>
-
-        {showSocietyForm && (
-          <AddSociety onClose={() => setShowSocietyForm(false)} onAddSociety={handleAddSociety} />
-        )}
 
         {filterSocieties.length === 0 ? (
           <div className="text-center py-4 text-gray-500">
@@ -235,22 +123,20 @@ const SocietyList = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-[#adccd6]">
                   <tr>
-                    <th className="px-6 py-3 text-left font-semibold md:text-sm lg:text-base">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left font-semibold md:text-sm lg:text-base">
+                    <th className="px-6 py-3 text-left font-semibold">Name</th>
+                    <th className="px-6 py-3 text-left font-semibold">
                       Location
                     </th>
-                    <th className="px-6 py-3 text-center font-semibold md:text-sm lg:text-base">
+                    <th className="px-6 py-3 text-center font-semibold">
                       Total Jobs
                     </th>
-                    <th className="px-6 py-3 text-center font-semibold md:text-sm lg:text-base">
+                    <th className="px-6 py-3 text-center font-semibold">
                       Active Jobs
                     </th>
-                    <th className="px-10 py-3 text-left font-semibold md:text-sm lg:text-base">
+                    <th className="px-10 py-3 text-left font-semibold">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-center font-semibold md:text-sm lg:text-base">
+                    <th className="px-6 py-3 text-center font-semibold">
                       Actions
                     </th>
                   </tr>
@@ -259,27 +145,23 @@ const SocietyList = () => {
                 <tbody className="divide-y divide-gray-100">
                   {filterSocieties.map((soc) => (
                     <tr key={soc.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 md:text-sm lg:text-base font-medium text-black-800 hover:text-blue-700">
+                      <td className="px-6 py-4 font-medium text-black-800 hover:text-blue-700">
                         <Link to={`/society-details/${soc.id}`}>
                           {soc.name}
                         </Link>
                       </td>
-                      <td className="px-6 py-4 md:text-sm lg:text-base">
-                        {soc.location}
-                      </td>
+                      <td className="px-6 py-4">{soc.location}</td>
 
-                      <td className="px-6 py-4 text-center md:text-sm lg:text-base">
+                      <td className="px-6 py-4 text-center">
                         {soc.totalJobsPosted}
                       </td>
-                      <td className="px-14 py-4 md:text-sm lg:text-base">
-                        {soc.activeJobs}
-                      </td>
+                      <td className="px-14 py-4">{soc.activeJobs}</td>
 
-                      <td className="px-6 py-4 relative md:text-sm lg:text-base">
+                      <td className="px-6 py-4 relative">
                         <div className="inline-block">
                           <button
                             onClick={() => setSelectSociety(soc)}
-                            className="flex items-center px-2 py-1 text-sm rounded-full border hover:bg-gray-100"
+                            className="fflex items-center px-2 py-1 text-sm border rounded-full hover:bg-gray-100"
                           >
                             {getStatusBadge(soc.status)}
                           </button>
@@ -291,7 +173,7 @@ const SocietyList = () => {
                                     handleBan(soc.id);
                                     setSelectSociety(null);
                                   }}
-                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                                 >
                                   Disable
                                 </button>
@@ -303,7 +185,7 @@ const SocietyList = () => {
                                     handleApprove(soc.id);
                                     setSelectSociety(null);
                                   }}
-                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                                 >
                                   Active
                                 </button>
@@ -314,7 +196,7 @@ const SocietyList = () => {
                                     handleApprove(soc.id);
                                     setSelectSociety(null);
                                   }}
-                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                                 >
                                   Approve
                                 </button>
@@ -326,7 +208,7 @@ const SocietyList = () => {
                                       handleApprove(soc.id);
                                       setSelectSociety(null);
                                     }}
-                                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                                   >
                                     Approve
                                   </button>
@@ -335,7 +217,7 @@ const SocietyList = () => {
                                       handleReject(soc.id);
                                       setSelectSociety(null);
                                     }}
-                                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 md:text-sm lg:text-base"
+                                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                                   >
                                     Reject
                                   </button>
@@ -346,7 +228,7 @@ const SocietyList = () => {
                         </div>
                       </td>
 
-                      <td className="px-6 py-4 text-center md:text-sm lg:text-base">
+                      <td className="px-6 py-4 text-center">
                         <button
                           onClick={() => handleDeleteSociety(soc.id)}
                           className="text-red-500 hover:text-red-700"

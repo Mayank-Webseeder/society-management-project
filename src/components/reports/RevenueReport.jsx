@@ -1,15 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FaRegFileExcel, FaRegFilePdf } from "react-icons/fa6";
+import {
+  FaUser,
+  FaCalendarAlt,
+  FaRupeeSign,
+  FaCheckCircle,
+  FaClock,
+  FaUndo,
+} from "react-icons/fa";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 
-// Mock revenue data — payments records
+// ✅ Cleaned mock data — no planType now
 const mockPayments = [
   {
     id: 1,
     user: "User A",
-    planType: "Basic",
     amountPaid: 499,
     paymentStatus: "completed",
     paymentDate: "2025-07-10",
@@ -18,7 +25,6 @@ const mockPayments = [
   {
     id: 2,
     user: "User B",
-    planType: "Premium",
     amountPaid: 3999,
     paymentStatus: "pending",
     paymentDate: "2025-07-08",
@@ -27,7 +33,6 @@ const mockPayments = [
   {
     id: 3,
     user: "User C",
-    planType: "Basic",
     amountPaid: 499,
     paymentStatus: "completed",
     paymentDate: "2025-06-12",
@@ -36,7 +41,6 @@ const mockPayments = [
   {
     id: 4,
     user: "User D",
-    planType: "Premium",
     amountPaid: 3999,
     paymentStatus: "completed",
     paymentDate: "2025-05-15",
@@ -45,7 +49,6 @@ const mockPayments = [
   {
     id: 5,
     user: "User E",
-    planType: "Pro",
     amountPaid: 1299,
     paymentStatus: "refunded",
     paymentDate: "2025-07-05",
@@ -54,7 +57,6 @@ const mockPayments = [
   {
     id: 6,
     user: "User F",
-    planType: "Pro",
     amountPaid: 1299,
     paymentStatus: "completed",
     paymentDate: "2025-07-03",
@@ -64,15 +66,12 @@ const mockPayments = [
 
 const groupByPeriod = (payments, period, fromDate, toDate) => {
   const groups = {};
-
-  // fromDate & toDate for filtering
   const from = fromDate ? new Date(fromDate) : null;
   const to = toDate ? new Date(toDate) : null;
 
   payments.forEach((p) => {
     const payDate = new Date(p.paymentDate);
     if ((from && payDate < from) || (to && payDate > to)) return;
-
     if (p.paymentStatus === "pending") return;
 
     let key = "";
@@ -95,22 +94,18 @@ const groupByPeriod = (payments, period, fromDate, toDate) => {
 };
 
 const RevenueReport = () => {
-  // Filters state
   const [filters, setFilters] = useState({
     from: "",
     to: "",
-    planType: "",
   });
 
   const [period, setPeriod] = useState("month");
 
-  // Filtered payments (by date & planType & paymentStatus)
   const filteredPayments = mockPayments.filter((p) => {
     const payDate = new Date(p.paymentDate);
     const fromCheck = !filters.from || payDate >= new Date(filters.from);
     const toCheck = !filters.to || payDate <= new Date(filters.to);
-    const planCheck = !filters.planType || p.planType === filters.planType;
-    return fromCheck && toCheck && planCheck;
+    return fromCheck && toCheck;
   });
 
   const totalRevenue = filteredPayments
@@ -125,23 +120,6 @@ const RevenueReport = () => {
     .filter((p) => p.paymentStatus === "refunded")
     .reduce((acc, p) => acc + p.refundOrDiscount, 0);
 
-  // Revenue by plan type
-  const revenueByPlanType = filteredPayments.reduce(
-    (acc, p) => {
-      if (p.paymentStatus === "completed") {
-        acc[p.planType].revenue += p.amountPaid;
-        acc[p.planType].count++;
-      }
-      return acc;
-    },
-    {
-      Basic: { revenue: 0, count: 0 },
-      Pro: { revenue: 0, count: 0 },
-      Premium: { revenue: 0, count: 0 },
-    }
-  );
-
-  // Revenue grouped by period for breakdown
   const revenueByPeriod = groupByPeriod(
     filteredPayments,
     period,
@@ -153,51 +131,46 @@ const RevenueReport = () => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
 
   const handleExportPDF = () => {
-  const doc = new jsPDF();
-  doc.text("Revenue Report", 14, 15);
+    const doc = new jsPDF();
+    doc.text("Revenue Report", 14, 15);
+    const tableData = filteredPayments.map((p) => [
+      p.user,
+      p.paymentStatus,
+      p.paymentDate,
+      `₹${p.refundOrDiscount.toLocaleString("en-IN")}`,
+    ]);
+    autoTable(doc, {
+      head: [["User", "Status", "Date", "Refund/Discount"]],
 
-  const tableData = filteredPayments.map((p) => [
-    p.user,
-    p.planType,
-    `₹${p.amountPaid.toLocaleString("en-IN")}`,
-    p.paymentStatus,
-    p.paymentDate,
-    `₹${p.refundOrDiscount.toLocaleString("en-IN")}`,
-  ]);
+      body: tableData,
+      startY: 25,
+    });
+    doc.save("revenue-report.pdf");
+  };
 
-  autoTable(doc, {
-    head: [["User", "Plan Type", "Amount Paid", "Status", "Date", "Refund/Discount"]],
-    body: tableData,
-    startY: 25,
-  });
+  const handleExportExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(
+      filteredPayments.map((p) => ({
+        User: p.user,
+        Status: p.paymentStatus,
+        "Payment Date": p.paymentDate,
+        "Refund / Discount": p.refundOrDiscount,
+      }))
+    );
 
-  doc.save("revenue-report.pdf");
-};
- const handleExportExcel = () => {
-  const ws = XLSX.utils.json_to_sheet(
-    filteredPayments.map((p) => ({
-      User: p.user,
-      "Plan Type": p.planType,
-      "Amount Paid": p.amountPaid,
-      Status: p.paymentStatus,
-      "Payment Date": p.paymentDate,
-      "Refund / Discount": p.refundOrDiscount,
-    }))
-  );
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Revenue Report");
-  XLSX.writeFile(wb, "revenue-report.xlsx");
-};
-
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Revenue Report");
+    XLSX.writeFile(wb, "revenue-report.xlsx");
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap gap-4 bg-white p-4 rounded-xl shadow items-end">
+      <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
         {["from", "to"].map((field) => (
-          <div key={field}>
+          <div key={field} className="w-full sm:w-auto min-w-[150px]">
             <label
               htmlFor={field}
-              className="block text-sm font-medium text-gray-700 capitalize"
+              className="block text-sm font-medium text-gray-700 capitalize mb-1"
             >
               {field}
             </label>
@@ -207,29 +180,10 @@ const RevenueReport = () => {
               name={field}
               value={filters[field]}
               onChange={handleFilterChange}
-              className="border rounded-md px-3 py-2"
+              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4e9cad]"
             />
           </div>
         ))}
-        <div>
-          <label
-            htmlFor="planType"
-            className="block text-sm font-medium text-gray-700 capitalize"
-          >
-            Plan Type
-          </label>
-          <select
-            id="planType"
-            name="planType"
-            value={filters.planType}
-            onChange={handleFilterChange}
-            className="border rounded-md px-3 py-2"
-          >
-            <option value="Basic">Basic</option>
-            <option value="Pro">Pro</option>
-            <option value="Premium">Premium</option>
-          </select>
-        </div>
       </div>
 
       {/* Overview Cards */}
@@ -241,170 +195,184 @@ const RevenueReport = () => {
             big
           />
         </div>
-        <Card
-          title="Pending Payments"
-          count={`₹${pendingPayments.toLocaleString()}`}
-        />
-        <Card
-          title="Refunds / Discounts"
-          count={`₹${totalRefunds.toLocaleString()}`}
-        />
+        <div className="col-span-1 lg:col-span-2">
+          <Card
+            title="Pending Payments"
+            count={`₹${pendingPayments.toLocaleString()}`}
+          />
+        </div>
+        <div className="col-span-1 lg:col-span-2">
+          <Card
+            title="Refunds / Discounts"
+            count={`₹${totalRefunds.toLocaleString()}`}
+          />
+        </div>
       </div>
 
+      {/* Revenue by Period */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Revenue by period */}
-        <div className="bg-white p-6 rounded-2xl shadow space-y-5 md:col-span-2">
-          <div className="flex items-center justify-between mb-3">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl shadow space-y-5 md:col-span-3">
+          <div className="px-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
             <h3 className="font-semibold text-gray-800 text-lg">
               Revenue by {period}
             </h3>
             <select
-              className="border rounded-md px-3 py-1"
+              className="border border-gray-300 rounded-md px-3 py-1.5 text-sm font-medium text-gray-700 bg-white
+             hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition
+              cursor-pointer w-auto"
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
-              aria-label="Select revenue grouping period"
             >
               <option value="month">Month</option>
               <option value="quarter">Quarter</option>
               <option value="year">Year</option>
             </select>
           </div>
-          <div className="space-y-3 max-h-72 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-blue-100">
+
+          <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-blue-100">
             {Object.entries(revenueByPeriod).length ? (
-              Object.entries(revenueByPeriod).map(([key, val]) => {
-                const percent = (val / (totalRevenue || 1)) * 100;
-                return (
-                  <div
-                    key={key}
-                    className="flex justify-between items-center text-sm font-semibold text-gray-900 bg-white rounded-lg px-4 py-3 shadow-sm hover:shadow-md transition cursor-default"
-                    title={`${key}: ₹${val.toLocaleString()}`}
-                  >
-                    <span className="truncate max-w-[70%]">{key}</span>
-                    <span className="text-gray-800">
-                      ₹{val.toLocaleString()}
-                    </span>
-                  </div>
-                );
-              })
+              Object.entries(revenueByPeriod).map(([key, val]) => (
+                <div
+                  key={key}
+                  className="flex justify-between items-center text-sm font-semibold text-gray-900 bg-white rounded-lg px-4 py-3 shadow-sm hover:shadow-md transition cursor-default"
+                  title={`${key}: ₹${val.toLocaleString()}`}
+                >
+                  <span className="truncate max-w-[70%]">{key}</span>
+                  <span className="text-gray-800">₹{val.toLocaleString()}</span>
+                </div>
+              ))
             ) : (
               <p className="text-gray-500 text-center py-10">No data found</p>
             )}
           </div>
         </div>
-
-        {/* Revenue by Plan Type */}
-        <div className="bg-[#f0f2f9] rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-300 space-y-3 border border-blue-100">
-          <h3 className="font-semibold text-gray-800 text-lg mb-3 border-b pb-1">
-            By Plan Type
-          </h3>
-          {["Basic", "Pro", "Premium"].map((type) => (
-            <div
-              key={type}
-              className="flex justify-between items-center text-sm font-semibold text-gray-900 bg-white rounded-lg px-4 py-4 shadow-sm hover:shadow-md transition cursor-default"
-              title={`${type} - ${revenueByPlanType[type].count} subscriptions`}
-            >
-              <div>
-                <p>{type} Plan</p>
-                <p className="text-gray-600 text-xs">
-                  {revenueByPlanType[type].count} subscriptions
-                </p>
-              </div>
-              <div className="text-gray-800 font-bold">
-                ₹{revenueByPlanType[type].revenue.toLocaleString()}
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
-      {/* Detailed Table */}
-      <div className="bg-white rounded-xl shadow p-6 overflow-x-auto">
+      {/* Large screen table layout */}
+      <div className="bg-white rounded-xl shadow p-6 hidden md:block">
         <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
           Payment Details
         </h2>
-        <table className="w-full text-md border-collapse">
-          <thead>
-            <tr className="text-gray-700 border-b bg-gray-50">
-              <th className="py-3 text-left px-4">User</th>
-              <th className="py-3 text-left px-4">Plan Type</th>
-              <th className="py-3 text-left px-4">Amount Paid</th>
-              <th className="py-3 text-left px-4">Payment Status</th>
-              <th className="py-3 text-left px-4">Payment Date</th>
-              <th className="py-3 text-left px-4">Refund / Discount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPayments.length ? (
-              filteredPayments.map((p) => (
-                <tr
-                  key={p.id}
-                  className="bg-white border-b last:border-none hover:shadow-md hover:scale-[1.007] transition-all duration-300 rounded-md last:rounded-b-xl"
-                >
-                  <td className="px-4 py-4 font-semibold text-gray-800">
-                    {p.user}
-                  </td>
-                  <td className="px-4 py-4">{p.planType}</td>
-                  <td className="px-4 py-4">
-                    ₹{p.amountPaid.toLocaleString()}
-                  </td>
-                  <td
-                    className={`px-4 py-4 capitalize font-semibold ${
-                      p.paymentStatus === "completed"
-                        ? "text-green-700"
-                        : p.paymentStatus === "pending"
-                        ? "text-yellow-700"
-                        : p.paymentStatus === "refunded"
-                        ? "text-red-700"
-                        : "text-gray-700"
-                    }`}
+
+        {/* Only adds scrollbar if actual overflow happens */}
+        <div className="overflow-x-auto max-w-full">
+          <table className="min-w-[700px] w-full text-md">
+            <thead>
+              <tr className="text-gray-700 bg-gray-50">
+                <th className="py-3 px-6 text-left">User</th>
+                <th className="py-3 px-6 text-left">Payment Status</th>
+                <th className="py-3 px-6 text-left">Payment Date</th>
+                <th className="py-3 px-6 text-left">Refund / Discount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPayments.length ? (
+                filteredPayments.map((p) => (
+                  <tr
+                    key={p.id}
+                    className="bg-white hover:shadow-md transition-all duration-300"
                   >
-                    {p.paymentStatus.charAt(0).toUpperCase() +
-                      p.paymentStatus.slice(1)}
-                  </td>
-                  <td className="px-4 py-4">{p.paymentDate}</td>
-                  <td className="px-4 py-4">
-                    ₹{p.refundOrDiscount.toLocaleString()}
+                    <td className="px-6 py-4 font-medium text-gray-800">
+                      {p.user}
+                    </td>
+                    <td
+                      className={`px-6 py-4 capitalize font-semibold ${
+                        p.paymentStatus === "completed"
+                          ? "text-green-700"
+                          : p.paymentStatus === "pending"
+                          ? "text-yellow-700"
+                          : p.paymentStatus === "refunded"
+                          ? "text-red-700"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      {p.paymentStatus}
+                    </td>
+                    <td className="px-6 py-4">{p.paymentDate}</td>
+                    <td className="px-12 py-4">
+                      ₹{p.refundOrDiscount.toLocaleString()}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="py-6 text-center text-gray-500">
+                    No Data Found
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="py-6 text-center text-gray-500">
-                  No Data Found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="space-y-4 md:hidden">
+        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          Payment Details
+        </h2>
+        {filteredPayments.length ? (
+          filteredPayments.map((p) => (
+            <div
+              key={p.id}
+              className="bg-white shadow-md rounded-xl p-4 space-y-2 border border-gray-100"
+            >
+              <div className="flex items-center gap-2 text-gray-800 font-semibold">
+                <FaUser className="text-gray-500" />
+                {p.user}
+              </div>
+              <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                {p.paymentStatus === "completed" ? (
+                  <FaCheckCircle className="text-green-600" />
+                ) : p.paymentStatus === "pending" ? (
+                  <FaClock className="text-yellow-600" />
+                ) : p.paymentStatus === "refunded" ? (
+                  <FaUndo className="text-red-600" />
+                ) : null}
+                <span className="capitalize">{p.paymentStatus}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <FaCalendarAlt />
+                {p.paymentDate}
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-800">
+                <FaRupeeSign />₹{p.refundOrDiscount.toLocaleString()}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-500 py-6">No Data Found</div>
+        )}
       </div>
 
       {/* Export Buttons */}
-      <div className="flex justify-end gap-3">
+      <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
         <button
           onClick={handleExportPDF}
-          className="flex items-center gap-2 px-4 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100"
-          aria-label="Export revenue report as PDF"
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
+          aria-label="Export PDF"
         >
-          <FaRegFilePdf className="text-red-500 text-lg" /> Export PDF
+          <FaRegFilePdf className="text-red-500 text-xl" />
+          <span className="text-base">Export PDF</span>
         </button>
+
         <button
           onClick={handleExportExcel}
-          className="flex items-center gap-2 px-4 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100"
-          aria-label="Export revenue report as Excel"
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
+          aria-label="Export Excel"
         >
-          <FaRegFileExcel className="text-green-600 text-lg" /> Export Excel
+          <FaRegFileExcel className="text-green-600 text-xl" />
+          <span className="text-base">Export Excel</span>
         </button>
       </div>
     </div>
   );
 };
 
-// Card component
 const Card = ({ title, count, big }) => (
   <div
     className={`rounded-2xl bg-[#f9fafb] shadow-md ${
       big ? "py-4" : "p-4"
-    } text-center space-y-2 hover:shadow-lg transition-shadow duration-300`}
+    } text-center hover:shadow-lg transition-shadow duration-300 h-full flex flex-col justify-between`}
   >
     <h3
       className={`font-semibold ${
@@ -415,7 +383,7 @@ const Card = ({ title, count, big }) => (
     </h3>
     <p
       className={`font-bold ${
-        big ? "text-4xl text-gray-900" : "text-2xl text-gray-900"
+        big ? "text-3xl text-gray-900" : "text-xl text-gray-900"
       }`}
     >
       {count}

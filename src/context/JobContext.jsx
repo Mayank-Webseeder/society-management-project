@@ -14,6 +14,7 @@ const JobProvider = ({ children }) => {
         title: "Plumbing Pipe Replacement",
         createdAt: "2024-07-04",
         status: "Open",
+        jobStage: "generated", 
         quotationRequired: true,
         description:
           "Pipes in Block A and Block B are leaking, causing water accumulation. Work to be completed within 3 days. Vendor to arrange material and labor.",
@@ -53,7 +54,8 @@ const JobProvider = ({ children }) => {
           email: "mohan12@example.com",
           appliedDate: "2024-07-06",
           quotation: 14800,
-          remarks: "Vendor selected based on lowest quotation and positive reviews.",
+          remarks:
+            "Vendor selected based on lowest quotation and positive reviews.",
         },
       },
 
@@ -63,6 +65,7 @@ const JobProvider = ({ children }) => {
         title: "Painting Building Entrance",
         createdAt: "2024-07-02",
         status: "In Progress",
+        jobStage: "achieved",
         quotationRequired: true,
         description:
           "Painting the main entrance of the building with weatherproof paint. Complete within 5 days.",
@@ -86,6 +89,7 @@ const JobProvider = ({ children }) => {
         title: "Security Camera Installation",
         createdAt: "2024-06-28",
         status: "Closed",
+        jobStage: "closed", 
         quotationRequired: true,
         description:
           "Install 10 CCTV cameras around the premises. Ensure coverage of all entry points.",
@@ -117,34 +121,41 @@ const JobProvider = ({ children }) => {
         title: "Lift Maintenance",
         createdAt: "2024-07-04",
         status: "Open",
+        jobStage: "generated", 
         quotationRequired: true,
         description:
           "Routine lift maintenance and safety checks for all 3 lifts in the building.",
         vendorApplications: [],
         selectedVendor: null,
       },
+
       {
         _id: "j5",
         societyName: "Palm County",
         title: "Clubhouse Painting",
         createdAt: "2024-06-30",
         status: "Closed",
+        jobStage: "completed", 
         quotationRequired: false,
       },
+
       {
         _id: "j6",
         societyName: "Emerald Residency",
         title: "Parking Area Lighting Fix",
         createdAt: "2024-07-02",
         status: "Open",
+        jobStage: "generated", 
         quotationRequired: true,
       },
+
       {
         _id: "j7",
         societyName: "Maple Woods",
         title: "Boundary Wall Crack Repair",
         createdAt: "2024-06-28",
         status: "Open",
+        jobStage: "generated",
         quotationRequired: false,
       },
     ]);
@@ -152,11 +163,11 @@ const JobProvider = ({ children }) => {
 
   const totalJobs = jobs.length;
 
-  return(
-    <JobContext.Provider value={{jobs, setJobs, totalJobs}}>
-        {children}
+  return (
+    <JobContext.Provider value={{ jobs, setJobs, totalJobs }}>
+      {children}
     </JobContext.Provider>
-  )
-}
+  );
+};
 
-export {JobProvider , JobContext};
+export { JobProvider, JobContext };

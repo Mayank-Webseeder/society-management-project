@@ -16,6 +16,8 @@ import {
   ListTodo,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSocietyContext } from "../../context/SocietyContext";
+
 
 const DetailProfile = () => {
   const { societyId } = useParams();
@@ -23,14 +25,13 @@ const DetailProfile = () => {
   const [activeTab, setActiveTab] = useState("basic info");
   const [society, setSociety] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchSociety = async () => {
       const data = {
         id: societyId,
         name: "Ocean View Apartments",
         status: "Active",
-        location: "Indore",
+        location: "Rajendra Nagar",
         contactPerson: "Ravi Kumar",
         phone: "9876543210",
         email: "ravi.kumar@example.com",
@@ -72,6 +73,7 @@ const DetailProfile = () => {
       setSociety(data);
       setLoading(false);
     };
+
     fetchSociety();
   }, [societyId]);
 
@@ -229,7 +231,7 @@ const DetailProfile = () => {
       {/* Top bar */}
       <div className="flex items-center justify-between mt-3 px-3">
         <button
-          onClick={() => navigate("/societies")}
+          onClick={() => navigate(-1)}
           className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-md px-2 sm:px-4"
           aria-label="Go Back"
         >
@@ -302,7 +304,7 @@ const DetailProfile = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-0 sm:gap-2 border-b sticky top-[64px] bg-white z-20 px-1 sm:px-0">
+        <div className="flex flex-wrap gap-0 sm:gap-2 border-b bg-white px-1 sm:px-0">
           {["basic info", "jobDetails", "jobStatus"].map((tab) => (
             <button
               key={tab}

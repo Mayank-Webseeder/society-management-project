@@ -14,7 +14,7 @@ const VendorProvider = ({ children }) => {
         phone: "+91-9876543210",
         location: "Indore",
         status: "Active",
-        subscriptionStatus: "Active",
+        subscriptionStatus: "active",
         servicesProvided: ["Plumber", "Electrical"],
         rating: 4.5,
         totalJobsApplied: 23,
@@ -77,10 +77,8 @@ const VendorProvider = ({ children }) => {
           },
         ],
         subscription: {
-          plan: "Premium",
           startDate: "2024-04-01",
           endDate: "2025-03-31",
-          price: 5000,
           paymentStatus: "Paid",
           renewalDue: false,
         },
@@ -92,7 +90,7 @@ const VendorProvider = ({ children }) => {
         phone: "+91-9123456780",
         location: "Bhopal",
         status: "Active",
-        subscriptionStatus: "Expired",
+        subscriptionStatus: "expired",
         servicesProvided: ["Cleaning", "Pest Control"],
         rating: 4.2,
         totalJobsApplied: 15,
@@ -104,7 +102,7 @@ const VendorProvider = ({ children }) => {
         phone: "+91-9988776655",
         location: "Ujjain",
         status: "Pending",
-        subscriptionStatus: "Active",
+        subscriptionStatus: "inactive",
         servicesProvided: ["Carpenter", "Painting"],
         rating: 4.8,
         totalJobsApplied: 35,
@@ -116,7 +114,7 @@ const VendorProvider = ({ children }) => {
         phone: "+91-9345612789",
         location: "Indore",
         status: "Rejected",
-        subscriptionStatus: "Active",
+        subscriptionStatus: "inactive",
         servicesProvided: ["Electrician"],
         rating: 4.0,
         totalJobsApplied: 12,
@@ -128,7 +126,7 @@ const VendorProvider = ({ children }) => {
         phone: "+91-9812345678",
         location: "Dewas",
         status: "Active",
-        subscriptionStatus: "Expired",
+        subscriptionStatus: "expired",
         servicesProvided: ["Plumber", "Cleaning"],
         rating: 3.9,
         totalJobsApplied: 8,
@@ -140,7 +138,7 @@ const VendorProvider = ({ children }) => {
         phone: "+91-9977554433",
         location: "Indore",
         status: "Active",
-        subscriptionStatus: "Active",
+        subscriptionStatus: "active",
         servicesProvided: ["Security", "CCTV Maintenance", "Access Control"],
         rating: 4.7,
         totalJobsApplied: 18,
@@ -152,7 +150,7 @@ const VendorProvider = ({ children }) => {
         phone: "+91-9988665544",
         location: "Bhopal",
         status: "Rejected",
-        subscriptionStatus: "Expired",
+        subscriptionStatus: "inactive",
         servicesProvided: ["Gardening", "Waste Management"],
         rating: 4.3,
         totalJobsApplied: 10,
@@ -164,7 +162,7 @@ const VendorProvider = ({ children }) => {
         phone: "+91-9876543211",
         location: "Indore",
         status: "Active",
-        subscriptionStatus: "Active",
+        subscriptionStatus: "active",
         servicesProvided: ["Maid Services", "Cleaning"],
         rating: 4.6,
         totalJobsApplied: 20,
@@ -176,8 +174,8 @@ const VendorProvider = ({ children }) => {
         email: "rohit.mehta@example.com",
         phone: "+91-9123456789",
         location: "Bhopal",
-        status: "Pending",
-        subscriptionStatus: "Active",
+        status: "Active",
+        subscriptionStatus: "expired",
         servicesProvided: ["Driver on Demand", "Transport Services"],
         rating: 4.4,
         totalJobsApplied: 15,
@@ -222,22 +220,6 @@ const VendorProvider = ({ children }) => {
     }
   };
 
-  const handleAddVendor = (newVendor) => {
-    setVendors((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        name: newVendor.vendorName,
-        email: newVendor.email,
-        phone: newVendor.phone,
-        location: newVendor.location,
-        servicesProvided: newVendor.servicesProvided,
-        status: newVendor.status,
-        subscriptionStatus: newVendor.subscriptionStatus,
-      },
-    ]);
-  };
-
   return (
     <VendorContext.Provider
       value={{
@@ -248,7 +230,6 @@ const VendorProvider = ({ children }) => {
         handlePending,
         handleDisable,
         handleDeleteVendor,
-        handleAddVendor,
       }}
     >
       {children}
