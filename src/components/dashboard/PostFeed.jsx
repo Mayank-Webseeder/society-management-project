@@ -60,8 +60,8 @@ const PostFeed = ({ selected }) => {
   return (
     <div className="w-full flex flex-col">
       {/* Small Screen Card */}
-      <div className="block md:hidden p-4">
-        <div className="relative rounded-3xl p-6 bg-gradient-to-br from-[#cde6ea] to-[#8DBCC7] shadow-xl border border-white/30 overflow-hidden flex flex-col justify-between min-h-[240px] gap-4">
+      <div className="block md:hidden">
+        <div className="relative rounded-3xl p-4 bg-gradient-to-br from-[#cde6ea] to-[#8DBCC7] shadow-xl border border-white/30 overflow-hidden flex flex-col justify-between min-h-[240px] gap-4">
           <div className="flex justify-center mb-2">
             <span className="px-4 py-1 rounded-full text-sm font-semibold text-[#0e3d47] bg-white/50 backdrop-blur-sm border border-white/40 shadow-sm select-none">
               {selected} Overview

@@ -51,7 +51,7 @@ const Dashboard = () => {
   const [selected, setSelected] = useState("Daily");
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-5 space-y-5 sm:space-y-6">
+    <div className="w-full max-w-7xl mx-auto space-y-5 sm:space-y-6">
       <StatsCards statsData={statsData} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">

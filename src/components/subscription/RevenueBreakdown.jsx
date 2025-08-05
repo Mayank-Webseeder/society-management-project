@@ -77,11 +77,11 @@ const RevenueBreakdown = () => {
 
       {/* Monthly Revenue Trend */}
       <div className="p-0 md:p-6 rounded-2xl shadow-lg bg-white mt-6 w-full max-w-full overflow-x-auto">
-        <h4 className="text-md font-semibold text-gray-700 mb-4 px-4 md:px-0">
+        <h4 className="text-md font-semibold text-gray-700 mb-6 px-4 md:px-0">
           Monthly Revenue Trend
         </h4>
 
-        <div className="min-w-[700px] md:min-w-full">
+        <div className="min-w-[700px] md:min-w-full mb-4">
           <ResponsiveContainer width="100%" height={isMobile ? 300 : 400}>
             <BarChart data={monthlyTrend} barSize={isMobile ? 32 : 40}>
               <CartesianGrid strokeDasharray="2 2" stroke="#E5E7EB" />

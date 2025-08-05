@@ -73,7 +73,7 @@ const SocietyList = () => {
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="px-4 py-4 border-b border-gray-200">
-        <div className="px-3 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="px-0 lg:px-3 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
           {/* Search Input */}
           <div className="relative w-full sm:w-[45%] lg:w-[30%]">
             <input

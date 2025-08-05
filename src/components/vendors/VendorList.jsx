@@ -98,8 +98,8 @@ const VendorList = () => {
     <div className="bg-white rounded-lg shadow">
       <div className="px-4 py-4 border-b border-gray-200">
         <div className="w-full flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between xl:gap-6">
-          {/* Left part: Search + filters + total vendors */}
-          <div className="px-3 flex flex-col gap-4 xl:flex-row xl:items-center xl:gap-4 xl:flex-grow">
+          {/* Search + filters + total vendors */}
+          <div className="px-0 lg:px-3 flex flex-col gap-4 xl:flex-row xl:items-center xl:gap-4 xl:flex-grow">
             <div className="relative w-full xl:w-[40%]">
               <input
                 type="text"

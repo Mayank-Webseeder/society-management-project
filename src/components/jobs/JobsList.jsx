@@ -42,7 +42,7 @@ const JobsList = () => {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white rounded-lg shadow p-3">
       {/* Filters */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 flex-wrap">
         {/* Search */}
