@@ -104,7 +104,7 @@ const VendorList = () => {
               <input
                 type="text"
                 placeholder="Search vendor by name or location..."
-                className="w-full pl-10 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 px-4 py-2 lg:py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -118,7 +118,7 @@ const VendorList = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="flex-1 min-w-[120px] px-4 py-2 border border-gray-300 rounded focus:ring-blue-500"
+                className="flex-1 min-w-[120px] px-4 py-2 lg:py-3 border border-gray-300 rounded focus:ring-blue-400 text-sm"
               >
                 <option value="" disabled>
                   Select Status
@@ -134,7 +134,7 @@ const VendorList = () => {
               <select
                 value={subscriptionFilter}
                 onChange={(e) => setSubscriptionFilter(e.target.value)}
-                className="flex-1 min-w-[120px] px-4 py-2 border border-gray-300 rounded focus:ring-blue-500"
+                className="flex-1 min-w-[120px] px-4 py-2 lg:py-3 border border-gray-300 rounded focus:ring-blue-400 text-sm"
               >
                 <option value="">All Subscriptions</option>
                 <option value="active">Active</option>

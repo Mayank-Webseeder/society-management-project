@@ -50,7 +50,7 @@ const JobsList = () => {
           <input
             type="text"
             placeholder="Search by society or job title..."
-            className="w-full pl-10 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="w-full pl-10 px-4 py-2 lg:py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -63,7 +63,7 @@ const JobsList = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="w-full sm:w-40 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="w-full sm:w-40 px-4 py-2 lg:py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <option value="" disabled>
             Select Status
@@ -78,7 +78,7 @@ const JobsList = () => {
         <select
           value={societyFilter}
           onChange={(e) => setSocietyFilter(e.target.value)}
-          className="w-full sm:w-40 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="w-full sm:w-40 px-4 py-2 lg:py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           <option value="" disabled>
             Select Society
@@ -96,7 +96,7 @@ const JobsList = () => {
           type="date"
           value={dateFilter}
           onChange={(e) => setDateFilter(e.target.value)}
-          className="w-full sm:w-40 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+          className="w-full sm:w-40 px-4 py-2 lg:py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
 
         {/* Total Count */}
