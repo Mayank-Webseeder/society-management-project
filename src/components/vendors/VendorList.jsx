@@ -8,15 +8,15 @@ const VendorList = () => {
     vendors,
     handleApprove,
     handleReject,
-    handleDisable,
+    handleBlacklist,
     handleDeleteVendor,
+    loading,
   } = useVendorContext();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [subscriptionFilter, setSubscriptionFilter] = useState("");
   const [selectVendor, setSelectVendor] = useState(null);
-  const [showSocietyForm, setShowSocietyForm] = useState(false);
   const [serviceFilter, setServiceFilter] = useState("");
 
   const filteredVendors = vendors.filter((vendor) => {
@@ -79,10 +79,16 @@ const VendorList = () => {
             Rejected
           </span>
         );
+      case "Blacklisted":
+        return (
+          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-300 text-gray-700">
+            Blacklisted
+          </span>
+        );
       case "Disabled":
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-300 text-gray-800">
-            Disabled
+          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-300 text-gray-700">
+            Blacklisted
           </span>
         );
       default:
@@ -93,6 +99,36 @@ const VendorList = () => {
         );
     }
   };
+
+  if (loading) {
+  return (
+    <div className="flex flex-col justify-center items-center h-48 space-y-2">
+      <p className="text-gray-700 font-semibold text-lg">
+        Fetching vendors, just a moment....
+      </p>
+      <svg
+        className="animate-spin h-12 w-12 text-indigo-600"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12" cy="12" r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+        />
+      </svg>
+    </div>
+  );
+}
+
+
 
   return (
     <div className="bg-white rounded-lg shadow">
@@ -127,7 +163,7 @@ const VendorList = () => {
                 <option value="Active">Active</option>
                 <option value="Pending">Pending</option>
                 <option value="Rejected">Rejected</option>
-                <option value="Disabled">Disabled</option>
+                <option value="Blacklisted">Blacklisted</option>
               </select>
 
               {/* Subscription Filter */}
@@ -194,7 +230,10 @@ const VendorList = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {filteredVendors.map((vendor) => (
-                    <tr key={vendor.id} className="hover:bg-gray-50">
+                    <tr
+                      key={vendor.id || vendor._id}
+                      className="hover:bg-gray-50"
+                    >
                       <td className="px-6 py-4">{vendor.name}</td>
                       <td className="px-6 py-4">{vendor.location}</td>
                       <td className="px-6 py-4">
@@ -220,62 +259,63 @@ const VendorList = () => {
                         >
                           {getStatusBadge(vendor.status)}
                         </button>
-                        {selectVendor?.id === vendor.id && (
+                        {(selectVendor?.id || selectVendor?._id) ===
+                          (vendor.id || vendor._id) && (
                           <div className="absolute mt-2 bg-white border rounded shadow w-36 z-10">
                             {vendor.status === "Active" && (
                               <button
                                 onClick={() => {
-                                  handleDisable(vendor.id);
+                                  handleBlacklist(vendor.id || vendor._id);
                                   setSelectVendor(null);
                                 }}
-                                className="block w-full px-4 py-2 hover:bg-gray-100"
+                                className="block w-full px-4 py-2 hover:bg-gray-100 text-red-600"
                               >
-                                Disable
-                              </button>
-                            )}
-                            {vendor.status === "Disabled" && (
-                              <button
-                                onClick={() => {
-                                  handleApprove(vendor.id);
-                                  setSelectVendor(null);
-                                }}
-                                className="block w-full px-4 py-2 hover:bg-gray-100"
-                              >
-                                Active
-                              </button>
-                            )}
-                            {vendor.status === "Rejected" && (
-                              <button
-                                onClick={() => {
-                                  handleApprove(vendor.id);
-                                  setSelectVendor(null);
-                                }}
-                                className="block w-full px-4 py-2 hover:bg-gray-100"
-                              >
-                                Approve
+                                Blacklist
                               </button>
                             )}
                             {vendor.status === "Pending" && (
                               <>
                                 <button
                                   onClick={() => {
-                                    handleApprove(vendor.id);
+                                    handleApprove(vendor.id || vendor._id);
                                     setSelectVendor(null);
                                   }}
-                                  className="block w-full px-4 py-2 hover:bg-gray-100"
+                                  className="block w-full px-4 py-2 hover:bg-gray-100 text-green-600"
                                 >
                                   Approve
                                 </button>
                                 <button
                                   onClick={() => {
-                                    handleReject(vendor.id);
+                                    handleReject(vendor.id || vendor._id);
                                     setSelectVendor(null);
                                   }}
-                                  className="block w-full px-4 py-2 hover:bg-gray-100"
+                                  className="block w-full px-4 py-2 hover:bg-gray-100 text-red-600"
                                 >
                                   Reject
                                 </button>
                               </>
+                            )}
+                            {vendor.status === "Rejected" && (
+                              <button
+                                onClick={() => {
+                                  handleApprove(vendor.id || vendor._id);
+                                  setSelectVendor(null);
+                                }}
+                                className="block w-full px-4 py-2 hover:bg-gray-100 text-green-600"
+                              >
+                                Approve
+                              </button>
+                            )}
+                            {vendor.status === "Blacklisted" && (
+                              <button
+                                onClick={() => {
+                                  handleApprove(vendor.id || vendor._id);
+                                  setSelectVendor(null);
+                                }}
+                                className="block w-full px-4 py-2 hover:bg-gray-100 text-green-600"
+                              >
+                                Active
+                              </button>
                             )}
                           </div>
                         )}
@@ -316,7 +356,7 @@ const VendorList = () => {
             <div className="block md:hidden mt-5 space-y-4">
               {filteredVendors.map((vendor) => (
                 <div
-                  key={vendor.id}
+                  key={vendor.id || vendor._id}
                   className="bg-white shadow-md rounded-xl p-4 border border-gray-200 relative"
                 >
                   <div className="flex justify-between items-center mb-2">
@@ -368,62 +408,63 @@ const VendorList = () => {
                         {getStatusBadge(vendor.status)}
                       </button>
 
-                      {selectVendor?.id === vendor.id && (
-                        <div className="absolute z-20 mt-2 bg-white border rounded shadow w-32 right-0">
+                      {(selectVendor?.id || selectVendor?._id) ===
+                        (vendor.id || vendor._id) && (
+                        <div className="absolute mt-2 bg-white border rounded shadow w-36 z-10">
                           {vendor.status === "Active" && (
                             <button
                               onClick={() => {
-                                handleDisable(vendor.id);
+                                handleBlacklist(vendor.id || vendor._id);
                                 setSelectVendor(null);
                               }}
-                              className="block w-full px-4 py-2 hover:bg-gray-100"
+                              className="block w-full px-4 py-2 hover:bg-gray-100 text-red-600"
                             >
-                              Disable
-                            </button>
-                          )}
-                          {vendor.status === "Disabled" && (
-                            <button
-                              onClick={() => {
-                                handleApprove(vendor.id);
-                                setSelectVendor(null);
-                              }}
-                              className="block w-full px-4 py-2 hover:bg-gray-100"
-                            >
-                              Active
-                            </button>
-                          )}
-                          {vendor.status === "Rejected" && (
-                            <button
-                              onClick={() => {
-                                handleApprove(vendor.id);
-                                setSelectVendor(null);
-                              }}
-                              className="block w-full px-4 py-2 hover:bg-gray-100"
-                            >
-                              Approve
+                              Blacklist
                             </button>
                           )}
                           {vendor.status === "Pending" && (
                             <>
                               <button
                                 onClick={() => {
-                                  handleApprove(vendor.id);
+                                  handleApprove(vendor.id || vendor._id);
                                   setSelectVendor(null);
                                 }}
-                                className="block w-full px-4 py-2 hover:bg-gray-100"
+                                className="block w-full px-4 py-2 hover:bg-gray-100 text-green-600"
                               >
                                 Approve
                               </button>
                               <button
                                 onClick={() => {
-                                  handleReject(vendor.id);
+                                  handleReject(vendor.id || vendor._id);
                                   setSelectVendor(null);
                                 }}
-                                className="block w-full px-4 py-2 hover:bg-gray-100"
+                                className="block w-full px-4 py-2 hover:bg-gray-100 text-red-600"
                               >
                                 Reject
                               </button>
                             </>
+                          )}
+                          {vendor.status === "Rejected" && (
+                            <button
+                              onClick={() => {
+                                handleApprove(vendor.id || vendor._id);
+                                setSelectVendor(null);
+                              }}
+                              className="block w-full px-4 py-2 hover:bg-gray-100 text-green-600"
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {vendor.status === "Blacklisted" && (
+                            <button
+                              onClick={() => {
+                                handleApprove(vendor.id || vendor._id);
+                                setSelectVendor(null);
+                              }}
+                              className="block w-full px-4 py-2 hover:bg-gray-100 text-green-600"
+                            >
+                              Active
+                            </button>
                           )}
                         </div>
                       )}

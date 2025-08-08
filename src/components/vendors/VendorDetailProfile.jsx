@@ -29,7 +29,7 @@ const VendorDetailProfile = () => {
     if (status === "Active") bgColor = "bg-green-100 text-green-700";
     else if (status === "Pending") bgColor = "bg-yellow-100 text-yellow-700";
     else if (status === "Rejected") bgColor = "bg-red-100 text-red-700";
-    else if (status === "Disabled") bgColor = "bg-red-100 text-red-700";
+    else if (status === "Blacklisted") bgColor = "bg-red-200 text-red-800";
 
     return (
       <span
@@ -42,24 +42,52 @@ const VendorDetailProfile = () => {
 
   const getActionButtons = () => {
     if (!vendor) return [];
-    if (vendor.status === "Active") {
-      return [
-        {
-          label: "Disable Vendor",
-          newStatus: "Disabled",
-          color: "bg-red-600 hover:bg-red-700",
-        },
-      ];
-    } else if (vendor.status === "Disabled") {
-      return [
-        {
-          label: "Activate Vendor",
-          newStatus: "Active",
-          color: "bg-green-600 hover:bg-green-700",
-        },
-      ];
+
+    switch (vendor.status) {
+      case "Active":
+        return [
+          {
+            label: "Blacklist Vendor",
+            newStatus: "Blacklisted",
+            color: "bg-red-600 hover:bg-red-700",
+          },
+        ];
+
+      case "Pending":
+        return [
+          {
+            label: "Approve Vendor",
+            newStatus: "Active",
+            color: "bg-green-600 hover:bg-green-700",
+          },
+          {
+            label: "Reject Vendor",
+            newStatus: "Rejected",
+            color: "bg-red-600 hover:bg-red-700",
+          },
+        ];
+
+      case "Blacklisted":
+        return [
+          {
+            label: "Activate Vendor",
+            newStatus: "Active",
+            color: "bg-green-600 hover:bg-green-700",
+          },
+        ];
+
+      case "Rejected":
+        return [
+          {
+            label: "Approve Vendor",
+            newStatus: "Active",
+            color: "bg-green-600 hover:bg-green-700",
+          },
+        ];
+
+      default:
+        return [];
     }
-    return [];
   };
 
   const handleChangeStatus = (newStatus) => {

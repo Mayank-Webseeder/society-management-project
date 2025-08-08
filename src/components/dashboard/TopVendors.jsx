@@ -13,10 +13,11 @@ const TopVendors = () => {
 
   return (
     <div className="w-full bg-white rounded-2xl shadow p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-      
       {/* Total Jobs */}
       <div className="space-y-3">
-        <h2 className="text-base sm:text-lg font-semibold text-gray-900">Total Jobs Posted</h2>
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+          Total Jobs Posted
+        </h2>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#e0f2f1] to-[#b2dfdb] shadow-inner">
           <div className="flex items-center gap-4 w-full sm:w-auto">
             <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#26a69a] rounded-full flex items-center justify-center text-white shadow-md shrink-0">
@@ -38,13 +39,15 @@ const TopVendors = () => {
 
       {/* Top Vendors */}
       <div className="space-y-4">
-        <h2 className="text-base sm:text-lg font-semibold text-gray-900">Top Performing Vendors</h2>
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+          Top Performing Vendors
+        </h2>
         {topVendors.length === 0 ? (
           <p className="text-gray-500 text-sm">No vendors found.</p>
         ) : (
           topVendors.map((vendor, index) => (
             <div
-              key={vendor.id}
+              key={vendor.id || vendor._id || index} 
               className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition duration-300"
             >
               <div className="flex items-center gap-4 w-full sm:w-auto">
@@ -52,16 +55,22 @@ const TopVendors = () => {
                   {index + 1}
                 </div>
                 <div>
-                  <p className="text-sm sm:text-base font-semibold text-gray-900">{vendor.name}</p>
+                  <p className="text-sm sm:text-base font-semibold text-gray-900">
+                    {vendor.name}
+                  </p>
                   <p className="text-xs text-gray-500">{vendor.location}</p>
                 </div>
               </div>
 
               <div className="flex flex-col items-end text-sm">
-                <p className="font-semibold text-gray-800">{vendor.totalJobsApplied} Jobs</p>
+                <p className="font-semibold text-gray-800">
+                  {vendor.totalJobsApplied} Jobs
+                </p>
                 <div className="flex items-center gap-1 text-yellow-400">
                   <Star className="w-4 h-4 fill-yellow-400" />
-                  <span className="font-medium text-xs sm:text-sm text-gray-800">{vendor.rating.toFixed(1)}</span>
+                  <span className="font-medium text-xs sm:text-sm text-gray-800">
+                    {vendor.rating.toFixed(1)}
+                  </span>
                 </div>
               </div>
             </div>

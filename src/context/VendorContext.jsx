@@ -1,9 +1,15 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getToken } from "../utils/Token";
 
 const VendorContext = createContext();
 
 const VendorProvider = ({ children }) => {
   const [vendors, setVendors] = useState([]);
+  const [pendingVendors, setPendingVendors] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [blacklistedVendors, setBlacklistedVendors] = useState([]);
 
   useEffect(() => {
     const mockVendors = [
@@ -41,7 +47,6 @@ const VendorProvider = ({ children }) => {
             uploadedOn: "2024-05-15",
           },
         ],
-
         jobHistory: [
           {
             id: "J001",
@@ -73,7 +78,7 @@ const VendorProvider = ({ children }) => {
             type: "Plumbing",
             status: "Completed",
             price: 2500,
-            date: "2025-07-3",
+            date: "2025-07-03",
           },
         ],
         subscription: {
@@ -96,7 +101,7 @@ const VendorProvider = ({ children }) => {
         totalJobsApplied: 15,
       },
       {
-        id: 3,
+        _id: "64e1fd3b7a9d8c0ff9f0a123",
         name: "Ravi Kumar",
         email: "ravi.kumar@example.com",
         phone: "+91-9988776655",
@@ -167,56 +172,131 @@ const VendorProvider = ({ children }) => {
         rating: 4.6,
         totalJobsApplied: 20,
       },
-
       {
         id: 9,
         name: "Rohit Mehta",
         email: "rohit.mehta@example.com",
         phone: "+91-9123456789",
         location: "Bhopal",
-        status: "Active",
+        status: "Blacklisted",
         subscriptionStatus: "expired",
         servicesProvided: ["Driver on Demand", "Transport Services"],
         rating: 4.4,
         totalJobsApplied: 15,
       },
     ];
-    setVendors(mockVendors);
+
+    const fetchAllVendors = async () => {
+      setLoading(true);
+      try {
+        const token = getToken();
+
+        // All Vendors API
+        const allRes = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/all-vendors`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        let allVendors = allRes.data || [];
+
+        // Pending Vendors API
+        const pendingRes = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/pending-vendors`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setPendingVendors(pendingRes.data || []);
+
+        // Merge all vendors 
+        let merged = allVendors.map((v) => ({
+          ...v,
+          servicesProvided: v.servicesProvided?.length
+            ? v.servicesProvided
+            : ["-"],
+        }));
+
+        // Merge pending vendors (avoid duplicates)
+        let finalList = [...merged, ...pendingVendors].filter(
+          (v, index, self) =>
+            index === self.findIndex((obj) => obj._id === v._id)
+        );
+
+        setVendors([...mockVendors, ...finalList]);
+      } catch (error) {
+        console.error("Error fetching vendors", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchBlacklistedVendors = async () => {
+      try {
+        const token = getToken();
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/blacklisted-vendors`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setBlacklistedVendors(res.data || []);
+       // console.log("Blacklist vendors", res.data);
+      } catch (error) {
+        console.error("Error fetching blacklisted vendors", error);
+      }
+    };
+
+    fetchAllVendors();
+    fetchBlacklistedVendors();
   }, []);
 
-  const handleApprove = (id) => {
-    setVendors((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, status: "Active" } : v))
-    );
+  const handleApprove = async (vendorId) => {
+    //console.log("Approving vendor with ID:", vendorId);
+    try {
+      const token = getToken();
+      await axios.patch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/admin/approve-vendor/${vendorId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setVendors((prev) =>
+        prev.map((v) =>
+          v.id === vendorId || v._id === vendorId
+            ? { ...v, status: "Active" }
+            : v
+        )
+      );
+    } catch (error) {
+      console.error("Error approving vendor:", error);
+    }
   };
 
   const handleReject = (id) => {
     setVendors((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, status: "Rejected" } : v))
+      prev.map((v) =>
+        v.id === id || v._id === id ? { ...v, status: "Rejected" } : v
+      )
     );
   };
 
-  const handlePending = (id) => {
-    setVendors((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, status: "Pending" } : v))
-    );
-  };
-
-  const handleDisable = (id) => {
-    setVendors((prev) =>
-      prev.map((v) => (v.id === id ? { ...v, status: "Disabled" } : v))
-    );
+  const handleBlacklist = async (id) => {
+    try {
+      const token = getToken();
+      await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/blacklist-vendor/${id}`,
+        { reason: "Fraudulent activity" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setVendors((prev) =>
+        prev.map((v) =>
+          v.id === id || v._id === id ? { ...v, status: "Blacklisted" } : v
+        )
+      );
+    } catch (error) {
+      console.error("Blacklist API failed", error);
+    }
   };
 
   const handleDeleteVendor = (id) => {
     if (window.confirm("Are you sure you want to delete this vendor?")) {
-      setVendors((prev) => prev.filter((v) => v.id !== id));
-    }
-  };
-
-  const handleDeleteSociety = (id) => {
-    if (window.confirm("Are you sure you want to delete this society?")) {
-      setSocieties((prev) => prev.filter((soc) => soc.id !== id));
+      setVendors((prev) => prev.filter((v) => v.id !== id && v._id !== id));
     }
   };
 
@@ -227,9 +307,9 @@ const VendorProvider = ({ children }) => {
         setVendors,
         handleApprove,
         handleReject,
-        handlePending,
-        handleDisable,
+        handleBlacklist,
         handleDeleteVendor,
+        loading,
       }}
     >
       {children}
