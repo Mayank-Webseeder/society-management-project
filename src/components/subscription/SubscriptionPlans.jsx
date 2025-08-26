@@ -13,9 +13,9 @@ const SubscriptionPlans = () => {
   useEffect(() => {
     setPlan({
       _id: "plan1",
-      name: "Premium Plan",
+      name: "Subscription Plan",
       price: 999,
-      duration: "Monthly",
+      duration: "yearly",
     });
   }, []);
 
@@ -53,94 +53,115 @@ const SubscriptionPlans = () => {
 
   if (!plan) {
     return (
-      <div className="py-8 max-w-4xl mx-auto px-4">
-        <div className="text-center py-16">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gray-100 flex items-center justify-center">
+      <div className="py-16 flex items-center justify-center bg-gray-50 min-h-screen w-full">
+        <div className="text-center p-10 bg-white rounded-2xl shadow-xl max-w-xl mx-auto transform transition-all duration-500 hover:scale-[1.02]">
+          <div className="w-20 h-10 mx-auto mb-5 rounded-full bg-gray-100 flex items-center justify-center animate-pulse">
             <Crown className="w-10 h-10 text-gray-400" />
           </div>
-          <h3 className="text-xl font-medium text-gray-900 mb-2">
+          <h3 className="text-2xl font-extrabold text-gray-900 mb-2">
             No Subscription Plan
           </h3>
           <p className="text-gray-500 mb-6">
-            Create a subscription plan to get started
+            It looks like there isn't a plan set up yet. Please create one to get started.
           </p>
+          <button className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-full shadow-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105">
+            Create Plan
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="py-8 w-full mx-auto space-y-8">
-      <div className="relative w-full max-w-xl">
-        <div className="absolute -top-3 left-4 z-10">
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
-            <Star className="w-3 h-3 mr-1.5" />
+    <div className="py-10 w-full min-h-fit bg-gradient-to-br from-gray-50 to-white flex items-center justify-center">
+      <div className="relative w-full max-w-5xl mx-auto px-4 group">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20 animate-pulse-slow">
+          <span className="inline-flex items-center px-5 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg transform hover:scale-110 transition-transform duration-300">
+            <Star className="w-3 h-3 mr-1.5 text-yellow-300 animate-spin-slow" />
             Current Plan
           </span>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden hover:shadow-2xl transition-all duration-300">
-          <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 h-2"></div>
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden transform transition-all duration-500 group-hover:scale-[1.01]">
+          <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 h-2 animate-gradient-flow"></div>
 
-          <div className="p-6 sm:p-8">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-              {/* Left Side - Plan Details */}
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
-                    <Crown className="w-6 h-6 text-indigo-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
-                      {plan.name}
-                    </h3>
-                    <p className="text-gray-500 text-sm">Subscription Plan</p>
-                  </div>
+          <div className="p-8 md:p-10 lg:flex lg:items-center lg:justify-between gap-10">
+            {/* Left Side - Plan Details & Features */}
+            <div className="flex-1">
+              <div className="flex items-start gap-4 mb-6">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-110">
+                  <Crown className="w-8 h-8 text-indigo-600 animate-crown-bounce" />
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 rounded-lg p-2">
-                    <p className="text-sm font-medium text-gray-600">
-                      Plan Duration
-                    </p>
-                    <p className="text-lg font-semibold text-gray-900 mt-1">
-                      {plan.duration}
-                    </p>
-                  </div>
+                <div>
+                  <h3 className="text-3xl sm:text-4xl font-extrabold text-gray-900 leading-tight">
+                    {plan.name}
+                  </h3>
+                  <p className="text-gray-500 text-base mt-1">
+                    Required for vendors to apply for jobs and access premium features.
+                  </p>
                 </div>
               </div>
 
-              {/* Right Side - Price & Actions */}
-              <div className="w-full lg:w-auto">
-                <div className="mb-6 text-center lg:text-right">
-                  <div className="flex items-baseline justify-center lg:justify-end gap-1">
-                    <span className="text-xl sm:text-4xl font-bold text-gray-900">
-                      ₹{plan.price}
-                    </span>
-                    <span className="text-gray-500">
-                      /{plan.duration.toLowerCase()}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-500 mt-1">Per user</p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center sm:items-end justify-end gap-3 mt-0 xl:mt-20">
-                  <button
-                    onClick={handleOpenModal}
-                    className="flex items-center justify-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium shadow-lg hover:shadow-xl"
-                  >
-                    <Pencil className="w-4 h-4" />
-                    Edit Plan
-                  </button>
-                  <button
-                    onClick={handleDelete}
-                    className="flex items-center justify-center gap-2 px-6 py-2 border-2 border-red-200 text-red-600 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors font-medium"
-                  >
-                    <X className="w-4 h-4" />
-                    Delete
-                  </button>
-                </div>
+              {/* Features Section */}
+              <div className="p-5 bg-gray-50 rounded-xl shadow-inner border border-gray-100">
+                <h4 className="text-lg font-bold text-gray-800 mb-3">What you get:</h4>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <li className="flex items-center transition-transform duration-300 hover:translate-x-1.5">
+                    <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 animate-checkmark-pop" />
+                    <span className="text-gray-700 font-medium text-sm">Access to all exclusive job listings</span>
+                  </li>
+                  <li className="flex items-center transition-transform duration-300 hover:translate-x-1.5">
+                    <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 animate-checkmark-pop animation-delay-100" />
+                    <span className="text-gray-700 font-medium text-sm">Unlimited, high-priority job applications</span>
+                  </li>
+                  <li className="flex items-center transition-transform duration-300 hover:translate-x-1.5">
+                    <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 animate-checkmark-pop animation-delay-200" />
+                    <span className="text-gray-700 font-medium text-sm">Enhanced vendor profile visibility</span>
+                  </li>
+                  <li className="flex items-center transition-transform duration-300 hover:translate-x-1.5">
+                    <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 animate-checkmark-pop animation-delay-300" />
+                    <span className="text-gray-700 font-medium text-sm">24/7 dedicated support team</span>
+                  </li>
+                  <li className="flex items-center transition-transform duration-300 hover:translate-x-1.5">
+                    <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 animate-checkmark-pop animation-delay-400" />
+                    <span className="text-gray-700 font-medium text-sm">Access to premium analytics and reports</span>
+                  </li>
+                  <li className="flex items-center transition-transform duration-300 hover:translate-x-1.5">
+                    <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 animate-checkmark-pop animation-delay-500" />
+                    <span className="text-gray-700 font-medium text-sm">Opportunity to bid on large-scale projects</span>
+                  </li>
+                </ul>
               </div>
+            </div>
+
+            {/* Right Side - Price & Actions */}
+            <div className="w-full lg:w-auto mt-8 lg:mt-0">
+              <div className="text-center lg:text-right mb-6">
+                <div className="flex items-baseline justify-center lg:justify-end gap-1">
+                  <span className="text-4xl sm:text-5xl font-extrabold text-gray-900 animate-price-pulse">
+                    ₹{plan.price}
+                  </span>
+                  <span className="text-gray-500 text-xl font-medium">/service</span>
+                </div>
+                <p className="text-sm text-gray-500 mt-1">Billed {plan.duration}</p>
+              </div>
+
+              {/* <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-3">
+                <button
+                  onClick={handleOpenModal}
+                  className="flex items-center justify-center w-full sm:w-auto px-8 py-3 bg-indigo-600 text-white font-semibold rounded-full shadow-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105"
+                >
+                  <Pencil className="w-4 h-4 mr-2" />
+                  Edit Plan
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="flex items-center justify-center w-full sm:w-auto px-8 py-3 border-2 border-red-200 text-red-600 font-semibold rounded-full hover:bg-red-50 hover:border-red-300 transition-all duration-300 transform hover:scale-105"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Delete
+                </button>
+              </div> */}
             </div>
           </div>
         </div>
@@ -148,8 +169,8 @@ const SubscriptionPlans = () => {
 
       {/* Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300 opacity-100">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform scale-100 transition-transform duration-300">
             <div className="bg-gradient-to-r from-indigo-500 to-purple-600 px-6 py-4 rounded-t-2xl">
               <h3 className="text-xl font-bold text-white">
                 Edit Subscription Plan
@@ -168,7 +189,7 @@ const SubscriptionPlans = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors shadow-sm text-sm"
                 />
               </div>
 
@@ -183,7 +204,7 @@ const SubscriptionPlans = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, price: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors shadow-sm text-sm"
                 />
               </div>
 
@@ -196,11 +217,11 @@ const SubscriptionPlans = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, duration: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors shadow-sm text-sm"
                 >
-                  <option value="Monthly">Monthly</option>
-                  <option value="Yearly">Yearly</option>
-                  <option value="Quarterly">Quarterly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                  <option value="quarterly">Quarterly</option>
                 </select>
               </div>
             </div>
@@ -209,13 +230,13 @@ const SubscriptionPlans = () => {
             <div className="px-6 py-4 bg-gray-50 rounded-b-2xl flex justify-end gap-3">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-6 py-2.5 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                className="px-5 py-2 text-gray-600 font-semibold rounded-full hover:bg-gray-100 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
-                className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium shadow-lg"
+                className="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition-colors shadow-md"
               >
                 Save Changes
               </button>

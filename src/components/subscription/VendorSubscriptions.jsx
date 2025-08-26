@@ -168,7 +168,7 @@ const VendorSubscriptions = () => {
     }
   };
 
-  const exportCSV = () => {
+  const exportExcel = () => {
     const sanitizeCSVField = (value) => {
       if (value === null || value === undefined) return "";
       const str = value.toString();
@@ -193,20 +193,25 @@ const VendorSubscriptions = () => {
     );
 
     subscriptions.forEach((row) => {
+      const startDate = row.startDate
+        ? new Date(row.startDate).toISOString().split("T")[0]
+        : "N/A";
+      const endDate = row.endDate
+        ? new Date(row.endDate).toISOString().split("T")[0]
+        : "N/A";
       csvRows.push(
         [
-          row.vendorName,
-          row.startDate,
-          row.endDate,
-          row.paymentStatus,
-          row.subscriptionStatus,
+          row.vendor?.name || row.vendorName || "N/A",
+          startDate,
+          endDate,
+          row.paymentStatus || "N/A",
+          row.subscriptionStatus || "N/A",
         ]
           .map(sanitizeCSVField)
           .join(", ")
       );
     });
 
-    // CSV string banake download karna
     const csvString = "\uFEFF" + csvRows.join("\n");
     const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -272,10 +277,10 @@ const VendorSubscriptions = () => {
           Vendor Subscriptions
         </h3>
         <button
-          onClick={exportCSV}
+          onClick={exportExcel}
           className="flex items-center justify-center gap-2 text-sm font-medium px-4 py-2 rounded-lg bg-[#44a59f] text-white hover:bg-[#76bcb8] border border-[#3D8D7A] transition shadow-sm"
         >
-          <IoCloudDownloadOutline className="w-5 h-5" /> Export CSV
+          <IoCloudDownloadOutline className="w-5 h-5" /> Export Excel
         </button>
       </div>
 
@@ -379,7 +384,7 @@ const VendorSubscriptions = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <User className="w-4 h-4 text-gray-500" />
-                {sub.vendorName || "N/A"}
+                {sub.vendor?.name || sub.vendorName || "N/A"}
               </h3>
               <span
                 className={`text-xs px-3 py-1 rounded-full font-semibold w-fit ${
@@ -399,11 +404,19 @@ const VendorSubscriptions = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
               <div className="space-y-1">
                 <p className="text-gray-500">Start Date</p>
-                <p className="font-medium">{sub.startDate || "N/A"}</p>
+                <p className="font-medium">
+                  {sub.startDate
+                    ? new Date(sub.startDate).toISOString().split("T")[0]
+                    : "N/A"}
+                </p>
               </div>
               <div className="space-y-1">
                 <p className="text-gray-500">End Date</p>
-                <p className="font-medium">{sub.endDate || "N/A"}</p>
+                <p className="font-medium">
+                  {sub.endDate
+                    ? new Date(sub.endDate).toISOString().split("T")[0]
+                    : "N/A"}
+                </p>
               </div>
               <div className="space-y-1 sm:col-span-2">
                 <p className="text-gray-500">Payment Status</p>
@@ -580,7 +593,7 @@ const VendorSubscriptions = () => {
                 onClick={exportPDF}
                 className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg bg-[#57A6A1] text-white hover:bg-[#48938d] w-full justify-center shadow-sm"
               >
-                <Download onClick={exportPDF} className="w-4 h-4" /> Download
+                <Download className="w-4 h-4" /> Download
                 PDF
               </button>
               <button
