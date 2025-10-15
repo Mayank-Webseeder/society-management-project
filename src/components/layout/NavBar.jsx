@@ -103,7 +103,7 @@ const NavBar = ({ setIsLoggedIn }) => {
 
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm z-10">
-      <div className="px-4 sm:px-6 lg:px-10 py-4 sm:py-5 lg:py-6 flex items-center justify-between">
+      <div className="px-4 sm:px-6 lg:px-10 py-4 sm:py-5 lg:py-3 flex items-center justify-between">
         <h2 className="font-serif text-xl sm:text-2xl text-gray-800 tracking-wide">
           {pageTitle}
         </h2>

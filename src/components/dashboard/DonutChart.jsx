@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 const DonutChart = () => {
   const data = [
     { name: "Completed", value: 50 },
-    { name: "In Progress", value: 30 },
+    { name: "Active Progress", value: 30 },
     { name: "Awaiting Response", value: 20 },
   ];
 

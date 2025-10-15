@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Search, Trash2, Star, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useVendorContext } from "../../context/VendorContext";
+import { Users, UserCheck, Clock, UserX, ShieldAlert } from "lucide-react";
 
 const VendorList = () => {
   const {
@@ -131,64 +132,122 @@ const VendorList = () => {
 
 
   return (
-    <div className="bg-white rounded-lg shadow">
-      <div className="px-4 py-4 border-b border-gray-200">
-        <div className="w-full flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between xl:gap-6">
-          {/* Search + filters + total vendors */}
-          <div className="px-0 lg:px-3 flex flex-col gap-4 xl:flex-row xl:items-center xl:gap-4 xl:flex-grow">
-            <div className="relative w-full xl:w-[40%]">
-              <input
-                type="text"
-                placeholder="Search vendor by name or location..."
-                className="w-full pl-10 px-4 py-2 lg:py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <div className="absolute left-3 top-2.5 text-gray-400">
-                <Search className="h-5 w-5" />
-              </div>
-            </div>
+ 
+    <div>
+      {/* --- Vendor Stats Section --- */}
+<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+  {/* Total Vendors */}
+  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
+    <div>
+      <p className="text-sm text-gray-500">Total Vendors</p>
+      <h3 className="text-2xl font-bold text-black">{vendors.length}</h3>
+    </div>
+    <div className="bg-black/10 p-3 rounded-full">
+      <Users className="w-6 h-6 text-black" />
+    </div>
+  </div>
 
-            <div className="flex flex-wrap gap-4 xl:flex-nowrap xl:items-center xl:flex-grow">
-              {/* Status Filter */}
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="flex-1 min-w-[120px] px-4 py-2 lg:py-3 border border-gray-300 rounded focus:ring-blue-400 text-sm"
-              >
-                <option value="" disabled>
-                  Select Status
-                </option>
-                <option value="">All</option>
-                <option value="Active">Active</option>
-                <option value="Pending">Pending</option>
-                <option value="Rejected">Rejected</option>
-                <option value="Blacklisted">Blacklisted</option>
-              </select>
+  {/* Active */}
+  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
+    <div>
+      <p className="text-sm text-gray-500">Active</p>
+      <h3 className="text-2xl font-bold text-black">
+        {vendors.filter((v) => v.status === "Active").length}
+      </h3>
+    </div>
+    <div className="bg-black/10 p-3 rounded-full">
+      <UserCheck className="w-6 h-6 text-black" />
+    </div>
+  </div>
 
-              {/* Subscription Filter */}
-              <select
-                value={subscriptionFilter}
-                onChange={(e) => setSubscriptionFilter(e.target.value)}
-                className="flex-1 min-w-[120px] px-4 py-2 lg:py-3 border border-gray-300 rounded focus:ring-blue-400 text-sm"
-              >
-                <option value="">All Subscriptions</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="cancelled">Cancelled</option>
-                <option value="expired">Expired</option>
-              </select>
-            </div>
+  {/* Pending */}
+  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
+    <div>
+      <p className="text-sm text-gray-500">Pending</p>
+      <h3 className="text-2xl font-bold text-black">
+        {vendors.filter((v) => v.status === "Pending").length}
+      </h3>
+    </div>
+    <div className="bg-black/10 p-3 rounded-full">
+      <Clock className="w-6 h-6 text-black" />
+    </div>
+  </div>
 
-            {/* Total Vendors */}
-            <div className="text-md font-medium whitespace-nowrap md:text-right xl:ml-6">
-              Total Vendors:{" "}
-              <span className="text-green-600 font-semibold">
-                {filteredVendors.length}
-              </span>
-            </div>
-          </div>
-        </div>
+  {/* Rejected */}
+  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
+    <div>
+      <p className="text-sm text-gray-500">Rejected</p>
+      <h3 className="text-2xl font-bold text-black">
+        {vendors.filter((v) => v.status === "Rejected").length}
+      </h3>
+    </div>
+    <div className="bg-black/10 p-3 rounded-full">
+      <UserX className="w-6 h-6 text-black" />
+    </div>
+  </div>
+
+  {/* Blacklisted */}
+  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
+    <div>
+      <p className="text-sm text-gray-500">Blacklisted</p>
+      <h3 className="text-2xl font-bold text-black">
+        {vendors.filter((v) => v.status === "Blacklisted").length}
+      </h3>
+    </div>
+    <div className="bg-black/10 p-3 rounded-full">
+      <ShieldAlert className="w-6 h-6 text-black" />
+    </div>
+  </div>
+</div>
+<div className="w-full flex flex-col gap-4 mb-6 xl:flex-row xl:items-center xl:justify-between bg-white p-4 rounded-lg shadow">
+  {/* Search Box */}
+  <div className="relative w-full xl:w-[40%]">
+    <input
+      type="text"
+      placeholder="Search vendor by name or location..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm placeholder-gray-400 transition-all duration-200"
+    />
+    <div className="absolute left-3 top-3 text-gray-400">
+      <Search className="h-5 w-5" />
+    </div>
+  </div>
+
+  {/* Filters */}
+  <div className="flex flex-wrap gap-4 xl:flex-nowrap xl:items-center xl:flex-grow">
+    {/* Status Filter */}
+    <select
+      value={statusFilter}
+      onChange={(e) => setStatusFilter(e.target.value)}
+      className="flex-1 min-w-[140px] px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-400 focus:border-green-400 transition-all duration-200"
+    >
+      <option value="">All Status</option>
+      <option value="Active">Active</option>
+      <option value="Pending">Pending</option>
+      <option value="Rejected">Rejected</option>
+      <option value="Blacklisted">Blacklisted</option>
+    </select>
+
+    {/* Subscription Filter */}
+    <select
+      value={subscriptionFilter}
+      onChange={(e) => setSubscriptionFilter(e.target.value)}
+      className="flex-1 min-w-[140px] px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200"
+    >
+      <option value="">All Subscriptions</option>
+      <option value="Active">Active</option>
+      <option value="Inactive">Inactive</option>
+      <option value="Cancelled">Cancelled</option>
+      <option value="Expired">Expired</option>
+    </select>
+  </div>
+</div>
+
+   <div>
+      
+      <div className=" border-b overflow-hidden p-1 border-gray-200">
+    
 
         {/* Table */}
         {filteredVendors.length === 0 ? (
@@ -198,159 +257,168 @@ const VendorList = () => {
         ) : (
           <>
             {/* table view for big screen*/}
-            <div className="hidden md:block mt-6 overflow-x-auto rounded-xl shadow border border-gray-200">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-[#adccd6]">
-                  <tr>
-                    <th className="px-6 py-3 text-left font-semibold text-gray-700">
-                      Name
-                    </th>
-                    <th className="px-6 py-3 text-left font-semibold text-gray-700">
-                      Location
-                    </th>
-                    <th className="px-6 py-3 text-left font-semibold text-gray-700">
-                      Services Provided
-                    </th>
-                    <th className="px-6 py-3 text-center font-semibold text-gray-700">
-                      Ratings
-                    </th>
-                    <th className="px-6 py-3 text-center font-semibold text-gray-700">
-                      Total Jobs
-                    </th>
-                    <th className="px-8 py-3 text-left font-semibold text-gray-700">
-                      Status
-                    </th>
-                    <th className="px-5 py-3 text-left font-semibold text-gray-700">
-                      Subscription
-                    </th>
-                    <th className="px-6 py-3 text-center font-semibold text-gray-700">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {filteredVendors.map((vendor) => (
-                    <tr
-                      key={vendor.id || vendor._id}
-                      className="hover:bg-gray-50"
-                    >
-                      <td className="px-6 py-4">{vendor.name}</td>
-                      <td className="px-6 py-4">{vendor.location}</td>
-                      <td className="px-6 py-4">
-                        {vendor.servicesProvided.length === 0
-                          ? "-"
-                          : vendor.servicesProvided.length <= 2
-                          ? vendor.servicesProvided.join(", ")
-                          : vendor.servicesProvided.slice(0, 2).join(", ") +
-                            " ..."}
-                      </td>
-                      <td className="px-6 py-4 text-center flex justify-center items-center gap-1">
-                        {vendor.rating > 0 ? vendor.rating : 0}
-                        <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        {vendor.totalJobsApplied ?? "-"}
-                      </td>
+           <div className="hidden md:block rounded-2xl  overflow-x-auto scrollbar-hide max-h-[55vh] border border-gray-200 shadow">
+  <table className="min-w-full  text-sm">
+    {/* --- Table Head --- */}
+    <thead className="bg-gray-200 font-light sticky top-0 z-20 text-balck uppercase tracking-wide">
+      <tr>
+        <th className="px-6 py-3 text-left font-semibold">Name</th>
+        <th className="px-6 py-3 text-left font-semibold">Location</th>
+        <th className="px-6 py-3 text-left font-semibold">Services</th>
+        <th className="px-6 py-3 text-center font-semibold">Ratings</th>
+        <th className="px-6 py-3 text-center font-semibold">Jobs</th>
+        <th className="px-6 py-3 text-left font-semibold">Status</th>
+        <th className="px-6 py-3 text-left font-semibold">Subscription</th>
+        <th className="px-6 py-3 text-center font-semibold">Actions</th>
+      </tr>
+    </thead>
 
-                      <td className="px-6 py-4 relative">
-                        <button
-                          onClick={() => setSelectVendor(vendor)}
-                          className="flex items-center px-2 py-1 text-sm border rounded-full hover:bg-gray-100"
-                        >
-                          {getStatusBadge(vendor.status)}
-                        </button>
-                        {(selectVendor?.id || selectVendor?._id) ===
-                          (vendor.id || vendor._id) && (
-                          <div className="absolute mt-2 bg-white border rounded shadow w-36 z-10">
-                            {vendor.status === "Active" && (
-                              <button
-                                onClick={() => {
-                                  handleBlacklist(vendor.id || vendor._id);
-                                  setSelectVendor(null);
-                                }}
-                                className="block w-full px-4 py-2 hover:bg-gray-100 text-red-600"
-                              >
-                                Blacklist
-                              </button>
-                            )}
-                            {vendor.status === "Pending" && (
-                              <>
-                                <button
-                                  onClick={() => {
-                                    handleApprove(vendor.id || vendor._id);
-                                    setSelectVendor(null);
-                                  }}
-                                  className="block w-full px-4 py-2 hover:bg-gray-100 text-green-600"
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    handleReject(vendor.id || vendor._id);
-                                    setSelectVendor(null);
-                                  }}
-                                  className="block w-full px-4 py-2 hover:bg-gray-100 text-red-600"
-                                >
-                                  Reject
-                                </button>
-                              </>
-                            )}
-                            {vendor.status === "Rejected" && (
-                              <button
-                                onClick={() => {
-                                  handleApprove(vendor.id || vendor._id);
-                                  setSelectVendor(null);
-                                }}
-                                className="block w-full px-4 py-2 hover:bg-gray-100 text-green-600"
-                              >
-                                Approve
-                              </button>
-                            )}
-                            {vendor.status === "Blacklisted" && (
-                              <button
-                                onClick={() => {
-                                  handleApprove(vendor.id || vendor._id);
-                                  setSelectVendor(null);
-                                }}
-                                className="block w-full px-4 py-2 hover:bg-gray-100 text-green-600"
-                              >
-                                Active
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </td>
+    {/* --- Table Body --- */}
+    <tbody className="divide-y divide-gray-200 bg-white">
+      {filteredVendors.map((vendor) => (
+        <tr
+          key={vendor.id || vendor._id}
+          className="hover:bg-gray-50 transition-colors duration-150"
+        >
+          {/* Name */}
+          <td className="px-6 py-4 font-medium text-gray-900">
+            {vendor.name}
+          </td>
 
-                      <td className="px-6 py-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            statusColorMap[vendor.subscriptionStatus] ||
-                            "text-slate-600"
-                          }`}
-                        >
-                          {vendor.subscriptionStatus}
-                        </span>
-                      </td>
+          {/* Location */}
+          <td className="px-6 py-4 text-gray-600">{vendor.location}</td>
 
-                      <td className="px-6 py-4 flex justify-center gap-5">
-                        <Link
-                          to={`/vendor-details/${vendor.id}`}
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          <Eye className="w-5 h-5" />
-                        </Link>
-                        <button
-                          onClick={() => handleDeleteVendor(vendor.id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {/* Services Provided */}
+          <td className="px-6 py-4 text-gray-600">
+            {vendor.servicesProvided.length === 0
+              ? "-"
+              : vendor.servicesProvided.length <= 2
+              ? vendor.servicesProvided.join(", ")
+              : vendor.servicesProvided.slice(0, 2).join(", ") + " ..."}
+          </td>
+
+          {/* Ratings */}
+          <td className="px-6 py-4 text-center">
+            <div className="flex justify-center items-center gap-1 text-gray-800">
+              {vendor.rating > 0 ? vendor.rating : 0}
+              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
             </div>
+          </td>
+
+          {/* Total Jobs */}
+          <td className="px-6 py-4 text-center text-gray-700">
+            {vendor.totalJobsApplied ?? "-"}
+          </td>
+
+          {/* Status Dropdown */}
+          <td className="px-6 py-4 relative">
+            <button
+              onClick={() => setSelectVendor(vendor)}
+              className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold border border-gray-300 rounded-full hover:bg-gray-100 transition"
+            >
+              {getStatusBadge(vendor.status)}
+            </button>
+
+            {(selectVendor?.id || selectVendor?._id) ===
+              (vendor.id || vendor._id) && (
+              <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-36 z-10">
+                {vendor.status === "Active" && (
+                  <button
+                    onClick={() => {
+                      handleBlacklist(vendor.id || vendor._id);
+                      setSelectVendor(null);
+                    }}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                  >
+                    Blacklist
+                  </button>
+                )}
+                {vendor.status === "Pending" && (
+                  <>
+                    <button
+                      onClick={() => {
+                        handleApprove(vendor.id || vendor._id);
+                        setSelectVendor(null);
+                      }}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-green-600"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleReject(vendor.id || vendor._id);
+                        setSelectVendor(null);
+                      }}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                    >
+                      Reject
+                    </button>
+                  </>
+                )}
+                {vendor.status === "Rejected" && (
+                  <button
+                    onClick={() => {
+                      handleApprove(vendor.id || vendor._id);
+                      setSelectVendor(null);
+                    }}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-green-600"
+                  >
+                    Approve
+                  </button>
+                )}
+                {vendor.status === "Blacklisted" && (
+                  <button
+                    onClick={() => {
+                      handleApprove(vendor.id || vendor._id);
+                      setSelectVendor(null);
+                    }}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-green-600"
+                  >
+                    Activate
+                  </button>
+                )}
+              </div>
+            )}
+          </td>
+
+          {/* Subscription */}
+          <td className="px-6 py-4">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+                vendor.subscriptionStatus === "Active"
+                  ? "text-black border-black"
+                  : vendor.subscriptionStatus === "Expired"
+                  ? "text-gray-500 border-gray-300"
+                  : "text-gray-600 border-gray-200"
+              }`}
+            >
+              {vendor.subscriptionStatus}
+            </span>
+          </td>
+
+          {/* Actions */}
+          <td className="px-6 py-4 text-center flex justify-center gap-4">
+            <Link
+              to={`/vendor-details/${vendor.id}`}
+              className="text-gray-700 hover:text-black transition"
+              title="View Details"
+            >
+              <Eye className="w-5 h-5" />
+            </Link>
+            <button
+              onClick={() => handleDeleteVendor(vendor.id)}
+              className="text-gray-500 hover:text-red-600 transition"
+              title="Delete Vendor"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
 
             {/* card view for small screen */}
             <div className="block md:hidden mt-5 space-y-4">
@@ -491,6 +559,7 @@ const VendorList = () => {
           </>
         )}
       </div>
+    </div>
     </div>
   );
 };

@@ -87,7 +87,7 @@ const Dashboard = () => {
               Job Post Trends
             </h4>
             <div className="flex flex-wrap gap-5 sm:gap-2 bg-white shadow-inner border border-gray-200 p-1 rounded-lg">
-              {["Daily", "Monthly", "Yearly"].map((option) => (
+              {["Weekly", "Monthly", "Yearly"].map((option) => (
                 <button
                   key={option}
                   onClick={() => setSelected(option)}
