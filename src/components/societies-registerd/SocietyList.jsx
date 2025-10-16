@@ -25,14 +25,11 @@ const SocietyList = () => {
   const [selectSociety, setSelectSociety] = useState(null);
 
   const filterSocieties = societies.filter((soc) => {
-    const matchesStatus =
-      statusFilter === "Select Status" ||
-      statusFilter === "All" ||
-      soc.status === statusFilter;
-    const matchesSearch =
-      soc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      soc.location.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch && matchesStatus;
+    const matchesStatus = statusFilter === "Select Status" || statusFilter === "All" || soc.status === statusFilter;
+    // const matchesSearch =
+    //   soc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //   soc.location.toLowerCase().includes(searchTerm.toLowerCase());
+    // return matchesSearch && matchesStatus;
   });
 
   const getStatusBadge = (status) => {
@@ -174,7 +171,7 @@ const SocietyList = () => {
                 </thead>
 
                 <tbody className="divide-y divide-gray-100">
-                  {filterSocieties.map((soc) => (
+                  {filterSocieties.map((soc,index) => (
                     <tr key={soc.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 font-medium text-black-800 hover:text-blue-700">
                         <Link to={`/society-details/${soc.id}`}>

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Search, Trash2, Star, Eye } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, Trash2, Star, Eye, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useVendorContext } from "../../context/VendorContext";
 import { Users, UserCheck, Clock, UserX, ShieldAlert } from "lucide-react";
@@ -52,6 +52,17 @@ const VendorList = () => {
       matchesSearch && matchesStatus && matchesSubscription && matchesService
     );
   });
+
+  useEffect(() => {
+  const handleClickOutside = (e) => {
+    if (!e.target.closest(".vendor-status-dropdown")) {
+      setSelectVendor(null);
+    }
+  };
+  document.addEventListener("click", handleClickOutside);
+  return () => document.removeEventListener("click", handleClickOutside);
+}, []);
+
 
   const statusColorMap = {
     active: "text-green-500",
@@ -274,148 +285,154 @@ const VendorList = () => {
     </thead>
 
     {/* --- Table Body --- */}
-    <tbody className="divide-y divide-gray-200 bg-white">
-      {filteredVendors.map((vendor) => (
-        <tr
-          key={vendor.id || vendor._id}
-          className="hover:bg-gray-50 transition-colors duration-150"
+<tbody className="divide-y divide-gray-200 bg-white">
+  {filteredVendors.map((vendor) => (
+    <tr
+      key={vendor.id || vendor._id}
+      className="hover:bg-gray-50 transition-colors duration-150"
+    >
+      {/* Name */}
+      <td className="px-6 py-4 font-medium text-gray-900">{vendor.name}</td>
+
+      {/* Location */}
+      <td className="px-6 py-4 text-gray-600">{vendor.location}</td>
+
+      {/* Services Provided */}
+      <td className="px-6 py-4 text-gray-600">
+        {vendor.servicesProvided.length === 0
+          ? "-"
+          : vendor.servicesProvided.length <= 2
+          ? vendor.servicesProvided.join(", ")
+          : vendor.servicesProvided.slice(0, 2).join(", ") + " ..."}
+      </td>
+
+      {/* Ratings */}
+      <td className="px-6 py-4 text-center">
+        <div className="flex justify-center items-center gap-1 text-gray-800">
+          {vendor.rating > 0 ? vendor.rating : 0}
+          <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+        </div>
+      </td>
+
+      {/* Total Jobs */}
+      <td className="px-6 py-4 text-center text-gray-700">
+        {vendor.totalJobsApplied ?? "-"}
+      </td>
+
+      {/* Status Dropdown */}
+      <td className="px-6 py-4 relative vendor-status-dropdown">
+        <button
+          onClick={() =>
+            setSelectVendor(
+              (selectVendor?.id || selectVendor?._id) ===
+              (vendor.id || vendor._id)
+                ? null // close dropdown if clicked again
+                : vendor // open new one
+            )
+          }
+          className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold border border-gray-300 rounded-full hover:bg-gray-100 transition"
         >
-          {/* Name */}
-          <td className="px-6 py-4 font-medium text-gray-900">
-            {vendor.name}
-          </td>
+          {getStatusBadge(vendor.status)}
+        </button>
 
-          {/* Location */}
-          <td className="px-6 py-4 text-gray-600">{vendor.location}</td>
-
-          {/* Services Provided */}
-          <td className="px-6 py-4 text-gray-600">
-            {vendor.servicesProvided.length === 0
-              ? "-"
-              : vendor.servicesProvided.length <= 2
-              ? vendor.servicesProvided.join(", ")
-              : vendor.servicesProvided.slice(0, 2).join(", ") + " ..."}
-          </td>
-
-          {/* Ratings */}
-          <td className="px-6 py-4 text-center">
-            <div className="flex justify-center items-center gap-1 text-gray-800">
-              {vendor.rating > 0 ? vendor.rating : 0}
-              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-            </div>
-          </td>
-
-          {/* Total Jobs */}
-          <td className="px-6 py-4 text-center text-gray-700">
-            {vendor.totalJobsApplied ?? "-"}
-          </td>
-
-          {/* Status Dropdown */}
-          <td className="px-6 py-4 relative">
-            <button
-              onClick={() => setSelectVendor(vendor)}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold border border-gray-300 rounded-full hover:bg-gray-100 transition"
-            >
-              {getStatusBadge(vendor.status)}
-            </button>
-
-            {(selectVendor?.id || selectVendor?._id) ===
-              (vendor.id || vendor._id) && (
-              <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-36 z-10">
-                {vendor.status === "Active" && (
-                  <button
-                    onClick={() => {
-                      handleBlacklist(vendor.id || vendor._id);
-                      setSelectVendor(null);
-                    }}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-                  >
-                    Blacklist
-                  </button>
-                )}
-                {vendor.status === "Pending" && (
-                  <>
-                    <button
-                      onClick={() => {
-                        handleApprove(vendor.id || vendor._id);
-                        setSelectVendor(null);
-                      }}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-green-600"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleReject(vendor.id || vendor._id);
-                        setSelectVendor(null);
-                      }}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
-                    >
-                      Reject
-                    </button>
-                  </>
-                )}
-                {vendor.status === "Rejected" && (
-                  <button
-                    onClick={() => {
-                      handleApprove(vendor.id || vendor._id);
-                      setSelectVendor(null);
-                    }}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-green-600"
-                  >
-                    Approve
-                  </button>
-                )}
-                {vendor.status === "Blacklisted" && (
-                  <button
-                    onClick={() => {
-                      handleApprove(vendor.id || vendor._id);
-                      setSelectVendor(null);
-                    }}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-green-600"
-                  >
-                    Activate
-                  </button>
-                )}
-              </div>
+        {(selectVendor?.id || selectVendor?._id) ===
+          (vendor.id || vendor._id) && (
+          <div className="absolute left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-36 z-10">
+            {vendor.status === "Active" && (
+              <button
+                onClick={() => {
+                  handleBlacklist(vendor.id || vendor._id);
+                  setSelectVendor(null);
+                }}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+              >
+                Blacklist
+              </button>
             )}
-          </td>
+            {vendor.status === "Pending" && (
+              <>
+                <button
+                  onClick={() => {
+                    handleApprove(vendor.id || vendor._id);
+                    setSelectVendor(null);
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-green-600"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => {
+                    handleReject(vendor.id || vendor._id);
+                    setSelectVendor(null);
+                  }}
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600"
+                >
+                  Reject
+                </button>
+              </>
+            )}
+            {vendor.status === "Rejected" && (
+              <button
+                onClick={() => {
+                  handleApprove(vendor.id || vendor._id);
+                  setSelectVendor(null);
+                }}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-green-600"
+              >
+                Approve
+              </button>
+            )}
+            {vendor.status === "Blacklisted" && (
+              <button
+                onClick={() => {
+                  handleApprove(vendor.id || vendor._id);
+                  setSelectVendor(null);
+                }}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-green-600"
+              >
+                Activate
+              </button>
+            )}
+          </div>
+        )}
+      </td>
 
-          {/* Subscription */}
-          <td className="px-6 py-4">
-            <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                vendor.subscriptionStatus === "Active"
-                  ? "text-black border-black"
-                  : vendor.subscriptionStatus === "Expired"
-                  ? "text-gray-500 border-gray-300"
-                  : "text-gray-600 border-gray-200"
-              }`}
-            >
-              {vendor.subscriptionStatus}
-            </span>
-          </td>
+      {/* Subscription */}
+      <td className="px-6 py-4">
+        <span
+          className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+            vendor.subscriptionStatus === "Active"
+              ? "text-black border-black"
+              : vendor.subscriptionStatus === "Expired"
+              ? "text-gray-500 border-gray-300"
+              : "text-gray-600 border-gray-200"
+          }`}
+        >
+          {vendor.subscriptionStatus}
+        </span>
+      </td>
 
-          {/* Actions */}
-          <td className="px-6 py-4 text-center flex justify-center gap-4">
-            <Link
-              to={`/vendor-details/${vendor.id}`}
-              className="text-gray-700 hover:text-black transition"
-              title="View Details"
-            >
-              <Eye className="w-5 h-5" />
-            </Link>
-            <button
-              onClick={() => handleDeleteVendor(vendor.id)}
-              className="text-gray-500 hover:text-red-600 transition"
-              title="Delete Vendor"
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
+      {/* Actions */}
+      <td className="px-6 py-4 text-center flex justify-center gap-4">
+        <Link
+          to={`/vendor-details/${vendor.id}`}
+          className="text-gray-700 hover:text-black transition"
+          title="View Details"
+        >
+          <Eye className="w-5 h-5" />
+        </Link>
+        <button
+          onClick={() => handleDeleteVendor(vendor.id)}
+          className="text-red-500 hover:text-red-600 transition"
+          title="Delete Vendor"
+        >
+          <Trash className="w-4 h-4" />
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
   </table>
 </div>
 

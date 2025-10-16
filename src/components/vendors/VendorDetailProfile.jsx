@@ -3,16 +3,20 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useVendorContext } from "../../context/VendorContext";
 import {
   PhoneCall,
-  MessageSquare,
-  BadgeCheck,
-  FileUser,
-  User,
-  Mails,
+  Mail,
+  MapPin,
   Pencil,
   Trash2,
   Star,
   StarHalf,
-  Star as StarOutline,
+  CheckCircle2,
+  Clock,
+  TrendingUp,
+  FileText,
+  CreditCard,
+  ChevronLeft,
+  BadgeCheck,
+  Briefcase,
 } from "lucide-react";
 
 const VendorDetailProfile = () => {
@@ -25,16 +29,20 @@ const VendorDetailProfile = () => {
   const [loading, setLoading] = useState(true);
 
   const getStatusBadge = (status) => {
-    let bgColor = "bg-gray-300 text-gray-800";
-    if (status === "Active") bgColor = "bg-green-100 text-green-700";
-    else if (status === "Pending") bgColor = "bg-yellow-100 text-yellow-700";
-    else if (status === "Rejected") bgColor = "bg-red-100 text-red-700";
-    else if (status === "Blacklisted") bgColor = "bg-red-200 text-red-800";
+    const statusConfig = {
+      Active: "bg-emerald-50 text-emerald-700 border-emerald-200",
+      Pending: "bg-amber-50 text-amber-700 border-amber-200",
+      Rejected: "bg-rose-50 text-rose-700 border-rose-200",
+      Blacklisted: "bg-red-50 text-red-700 border-red-200",
+    };
 
     return (
       <span
-        className={`inline-block px-3 py-1 text-sm font-semibold rounded-full ${bgColor}`}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border ${
+          statusConfig[status] || "bg-gray-50 text-gray-700 border-gray-200"
+        }`}
       >
+        <span className={`w-1.5 h-1.5 rounded-full ${status === 'Active' ? 'bg-emerald-500' : status === 'Pending' ? 'bg-amber-500' : 'bg-rose-500'}`}></span>
         {status}
       </span>
     );
@@ -49,39 +57,39 @@ const VendorDetailProfile = () => {
           {
             label: "Blacklist Vendor",
             newStatus: "Blacklisted",
-            color: "bg-red-600 hover:bg-red-700",
+            color: "bg-rose-600 hover:bg-rose-700",
           },
         ];
 
       case "Pending":
         return [
           {
-            label: "Approve Vendor",
+            label: "Approve",
             newStatus: "Active",
-            color: "bg-green-600 hover:bg-green-700",
+            color: "bg-emerald-600 hover:bg-emerald-700",
           },
           {
-            label: "Reject Vendor",
+            label: "Reject",
             newStatus: "Rejected",
-            color: "bg-red-600 hover:bg-red-700",
+            color: "bg-rose-600 hover:bg-rose-700",
           },
         ];
 
       case "Blacklisted":
         return [
           {
-            label: "Activate Vendor",
+            label: "Activate",
             newStatus: "Active",
-            color: "bg-green-600 hover:bg-green-700",
+            color: "bg-emerald-600 hover:bg-emerald-700",
           },
         ];
 
       case "Rejected":
         return [
           {
-            label: "Approve Vendor",
+            label: "Approve",
             newStatus: "Active",
-            color: "bg-green-600 hover:bg-green-700",
+            color: "bg-emerald-600 hover:bg-emerald-700",
           },
         ];
 
@@ -112,30 +120,44 @@ const VendorDetailProfile = () => {
   }, [vendorId, vendors]);
 
   if (loading)
-    return <div className="text-center py-10 text-gray-500">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading vendor details...</p>
+        </div>
+      </div>
+    );
 
   if (!vendor)
     return (
-      <div className="text-center py-10 text-red-500">Vendor not found.</div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl">🔍</span>
+          </div>
+          <p className="text-gray-800 font-semibold text-lg">Vendor not found</p>
+          <p className="text-gray-500 mt-1">This vendor doesn't exist in our system</p>
+        </div>
+      </div>
     );
 
-  // rating stars in job status
   const RatingDisplay = ({ rating }) => {
     const maxStars = 5;
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating - fullStars >= 0.5;
     const emptyStars = maxStars - fullStars - (hasHalfStar ? 1 : 0);
     return (
-      <div className="flex items-center gap-1 text-yellow-400">
+      <div className="flex items-center gap-1">
         {[...Array(fullStars)].map((_, i) => (
-          <Star key={`full-${i}`} className="w-5 h-5" />
+          <Star key={`full-${i}`} className="w-4 h-4 fill-amber-400 text-amber-400" />
         ))}
-        {hasHalfStar && <StarHalf className="w-5 h-5" />}
+        {hasHalfStar && <StarHalf className="w-4 h-4 fill-amber-400 text-amber-400" />}
         {[...Array(emptyStars)].map((_, i) => (
-          <StarOutline key={`empty-${i}`} className="w-5 h-5 text-gray-300" />
+          <Star key={`empty-${i}`} className="w-4 h-4 text-gray-300" />
         ))}
-        <span className="ml-2 text-gray-700 font-semibold">
-          {rating.toFixed(1)} / 5
+        <span className="ml-1.5 text-sm font-semibold text-gray-700">
+          {rating.toFixed(1)}
         </span>
       </div>
     );
@@ -145,456 +167,354 @@ const VendorDetailProfile = () => {
     vendor.status === "Pending" || vendor.status === "Rejected";
 
   return (
-    <div className="bg-white rounded-lg shadow border border-gray-200">
-      <div className="flex items-center justify-between mt-3 px-3">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-md gap-1"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            className="w-4 h-4"
+    <div >
+      {/* Header */}
+      <div className="">
+        <div className="">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors group"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5"
-            />
-          </svg>
-          Back
-        </button>
+            <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            Back to Vendors
+          </button>
+        </div>
       </div>
 
       {isProfileHidden ? (
-        <div className="text-center text-gray-500 py-20 text-lg">
-          Vendor profile is not available.
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FileText className="w-10 h-10 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">Profile Unavailable</h3>
+            <p className="text-gray-500">This vendor's profile is currently not available for viewing.</p>
+          </div>
         </div>
       ) : (
-        <div className="px-4 py-6 space-y-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
-            <div>
-              <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-                  {vendor.name}
-                </h2>
-                {getStatusBadge(vendor.status)}
-              </div>
-              <div className="text-gray-500 text-sm mt-1">
-                {vendor.location}
-              </div>
-            </div>
-
-            {/* action Buttons */}
-            <div className="flex flex-wrap sm:flex-wrap md:flex-nowrap lg:flex-nowrap justify-end gap-2 pt-4 md:pt-0 sticky bottom-0 bg-white z-20">
-              {getActionButtons().map(({ label, newStatus, color }) => (
-                <button
-                  key={label}
-                  onClick={() => handleChangeStatus(newStatus)}
-                  className={`${color} px-4 py-2 rounded text-white text-sm font-semibold whitespace-nowrap`}
-                >
-                  {label}
-                </button>
-              ))}
-
-              <button
-                onClick={() => navigate(`/vendor-edit/${vendor.id}`)}
-                className="p-2 rounded bg-blue-100 text-blue-600 hover:bg-blue-200 text-sm font-medium w-fit lg:px-4 lg:py-2 lg:flex lg:items-center lg:gap-2"
-              >
-                <Pencil className="w-4 h-4" />
-                <span className="hidden lg:inline">Edit Profile</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to delete this vendor?"
-                    )
-                  ) {
-                    navigate("/vendors");
-                  }
-                }}
-                className="p-2 rounded bg-red-100 text-red-600 hover:bg-red-200 text-sm font-medium w-fit lg:px-4 lg:py-2 lg:flex lg:items-center lg:gap-2"
-              >
-                <Trash2 className="w-4 h-4" />
-                <span className="hidden lg:inline">Delete Vendor</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex flex-wrap gap-2 border-b bg-white px-1 sm:px-0">
-            {[
-              "vendor info",
-              "documents",
-              "job history",
-              "job status",
-              "subscription",
-            ].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-3 py-2 font-medium capitalize text-sm sm:text-base whitespace-nowrap ${
-                  activeTab === tab
-                    ? "border-b-2 border-blue-500 text-blue-600"
-                    : "text-gray-600 hover:text-blue-600"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          {/* Main Content */}
-          <div className="min-h-32 mt-4">
-            {activeTab === "vendor info" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-100">
-                  <div className="space-y-3 text-gray-700 text-sm">
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-gray-500" />
-                      <span className="font-medium text-gray-800">
-                        {vendor.name}
-                      </span>
+        <div className=" py-4 space-y-6">
+          {/* Vendor Header Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-gradient-to-r  h-24"></div>
+            <div className="px-6 pb-6 -mt-16">
+              <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
+                <div className="flex items-end gap-4">
+                  <div className="w-24 h-24 rounded-2xl bg-white shadow-lg border-4 border-white flex items-center justify-center text-3xl font-bold text-blue-600">
+                    {vendor.name.charAt(0)}
+                  </div>
+                  <div className="pb-2">
+                    <div className="flex items-center gap-3 flex-wrap mb-2">
+                      <h1 className="text-2xl font-bold text-gray-900">{vendor.name}</h1>
+                      {getStatusBadge(vendor.status)}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <PhoneCall className="w-4 h-4 text-gray-500" />
-                      <span className="font-medium text-gray-800">
-                        {vendor.phone}
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span className="flex items-center gap-1.5">
+                        <MapPin className="w-4 h-4" />
+                        {vendor.location}
                       </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Mails className="w-4 h-4 text-gray-500" />
-                      <span className="font-medium text-gray-800">
-                        {vendor.email}
+                      <span className="flex items-center gap-1.5">
+                        <Briefcase className="w-4 h-4" />
+                        ID: {vendor.id}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Services Offered */}
-                <div className="bg-white rounded-2xl shadow p-6 space-y-4 border border-gray-100">
-                  <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-700 mb-2">
-                    <BadgeCheck className="text-blue-600 w-5 h-5" /> Services
-                    Offered
-                  </h2>
-                  <ul className="list-disc ml-6 text-gray-700 text-sm space-y-1">
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-2">
+                  {getActionButtons().map(({ label, newStatus, color }) => (
+                    <button
+                      key={label}
+                      onClick={() => handleChangeStatus(newStatus)}
+                      className={`${color} px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all hover:shadow-lg`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={() => navigate(`/vendor-edit/${vendor.id}`)}
+                    className="px-4 py-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 text-sm font-semibold transition-all flex items-center gap-2"
+                  >
+                    <Pencil className="w-4 h-4" />
+                    Edit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-2">
+            <div className="flex flex-wrap gap-1">
+              {[
+                { id: "vendor info", icon: BadgeCheck },
+                { id: "documents", icon: FileText },
+                { id: "job history", icon: Briefcase },
+                { id: "subscription", icon: CreditCard },
+              ].map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-2 px-4 py-2.5 font-medium capitalize text-sm rounded-lg transition-all ${
+                      activeTab === tab.id
+                        ? "bg-blue-600 text-white shadow-md"
+                        : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="hidden sm:inline">{tab.id}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div>
+            {activeTab === "vendor info" && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Contact Info */}
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <PhoneCall className="w-4 h-4 text-blue-600" />
+                    </div>
+                    Contact Information
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <PhoneCall className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-0.5">Phone</p>
+                        <p className="font-medium text-gray-900">{vendor.phone}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Mail className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-0.5">Email</p>
+                        <p className="font-medium text-gray-900 break-all">{vendor.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <MapPin className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-0.5">Location</p>
+                        <p className="font-medium text-gray-900">{vendor.location}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Services */}
+                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                      <BadgeCheck className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    Services Offered
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {vendor.servicesProvided?.map((service, idx) => (
-                      <li key={idx} className="font-medium text-gray-800">
-                        {service}
-                      </li>
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100"
+                      >
+                        <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                        <span className="font-medium text-gray-800 text-sm">{service}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Documents */}
             {activeTab === "documents" && (
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-4">
                 {vendor.documents?.map((doc, idx) => (
                   <div
                     key={idx}
-                    className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 p-4 rounded-xl shadow bg-white hover:shadow-md transition"
+                    className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all"
                   >
-                    <div className="space-y-1">
-                      <div className="text-gray-900 font-semibold text-base">
-                        {doc.name}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <FileText className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-1">{doc.name}</h4>
+                          <p className="text-sm text-gray-500">{doc.type}</p>
+                        </div>
                       </div>
-                      <div className="text-gray-500 text-sm">{doc.type}</div>
-                    </div>
-
-                    <div className="text-gray-600 text-sm mt-3 md:mt-0 md:text-center whitespace-nowrap">
-                      <span className="font-medium text-gray-700">
-                        Uploaded On:
-                      </span>{" "}
-                      {doc.uploadedOn !== "--"
-                        ? doc.uploadedOn
-                        : "Not Uploaded"}
-                    </div>
-
-                    <div
-                      className={`px-3 py-1 text-sm font-semibold rounded-full mt-3 md:mt-0 ${
-                        doc.status === "Verified"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}
-                    >
-                      {doc.status}
+                      <div className="flex items-center gap-4 sm:flex-row-reverse">
+                        <span
+                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg ${
+                            doc.status === "Verified"
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                              : "bg-amber-50 text-amber-700 border border-amber-200"
+                          }`}
+                        >
+                          {doc.status}
+                        </span>
+                        <span className="text-sm text-gray-600">
+                          {doc.uploadedOn !== "--" ? doc.uploadedOn : "Not Uploaded"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Job History */}
             {activeTab === "job history" && (
-              <div className="overflow-x-auto border rounded-lg shadow">
-                <table className="min-w-full text-left text-sm border-collapse">
-                  <thead className="bg-gray-50 text-gray-700">
-                    <tr>
-                      <th className="px-4 py-3 whitespace-nowrap">Job ID</th>
-                      <th className="px-4 py-3 whitespace-nowrap">Title</th>
-                      <th className="px-4 py-3 whitespace-nowrap">Type</th>
-                      <th className="px-4 py-3 whitespace-nowrap">Price (₹)</th>
-                      <th className="px-4 py-3 whitespace-nowrap">Status</th>
-                      <th className="px-4 py-3 whitespace-nowrap">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {vendor.jobHistory?.map((job) => (
-                      <tr
-                        key={job.id}
-                        className="border-t hover:bg-gray-50 transition"
-                      >
-                        <td className="px-4 py-2 whitespace-nowrap">
-                          {job.id}
-                        </td>
-                        <td className="px-4 py-2 font-medium text-gray-800 whitespace-nowrap">
-                          {job.title}
-                        </td>
-                        <td className="px-4 py-2 whitespace-nowrap">
-                          {job.type}
-                        </td>
-                        <td className="px-4 py-2 whitespace-nowrap">
-                          ₹{job.price}
-                        </td>
-                        <td className="px-4 py-2 whitespace-nowrap">
-                          <span
-                            className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                              job.status === "Completed"
-                                ? "bg-green-100 text-green-700"
-                                : job.status === "Ongoing"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-gray-200 text-gray-700"
-                            }`}
-                          >
-                            {job.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
-                          {job.date}
-                        </td>
+           
+              <div>
+                <div className="mb-6">
+
+  {/* Job Stats Grid */}
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    
+    {/* Total Jobs */}
+    <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
+      <div>
+        <p className="text-sm text-gray-500">Total Jobs</p>
+        <h3 className="text-2xl font-bold text-black">{vendor.totalJobsApplied}</h3>
+      </div>
+      <div className="bg-black/10 p-3 rounded-full">
+        <Briefcase className="w-6 h-6 text-black" />
+      </div>
+    </div>
+
+    {/* Completed */}
+    <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
+      <div>
+        <p className="text-sm text-gray-500">Completed</p>
+        <h3 className="text-2xl font-bold text-black">{vendor.completedJobs}</h3>
+      </div>
+      <div className="bg-black/10 p-3 rounded-full">
+        <CheckCircle2 className="w-6 h-6 text-black" />
+      </div>
+    </div>
+
+    {/* Ongoing */}
+    <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
+      <div>
+        <p className="text-sm text-gray-500">Ongoing</p>
+        <h3 className="text-2xl font-bold text-black">{vendor.ongoingJobs}</h3>
+      </div>
+      <div className="bg-black/10 p-3 rounded-full">
+        <Clock className="w-6 h-6 text-black" />
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+</div>
+
+                   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Job ID</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {vendor.jobHistory?.map((job) => (
+                        <tr key={job.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{job.id}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job.title}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.type}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">₹{job.price}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-lg ${
+                                job.status === "Completed"
+                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                  : job.status === "Ongoing"
+                                  ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                  : "bg-gray-50 text-gray-700 border border-gray-200"
+                              }`}
+                            >
+                              {job.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.date}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
               </div>
             )}
 
-            {/* Job Status */}
-            {activeTab === "job status" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex items-center gap-4 bg-white p-6 rounded-2xl shadow border border-gray-100">
-                  <div className="w-16 h-16 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full text-xl font-bold">
-                    {vendor.totalJobsApplied}
-                  </div>
-                  <div>
-                    <div className="text-lg font-semibold text-gray-800">
-                      Total Jobs Applied
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Across all categories
-                    </div>
-                  </div>
-                </div>
-
-                {/* Completed Jobs */}
-                <div className="flex items-center gap-4 bg-white p-6 rounded-2xl shadow border border-gray-100">
-                  <div className="relative w-16 h-16">
-                    <svg
-                      className="w-16 h-16 transform -rotate-90"
-                      viewBox="0 0 36 36"
-                    >
-                      <path
-                        className="text-gray-200"
-                        strokeWidth="4"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845
-               a 15.9155 15.9155 0 0 1 0 31.831
-               a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                      <path
-                        className="text-green-500"
-                        strokeWidth="4"
-                        strokeDasharray={`${
-                          (vendor.completedJobs / vendor.totalJobsApplied) * 100
-                        }, 100`}
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845
-               a 15.9155 15.9155 0 0 1 0 31.831
-               a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center text-green-600 font-bold">
-                      {vendor.completedJobs}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-semibold text-gray-800">
-                      Completed Jobs
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Successfully finished
-                    </div>
-                  </div>
-                </div>
-
-                {/* Ongoing Jobs */}
-                <div className="flex items-center gap-4 bg-white p-6 rounded-2xl shadow border border-gray-100">
-                  <div className="relative w-16 h-16">
-                    <svg
-                      className="w-16 h-16 transform -rotate-90"
-                      viewBox="0 0 36 36"
-                    >
-                      <path
-                        className="text-gray-200"
-                        strokeWidth="4"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845
-               a 15.9155 15.9155 0 0 1 0 31.831
-               a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                      <path
-                        className="text-yellow-500"
-                        strokeWidth="4"
-                        strokeDasharray={`${
-                          (vendor.ongoingJobs / vendor.totalJobsApplied) * 100
-                        }, 100`}
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845
-               a 15.9155 15.9155 0 0 1 0 31.831
-               a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center text-yellow-600 font-bold">
-                      {vendor.ongoingJobs}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-semibold text-gray-800">
-                      Ongoing Jobs
-                    </div>
-                    <div className="text-sm text-gray-500">In progress</div>
-                  </div>
-                </div>
-
-                {/* Success Rate */}
-                <div className="flex items-center gap-4 bg-white p-6 rounded-2xl shadow border border-gray-100">
-                  <div className="relative w-16 h-16">
-                    <svg
-                      className="w-16 h-16 transform -rotate-90"
-                      viewBox="0 0 36 36"
-                    >
-                      <path
-                        className="text-gray-200"
-                        strokeWidth="4"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845
-               a 15.9155 15.9155 0 0 1 0 31.831
-               a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                      <path
-                        className="text-green-500"
-                        strokeWidth="4"
-                        strokeDasharray={`${vendor.jobSuccessRate}, 100`}
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845
-               a 15.9155 15.9155 0 0 1 0 31.831
-               a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center text-green-600 font-bold">
-                      {vendor.jobSuccessRate}%
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-semibold text-gray-800">
-                      Success Rate
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Overall performance
-                    </div>
-                  </div>
-                </div>
-
-                {/* Rating */}
-                <div className="flex items-center justify-center gap-3 mb-10 col-span-full">
-                  <h3 className="font-semibold text-gray-700 m-0 text-lg">
-                    Rating:
-                  </h3>
-                  <RatingDisplay rating={vendor.rating} />
-                </div>
-              </div>
-            )}
-
-            {/* Subscription */}
+    
             {activeTab === "subscription" && (
-              <div className="border rounded-2xl p-6 shadow bg-white max-w-xl w-full">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                  Subscription Details
-                </h2>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <CreditCard className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900">Subscription Details</h2>
+                </div>
 
-                <div className="space-y-2 text-gray-800 text-base">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-600">Price:</span>
-                    <span className="font-medium">
-                      ₹{vendor.subscription.price}
-                    </span>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <span className="font-medium text-gray-600">Plan Price</span>
+                    <span className="text-2xl font-bold text-gray-900">₹</span>
                   </div>
 
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-600">
-                      Payment Status:
-                    </span>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <span className="font-medium text-gray-600">Payment Status</span>
                     <span
-                      className={`font-medium ${
+                      className={`px-3 py-1.5 rounded-lg font-semibold text-sm ${
                         vendor.subscription.paymentStatus === "Paid"
-                          ? "text-green-600"
-                          : "text-red-600"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-rose-100 text-rose-700"
                       }`}
                     >
                       {vendor.subscription.paymentStatus}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-600">
-                      Start Date:
-                    </span>
-                    <span className="font-medium">
-                      {vendor.subscription.startDate}
-                    </span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-gray-50 rounded-xl">
+                      <span className="text-sm text-gray-600 block mb-1">Start Date</span>
+                      <span className="font-semibold text-gray-900">{vendor.subscription.startDate}</span>
+                    </div>
+                    <div className="p-4 bg-gray-50 rounded-xl">
+                      <span className="text-sm text-gray-600 block mb-1">End Date</span>
+                      <span className="font-semibold text-gray-900">{vendor.subscription.endDate}</span>
+                    </div>
                   </div>
 
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-600">
-                      End Date:
-                    </span>
-                    <span className="font-medium">
-                      {vendor.subscription.endDate}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-600">
-                      Renewal Due:
-                    </span>
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <span className="font-medium text-gray-600">Renewal Due</span>
                     <span
-                      className={`font-medium ${
+                      className={`px-3 py-1.5 rounded-lg font-semibold text-sm ${
                         vendor.subscription.renewalDue
-                          ? "text-yellow-600"
-                          : "text-green-600"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-emerald-100 text-emerald-700"
                       }`}
                     >
                       {vendor.subscription.renewalDue ? "Yes" : "No"}

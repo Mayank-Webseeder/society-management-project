@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Trash, Briefcase, CheckCircle, Clock, XCircle } from "lucide-react";
+import { Search, Trash, Briefcase, CheckCircle, Clock, XCircle, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useJobContext } from "../../context/JobContext";
 
@@ -199,11 +199,11 @@ const JobsList = () => {
                     )}
                   </td>
                   <td className="px-6 py-3 text-center flex items-center justify-center gap-3">
-                    <Link to={`/job-details/${job._id}`} className="text-blue-600 hover:underline">
-                      View
+                    <Link to={`/job-details/${job._id}`} className=" hover:underline">
+                      <Eye className="w-4 h-4" />
                     </Link>
                     <button onClick={() => handleDelete(job._id)} className="text-red-500 hover:text-red-400">
-                      <Trash className="w-5 h-5" />
+                      <Trash  className="w-4 h-4 text-red-500" />
                     </button>
                   </td>
                 </tr>
