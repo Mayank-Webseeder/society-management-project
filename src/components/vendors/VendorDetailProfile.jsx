@@ -17,6 +17,7 @@ import {
   ChevronLeft,
   BadgeCheck,
   Briefcase,
+  XCircle
 } from "lucide-react";
 
 const VendorDetailProfile = () => {
@@ -248,10 +249,9 @@ const VendorDetailProfile = () => {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-2">
             <div className="flex flex-wrap gap-1">
               {[
-                { id: "vendor info", icon: BadgeCheck },
-                { id: "documents", icon: FileText },
-                { id: "job history", icon: Briefcase },
+                { id: "vendor info", icon: BadgeCheck },    
                 { id: "subscription", icon: CreditCard },
+                { id: "job history", icon: Briefcase },
               ].map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -275,7 +275,9 @@ const VendorDetailProfile = () => {
           {/* Content */}
           <div>
             {activeTab === "vendor info" && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+              <div>
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Contact Info */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -336,10 +338,11 @@ const VendorDetailProfile = () => {
                   </div>
                 </div>
               </div>
-            )}
+             
 
-            {activeTab === "documents" && (
-              <div className="grid grid-cols-1 gap-4">
+              <div>
+
+                       <div className="grid grid-cols-1 gap-4 py-4">
                 {vendor.documents?.map((doc, idx) => (
                   <div
                     key={idx}
@@ -373,103 +376,13 @@ const VendorDetailProfile = () => {
                   </div>
                 ))}
               </div>
-            )}
-
-            {activeTab === "job history" && (
-           
-              <div>
-                <div className="mb-6">
-
-  {/* Job Stats Grid */}
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-    
-    {/* Total Jobs */}
-    <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-      <div>
-        <p className="text-sm text-gray-500">Total Jobs</p>
-        <h3 className="text-2xl font-bold text-black">{vendor.totalJobsApplied}</h3>
-      </div>
-      <div className="bg-black/10 p-3 rounded-full">
-        <Briefcase className="w-6 h-6 text-black" />
-      </div>
-    </div>
-
-    {/* Completed */}
-    <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-      <div>
-        <p className="text-sm text-gray-500">Completed</p>
-        <h3 className="text-2xl font-bold text-black">{vendor.completedJobs}</h3>
-      </div>
-      <div className="bg-black/10 p-3 rounded-full">
-        <CheckCircle2 className="w-6 h-6 text-black" />
-      </div>
-    </div>
-
-    {/* Ongoing */}
-    <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-      <div>
-        <p className="text-sm text-gray-500">Ongoing</p>
-        <h3 className="text-2xl font-bold text-black">{vendor.ongoingJobs}</h3>
-      </div>
-      <div className="bg-black/10 p-3 rounded-full">
-        <Clock className="w-6 h-6 text-black" />
-      </div>
-    </div>
-
-
-  </div>
-
-
-
-</div>
-
-                   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Job ID</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {vendor.jobHistory?.map((job) => (
-                        <tr key={job.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{job.id}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job.title}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.type}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">₹{job.price}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-lg ${
-                                job.status === "Completed"
-                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                  : job.status === "Ongoing"
-                                  ? "bg-amber-50 text-amber-700 border border-amber-200"
-                                  : "bg-gray-50 text-gray-700 border border-gray-200"
-                              }`}
-                            >
-                              {job.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.date}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
               </div>
-
               </div>
             )}
 
     
-            {activeTab === "subscription" && (
+
+   {activeTab === "subscription" && (
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -523,6 +436,104 @@ const VendorDetailProfile = () => {
                 </div>
               </div>
             )}
+            {activeTab === "job history" && (
+           
+              <div>
+                <div className="mb-6">
+
+  {/* Job Stats Grid */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  {[
+    {
+      label: "Total Jobs",
+      value: vendor.totalJobsApplied,
+      icon: Briefcase,
+      bg: "bg-blue-200",
+    },
+    {
+      label: "Completed",
+      value: vendor.completedJobs,
+      icon: CheckCircle2,
+      bg: "bg-green-200",
+    },
+    {
+      label: "Ongoing",
+      value: vendor.ongoingJobs,
+      icon: Clock,
+      bg: "bg-amber-200",
+    },
+    {
+      label: "Cancelled",
+      value: vendor.cancelledJobs || 0,
+      icon: XCircle,
+      bg: "bg-red-200",
+    },
+  ].map(({ label, value, icon: Icon, bg }, index) => (
+    <div
+      key={index}
+      className={`${bg} text-black rounded-2xl p-4 flex items-center justify-between`}
+    >
+      <div>
+        <p className="text-sm opacity-90">{label}</p>
+        <h3 className="text-3xl font-bold mt-1">{value}</h3>
+      </div>
+      <div className="bg-gray-50 p-3 rounded-full">
+        <Icon className="w-6 h-6 text-black" />
+      </div>
+    </div>
+  ))}
+</div>
+
+
+
+
+</div>
+
+                   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Job ID</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {vendor.jobHistory?.map((job) => (
+                        <tr key={job.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{job.id}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job.title}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.type}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">₹{job.price}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-lg ${
+                                job.status === "Completed"
+                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                  : job.status === "Ongoing"
+                                  ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                  : "bg-gray-50 text-gray-700 border border-gray-200"
+                              }`}
+                            >
+                              {job.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.date}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              </div>
+            )}
+        
           </div>
         </div>
       )}

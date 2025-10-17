@@ -4,6 +4,8 @@ import { confirmAlert } from "react-confirm-alert";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { removeToken } from "../../utils/Token";
+import { IoSettings } from "react-icons/io5";
+import { FaUserCircle } from "react-icons/fa";
 
 const NavBar = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
@@ -129,7 +131,7 @@ const NavBar = ({ setIsLoggedIn }) => {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="hidden lg:inline text-sm">Notifications</span>
+              {/* <span className="hidden lg:inline text-sm">Notifications</span> */}
             </button>
 
             {/* Dropdown */}
@@ -170,24 +172,25 @@ const NavBar = ({ setIsLoggedIn }) => {
               >
                 <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
               </svg>
-              <span className="hidden lg:inline text-sm font-medium text-gray-700">
+              {/* <span className="hidden lg:inline text-sm font-medium text-gray-700">
                 Profile
-              </span>
+              </span> */}
             </button>
 
             {isProfileOpen && (
               <div className="absolute right-0 mt-3 w-56 rounded-xl shadow-2xl bg-white ring-1 ring-gray-200 z-50 animate-fade-in">
                 <div className="px-4 py-3 border-b border-gray-100">
-                  <p className="text-gray-600 text-sm text-center">
+                  <p className="text-gray-600 text-sm">
                     Manage your profile
                   </p>
                 </div>
 
-                <div className="flex flex-col p-3 space-y-3 items-center">
+                <div className="flex flex-col p-3 space-y-3">
                   <button
                     onClick={() => setIsProfileOpen(false)}
                     className="group flex items-center gap-2 rounded-full px-3 py-2 hover:bg-gray-100 transition-all focus:outline-none ring-1 ring-transparent hover:ring-indigo-200"
                   >
+                    <FaUserCircle className="w-4 h-4 text-gray-600" />
                     Your Profile
                   </button>
 
@@ -196,16 +199,12 @@ const NavBar = ({ setIsLoggedIn }) => {
                       navigate("/admin-settings");
                       setIsProfileOpen(false);
                     }}
-                    className="group flex items-center rounded-full px-3 py-2 hover:bg-gray-100 transition-all focus:outline-none ring-1 ring-transparent hover:ring-indigo-200"
+                    className="group gap-2 flex items-center rounded-full px-3 py-2 hover:bg-gray-100 transition-all focus:outline-none ring-1 ring-transparent hover:ring-indigo-200"
                   >
+                    <IoSettings className="w-4 h-4 text-gray-600" />
                     Settings
                   </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <button
+                    <button
             onClick={handleLogout}
             className="group flex items-center px-3 py-2 gap-2 rounded-full hover:bg-gray-100 transition-all ring-1 ring-transparent hover:ring-red-300 focus:outline-none"
             title="Logout"
@@ -216,6 +215,22 @@ const NavBar = ({ setIsLoggedIn }) => {
               Logout
             </span>
           </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* <button
+            onClick={handleLogout}
+            className="group flex items-center px-3 py-2 gap-2 rounded-full hover:bg-gray-100 transition-all ring-1 ring-transparent hover:ring-red-300 focus:outline-none"
+            title="Logout"
+            aria-label="Logout"
+          >
+            <RiLogoutCircleLine className="w-5 h-5 text-gray-600 group-hover:text-red-600 transition duration-200" />
+            <span className="hidden lg:inline text-sm font-medium text-gray-700 group-hover:text-red-600">
+              Logout
+            </span>
+          </button> */}
         </div>
       </div>
     </header>

@@ -100,17 +100,17 @@ export const SocietyProvider = ({ children }) => {
 
         // Merge mock data for now
         const mergedSocieties = [
-          ...apiSocieties,
-          ...mockSocieties.filter(
+          ,
+          ...apiSocieties.filter(
             (mock) => !apiSocieties.some((api) => api.id === mock.id)
           ),
         ];
-
-        setSocieties(mergedSocieties);
+ setSocieties(mergedSocieties);
+       
       } catch (error) {
         console.error("Error fetching societies:", error);
 
-        setSocieties(mockSocieties);
+         setSocieties(mergedSocieties);
       } finally {
         setLoading(false);
       }
@@ -133,7 +133,7 @@ export const SocietyProvider = ({ children }) => {
         }
       );
 
-      // console.log("Approve click", res.data);
+      console.log("Approve click", res.data);
 
       setVendors((prev) =>
         prev.map((vendor) =>

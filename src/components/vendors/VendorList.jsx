@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, } from "react";
 import { Search, Trash2, Star, Eye, Trash } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { useVendorContext } from "../../context/VendorContext";
 import { Users, UserCheck, Clock, UserX, ShieldAlert } from "lucide-react";
 
@@ -19,6 +19,8 @@ const VendorList = () => {
   const [subscriptionFilter, setSubscriptionFilter] = useState("");
   const [selectVendor, setSelectVendor] = useState(null);
   const [serviceFilter, setServiceFilter] = useState("");
+
+   const navigate = useNavigate();
 
   const filteredVendors = vendors.filter((vendor) => {
     const name = vendor.name || "";
@@ -146,70 +148,56 @@ const VendorList = () => {
  
     <div>
       {/* --- Vendor Stats Section --- */}
-<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-  {/* Total Vendors */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">Total Vendors</p>
-      <h3 className="text-2xl font-bold text-black">{vendors.length}</h3>
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+  {[
+    {
+      label: "Total Vendors",
+      value: vendors.length,
+      icon: Users,
+      bg: "bg-blue-200",
+    },
+    {
+      label: "Active",
+      value: vendors.filter((v) => v.status === "Active").length,
+      icon: UserCheck,
+      bg: "bg-green-200",
+    },
+    {
+      label: "Pending",
+      value: vendors.filter((v) => v.status === "Pending").length,
+      icon: Clock,
+      bg: "bg-yellow-200",
+    },
+    {
+      label: "Rejected",
+      value: vendors.filter((v) => v.status === "Rejected").length,
+      icon: UserX,
+      bg: "bg-red-200",
+    },
+    {
+      label: "Blacklisted",
+      value: vendors.filter((v) => v.status === "Blacklisted").length,
+      icon: ShieldAlert,
+      bg: "bg-purple-200",
+    },
+  ].map(({ label, value, icon: Icon, bg }, index) => (
+    <div
+      key={index}
+      className={`${bg} text-black rounded-2xl p-4 flex items-center justify-between`}
+    >
+      <div>
+        <p className="text-sm opacity-90">{label}</p>
+        <h3 className="text-3xl font-bold mt-1">{value}</h3>
+      </div>
+      <div className="bg-gray-50 p-3 rounded-full">
+        <Icon className="w-6 h-6 text-black" />
+      </div>
     </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <Users className="w-6 h-6 text-black" />
-    </div>
-  </div>
-
-  {/* Active */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">Active</p>
-      <h3 className="text-2xl font-bold text-black">
-        {vendors.filter((v) => v.status === "Active").length}
-      </h3>
-    </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <UserCheck className="w-6 h-6 text-black" />
-    </div>
-  </div>
-
-  {/* Pending */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">Pending</p>
-      <h3 className="text-2xl font-bold text-black">
-        {vendors.filter((v) => v.status === "Pending").length}
-      </h3>
-    </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <Clock className="w-6 h-6 text-black" />
-    </div>
-  </div>
-
-  {/* Rejected */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">Rejected</p>
-      <h3 className="text-2xl font-bold text-black">
-        {vendors.filter((v) => v.status === "Rejected").length}
-      </h3>
-    </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <UserX className="w-6 h-6 text-black" />
-    </div>
-  </div>
-
-  {/* Blacklisted */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">Blacklisted</p>
-      <h3 className="text-2xl font-bold text-black">
-        {vendors.filter((v) => v.status === "Blacklisted").length}
-      </h3>
-    </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <ShieldAlert className="w-6 h-6 text-black" />
-    </div>
-  </div>
+  ))}
 </div>
+
+
+
 <div className="w-full flex flex-col gap-4 mb-6 xl:flex-row xl:items-center xl:justify-between bg-white p-4 rounded-lg shadow">
   {/* Search Box */}
   <div className="relative w-full xl:w-[40%]">
@@ -288,8 +276,18 @@ const VendorList = () => {
 <tbody className="divide-y divide-gray-200 bg-white">
   {filteredVendors.map((vendor) => (
     <tr
-      key={vendor.id || vendor._id}
-      className="hover:bg-gray-50 transition-colors duration-150"
+      key={vendor.id || vendor._id} 
+      onClick={(e) => {
+    if (
+      !e.target.closest(".vendor-status-dropdown") &&
+      !e.target.closest("button") &&
+      !e.target.closest("a")
+    ) {
+      navigate(`/vendor-details/${vendor.id}`);
+
+    }
+  }}
+      className="hover:bg-gray-50 cursor-pointer transition-colors duration-150"
     >
       {/* Name */}
       <td className="px-6 py-4 font-medium text-gray-900">{vendor.name}</td>
@@ -414,13 +412,13 @@ const VendorList = () => {
 
       {/* Actions */}
       <td className="px-6 py-4 text-center flex justify-center gap-4">
-        <Link
+        {/* <Link
           to={`/vendor-details/${vendor.id}`}
           className="text-gray-700 hover:text-black transition"
           title="View Details"
         >
           <Eye className="w-5 h-5" />
-        </Link>
+        </Link> */}
         <button
           onClick={() => handleDeleteVendor(vendor.id)}
           className="text-red-500 hover:text-red-600 transition"

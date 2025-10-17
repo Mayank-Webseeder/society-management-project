@@ -175,7 +175,7 @@ const SocietyList = () => {
                     <tr key={soc.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 font-medium text-black-800 hover:text-blue-700">
                         <Link to={`/society-details/${soc.id}`}>
-                          {soc.name}
+                          {soc.username}
                         </Link>
                       </td>
                       <td className="px-6 py-4">{soc.location}</td>

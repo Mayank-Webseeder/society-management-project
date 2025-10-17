@@ -1,8 +1,10 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { confirmAlert } from "react-confirm-alert";
+import { removeToken } from "../../utils/Token";
 
-const SideBarLink = ({ to, icon, label, active, collapsed }) => (
+const SideBarLink = ({ to, icon, label, active, expanded }) => (
   <Link
     to={to}
     className={`flex items-center px-3 py-2 rounded-lg transition-all duration-200 group relative ${
@@ -11,27 +13,63 @@ const SideBarLink = ({ to, icon, label, active, collapsed }) => (
         : "text-white hover:bg-white/10 hover:outline hover:outline-2 hover:outline-cyan-200/50 hover:outline-offset-0"
     }`}
   >
-    <div className={`flex ${collapsed ? "justify-center w-full" : "mr-3"}`}>
+    <div className="flex items-center justify-center min-w-[24px]">
       <span className="text-lg">{icon}</span>
     </div>
-    {!collapsed && <span>{label}</span>}
+    <span
+      className={`ml-3 whitespace-nowrap overflow-hidden transition-all duration-200 ${
+        expanded ? "opacity-100 w-auto" : "opacity-0 w-0"
+      }`}
+    >
+      {label}
+    </span>
   </Link>
 );
 
+const BottomButton = ({ icon, label, onClick, expanded }) => (
+  <button
+    onClick={onClick}
+    className="flex items-center px-3 py-2 rounded-lg transition-all duration-200 text-white hover:bg-white/10 hover:outline hover:outline-2 hover:outline-cyan-200/50 hover:outline-offset-0 w-full"
+  >
+    <div className="flex items-center justify-center min-w-[24px]">
+      <span className="text-lg">{icon}</span>
+    </div>
+    <span
+      className={`ml-3 whitespace-nowrap overflow-hidden transition-all duration-200 ${
+        expanded ? "opacity-100 w-auto" : "opacity-0 w-0"
+      }`}
+    >
+      {label}
+    </span>
+  </button>
+);
+
 const SideBar = () => {
+    const navigate = useNavigate();
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    const handleSize = () => {
-      const showBar = window.innerWidth < 800;
-      setCollapsed(showBar);
+
+
+   const handleLogout = () => {
+      confirmAlert({
+        title: "Exit Dashboard",
+        message: "Do you want to sign out of your admin account?",
+        buttons: [
+          {
+            label: "Yes",
+            onClick: () => {
+              removeToken();
+              navigate("/admin/login");
+            },
+          },
+          {
+            label: "No",
+            onClick: () => {},
+          },
+        ],
+      });
     };
-
-    handleSize();
-    window.addEventListener("resize", handleSize);
-    return () => window.removeEventListener("resize", handleSize);
-  }, []);
 
   const menuItems = [
     {
@@ -145,7 +183,7 @@ const SideBar = () => {
           />
         </svg>
       ),
-      label: "Services/Categories",
+      label: "Services",
     },
     {
       to: "/ratings",
@@ -165,25 +203,6 @@ const SideBar = () => {
       ),
       label: "Ratings & Feedback",
     },
-    // {
-    //   to: "/payments",
-    //   icon: (
-    //     <svg
-    //       xmlns="http://www.w3.org/2000/svg"
-    //       viewBox="0 0 24 24"
-    //       fill="currentColor"
-    //       className="size-6"
-    //     >
-    //       <path d="M4.5 3.75a3 3 0 0 0-3 3v.75h21v-.75a3 3 0 0 0-3-3h-15Z" />
-    //       <path
-    //         fillRule="evenodd"
-    //         d="M22.5 9.75h-21v7.5a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3v-7.5Zm-18 3.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z"
-    //         clipRule="evenodd"
-    //       />
-    //     </svg>
-    //   ),
-    //   label: "Payments",
-    // },
     {
       to: "/admin-settings",
       icon: (
@@ -224,60 +243,50 @@ const SideBar = () => {
     },
   ];
 
+  const handleNotificationClick = () => {
+    console.log("Notifications clicked");
+  };
+
+  const handleProfileClick = () => {
+    console.log("Profile clicked");
+  };
+
+  const handleLogoutClick = () => {
+    console.log("Logout clicked");
+  };
+
   return (
     <aside
       className={`h-screen ${
-        collapsed ? "w-14" : "w-64"
-      }  transition-all duration-300 bg-gradient-to-b from-[#2d5e6c] to-[#0B2E36] text-white flex flex-col shadow-xl border-r border-white/20 overflow-hidden`}
+        expanded ? "w-64" : "w-16"
+      } transition-all duration-300 bg-gradient-to-b from-[#2d5e6c] to-[#0B2E36] text-white flex flex-col shadow-xl border-r border-white/20 overflow-hidden`}
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
     >
-      <div className="flex items-center justify-between p-4 border-b border-white/10 mb-8">
-        {!collapsed && (
-          <span className="px-2 text-xl font-bold tracking-wide">Welcome!</span>
-        )}
-        <button
-          onClick={() => {
-            if (window.innerWidth >= 800) {
-              setCollapsed(!collapsed);
-            }
-          }}
-          disabled={window.innerWidth < 800}
-          className={`hover:scale-105 transition ${
-            window.innerWidth < 800 ? "opacity-40 cursor-not-allowed" : ""
+      <div className="flex items-center justify-center p-4 border-b border-white/10 mb-4 h-16">
+        <span
+          className={`text-xl font-bold tracking-wide whitespace-nowrap overflow-hidden transition-all duration-200 ${
+            expanded ? "opacity-100 w-auto" : "opacity-0 w-0"
           }`}
         >
-          {collapsed ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
-              />
-            </svg>
-          )}
-        </button>
+          Welcome!
+        </span>
+        {!expanded && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              fillRule="evenodd"
+              d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z"
+              clipRule="evenodd"
+            />
+          </svg>
+        )}
       </div>
+
       <div className="flex-1 overflow-y-auto px-2 py-3">
         <nav className="flex flex-col space-y-2">
           {menuItems.map((item) => (
@@ -287,10 +296,73 @@ const SideBar = () => {
               icon={item.icon}
               label={item.label}
               active={location.pathname === item.to}
-              collapsed={collapsed}
+              expanded={expanded}
             />
           ))}
         </nav>
+      </div>
+
+      <div className="border-t border-white/10 p-2 space-y-2">
+        <BottomButton
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-6 h-6"
+            >
+              <path d="M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 1.987 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z" />
+              <path
+                fillRule="evenodd"
+                d="M12 2.25A6.75 6.75 0 0 0 5.25 9v.75a8.217 8.217 0 0 1-2.119 5.52.75.75 0 0 0 .298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 1 0 7.48 0 24.583 24.583 0 0 0 4.83-1.244.75.75 0 0 0 .298-1.205 8.217 8.217 0 0 1-2.118-5.52V9A6.75 6.75 0 0 0 12 2.25ZM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 0 0 4.496 0l.002.1a2.25 2.25 0 1 1-4.5 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          }
+          label="Notifications"
+          onClick={handleNotificationClick}
+          expanded={expanded}
+        />
+
+        <BottomButton
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          }
+          label="Profile"
+          onClick={handleProfileClick}
+          expanded={expanded}
+        />
+
+        <BottomButton
+          icon={
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.5 3.75A1.5 1.5 0 0 0 6 5.25v13.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5V15a.75.75 0 0 1 1.5 0v3.75a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V5.25a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3V9A.75.75 0 0 1 15 9V5.25a1.5 1.5 0 0 0-1.5-1.5h-6Zm10.72 4.72a.75.75 0 0 1 1.06 0l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H9a.75.75 0 0 1 0-1.5h10.94l-1.72-1.72a.75.75 0 0 1 0-1.06Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          }
+          label="Logout"
+          onClick={handleLogout}
+          expanded={expanded}
+        />
       </div>
     </aside>
   );

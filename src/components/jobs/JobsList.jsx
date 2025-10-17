@@ -43,62 +43,54 @@ const JobsList = () => {
   
       
 
-<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
-  {/* Total Jobs */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">Total Jobs</p>
-      <h3 className="text-2xl font-bold text-black">{jobs.length}</h3>
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+  {[
+    {
+      label: "Total Jobs",
+      value: jobs.length,
+      icon: Briefcase,
+      bg: "bg-blue-200",
+    },
+    {
+      label: "Open",
+      value: jobs.filter((j) => j.status === "Open").length,
+      icon: CheckCircle,
+      bg: "bg-green-200",
+    },
+    {
+      label: "In Progress",
+      value: jobs.filter((j) => j.status === "In Progress").length,
+      icon: Clock,
+      bg: "bg-amber-200",
+    },
+    {
+      label: "Closed",
+      value: jobs.filter((j) => j.status === "Closed").length,
+      icon: XCircle,
+      bg: "bg-red-200",
+    },
+    {
+      label: "Quotation Required",
+      value: jobs.filter((j) => j.quotationRequired).length,
+      icon: Briefcase,
+      bg: "bg-purple-200",
+    },
+  ].map(({ label, value, icon: Icon, bg }, index) => (
+    <div
+      key={index}
+      className={`${bg} text-black rounded-2xl p-4 flex items-center justify-between`}
+    >
+      <div>
+        <p className="text-sm opacity-90">{label}</p>
+        <h3 className="text-3xl font-bold mt-1">{value}</h3>
+      </div>
+      <div className="bg-gray-50 p-3 rounded-full">
+        <Icon className="w-6 h-6 text-black" />
+      </div>
     </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <Briefcase className="w-6 h-6 text-black" />
-    </div>
-  </div>
-
-  {/* Open */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">Open</p>
-      <h3 className="text-2xl font-bold text-black">{jobs.filter((j) => j.status === "Open").length}</h3>
-    </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <CheckCircle className="w-6 h-6 text-black" />
-    </div>
-  </div>
-
-  {/* In Progress */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">In Progress</p>
-      <h3 className="text-2xl font-bold text-black">{jobs.filter((j) => j.status === "In Progress").length}</h3>
-    </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <Clock className="w-6 h-6 text-black" />
-    </div>
-  </div>
-
-  {/* Closed */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">Closed</p>
-      <h3 className="text-2xl font-bold text-black">{jobs.filter((j) => j.status === "Closed").length}</h3>
-    </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <XCircle className="w-6 h-6 text-black" />
-    </div>
-  </div>
-
-  {/* Quotation Required */}
-  <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-200">
-    <div>
-      <p className="text-sm text-gray-500">Quotation Required</p>
-      <h3 className="text-2xl font-bold text-black">{jobs.filter((j) => j.quotationRequired).length}</h3>
-    </div>
-    <div className="bg-black/10 p-3 rounded-full">
-      <Briefcase className="w-6 h-6 text-black" />
-    </div>
-  </div>
+  ))}
 </div>
+
 
 
       {/* === FILTERS SECTION === */}
