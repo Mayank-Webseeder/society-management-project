@@ -8,65 +8,6 @@ export const SocietyProvider = ({ children }) => {
   const [societies, setSocieties] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const mockSocieties = [
-    {
-      id: 1,
-      name: "Dolphine plaza",
-      location: "Vijay Nagar",
-      status: "Active",
-      totalJobsPosted: 25,
-      activeJobs: 5,
-    },
-    {
-      id: 2,
-      name: "Sunshine Apartments",
-      location: "Bengali Square",
-      status: "Pending",
-      totalJobsPosted: 10,
-      activeJobs: 0,
-    },
-    {
-      id: 3,
-      name: "PQR Heights",
-      location: "Bhawarkuan",
-      status: "Rejected",
-      totalJobsPosted: 15,
-      activeJobs: 0,
-    },
-    {
-      id: 4,
-      name: "Green Valley Society",
-      location: "MR 10",
-      status: "Active",
-      totalJobsPosted: 18,
-      activeJobs: 3,
-    },
-    {
-      id: 5,
-      name: "Maple Residency",
-      location: "Scheme No. 78",
-      status: "Active",
-      totalJobsPosted: 30,
-      activeJobs: 7,
-    },
-    {
-      id: 6,
-      name: "Ocean View Apartments",
-      location: "Rajendra Nagar",
-      status: "Pending",
-      totalJobsPosted: 12,
-      activeJobs: 0,
-    },
-    {
-      id: 7,
-      name: "ABC Apartments",
-      location: "Palasia",
-      status: "Active",
-      totalJobsPosted: 26,
-      activeJobs: 11,
-    },
-  ];
-
   useEffect(() => {
     const fetchSocieties = async () => {
       setLoading(true);
@@ -89,28 +30,35 @@ export const SocietyProvider = ({ children }) => {
           ),
         ]);
 
-        // console.log("Pending Res", pendingRes.data.societies);
         const pendingSocieties = pendingRes.data.societies || [];
-
-        // console.log("Approve res", approvedRes.data.societies);
         const approvedSocieties = approvedRes.data.societies || [];
 
-        // Merge all API societies
+        // Merge and normalize API data
         const apiSocieties = [...pendingSocieties, ...approvedSocieties];
+        
+        // Transform API response to match component expectations
+        const normalizedSocieties = apiSocieties.map(society => ({
+          id: society._id,
+          _id: society._id,
+          username: society.username,
+          name: society.buildingName || society.username,
+          location: society.location?.default || society.address || "Not provided",
+          address: society.address,
+          email: society.email,
+          residentsCount: society.residentsCount,
+          profilePicture: society.profilePicture,
+          totalJobsPosted: society.jobs?.length || 0,
+          activeJobs: society.jobs?.filter(job => job.status === 'active').length || 0,
+          status: society.isApproved ? "Active" : "Pending",
+          isApproved: society.isApproved,
+          createdAt: society.createdAt,
+          updatedAt: society.updatedAt
+        }));
 
-        // Merge mock data for now
-        const mergedSocieties = [
-          ,
-          ...apiSocieties.filter(
-            (mock) => !apiSocieties.some((api) => api.id === mock.id)
-          ),
-        ];
- setSocieties(mergedSocieties);
+        setSocieties(normalizedSocieties);
        
       } catch (error) {
         console.error("Error fetching societies:", error);
-
-         setSocieties(mergedSocieties);
       } finally {
         setLoading(false);
       }
@@ -119,25 +67,25 @@ export const SocietyProvider = ({ children }) => {
     fetchSocieties();
   }, []);
 
-  const handleApprove = async (vendorId) => {
+  const handleApprove = async (societyId) => {
     const token = getToken();
 
     try {
       const res = await axios.patch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/admin/approve-vendor/${vendorId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/approve-society/${societyId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      console.log("Approve click", res.data);
+      console.log("Approve success:", res.data);
 
-      setVendors((prev) =>
-        prev.map((vendor) =>
-          vendor._id === vendorId ? { ...vendor, status: "Active" } : vendor
+      setSocieties((prev) =>
+        prev.map((society) =>
+          society._id === societyId || society.id === societyId
+            ? { ...society, status: "Active", isApproved: true }
+            : society
         )
       );
     } catch (error) {
@@ -145,24 +93,80 @@ export const SocietyProvider = ({ children }) => {
     }
   };
 
-  const handleReject = (id) =>
-    setSocieties((prev) =>
-      prev.map((soc) => (soc.id === id ? { ...soc, status: "Rejected" } : soc))
-    );
+  const handleReject = async (societyId) => {
+    const token = getToken();
 
-  const handlePending = (id) =>
-    setSocieties((prev) =>
-      prev.map((soc) => (soc.id === id ? { ...soc, status: "Pending" } : soc))
-    );
+    try {
+      const res = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/reject-society/${societyId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-  const handleBan = (id) =>
-    setSocieties((prev) =>
-      prev.map((soc) => (soc.id === id ? { ...soc, status: "Banned" } : soc))
-    );
+      console.log("Reject success:", res.data);
 
-  const handleDeleteSociety = (id) => {
-    if (window.confirm("Are you sure you want to delete this society?")) {
-      setSocieties((prev) => prev.filter((soc) => soc.id !== id));
+      setSocieties((prev) =>
+        prev.map((society) =>
+          society._id === societyId || society.id === societyId
+            ? { ...society, status: "Rejected", isApproved: false }
+            : society
+        )
+      );
+    } catch (error) {
+      console.error("Reject failed:", error);
+    }
+  };
+
+  const handleBan = async (societyId) => {
+    const token = getToken();
+
+    try {
+      const res = await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/ban-society/${societyId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log("Ban success:", res.data);
+
+      setSocieties((prev) =>
+        prev.map((society) =>
+          society._id === societyId || society.id === societyId
+            ? { ...society, status: "Banned" }
+            : society
+        )
+      );
+    } catch (error) {
+      console.error("Ban failed:", error);
+    }
+  };
+
+  const handleDeleteSociety = async (societyId) => {
+    if (!window.confirm("Are you sure you want to delete this society?")) {
+      return;
+    }
+
+    const token = getToken();
+
+    try {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/society/${societyId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log("Delete success:", res.data);
+
+      setSocieties((prev) => 
+        prev.filter((society) => society._id !== societyId && society.id !== societyId)
+      );
+    } catch (error) {
+      console.error("Delete failed:", error);
     }
   };
 
@@ -170,10 +174,10 @@ export const SocietyProvider = ({ children }) => {
     <SocietyContext.Provider
       value={{
         societies,
+        setSocieties,
         loading,
         handleApprove,
         handleReject,
-        handlePending,
         handleBan,
         handleDeleteSociety,
       }}

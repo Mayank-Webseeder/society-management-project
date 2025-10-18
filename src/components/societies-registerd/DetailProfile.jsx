@@ -3,21 +3,28 @@ import {
   FileUser,
   User,
   PhoneCall,
-  Mails,
-  MapPinHouse,
+  Mail,
+  MapPin,
   Building2,
   CircleCheckBig,
   CircleAlert,
   CircleX,
   Ban,
-  MessageSquare,
   Pencil,
   Trash2,
   ListTodo,
+  ArrowLeft,
+  Briefcase,
+  Clock,
+  CheckCircle2,
+  Calendar,
+  DollarSign,
+  UserCheck,
+  TrendingUp,
+  Activity,
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSocietyContext } from "../../context/SocietyContext";
-
 
 const DetailProfile = () => {
   const { societyId } = useParams();
@@ -25,6 +32,7 @@ const DetailProfile = () => {
   const [activeTab, setActiveTab] = useState("basic info");
   const [society, setSociety] = useState(null);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchSociety = async () => {
       const data = {
@@ -77,75 +85,115 @@ const DetailProfile = () => {
     fetchSociety();
   }, [societyId]);
 
-  if (loading)
-    return <div className="text-center py-10 text-gray-500">Loading...</div>;
-
-  if (!society)
+  if (loading) {
     return (
-      <div className="text-center py-10 text-red-500">Society not found.</div>
-    );
-
-  if (society.status === "Pending" || society.status === "Rejected") {
-    return (
-      <div className="text-center py-10 text-gray-500 space-y-6">
-        <button
-          onClick={() => navigate("/vendors")}
-          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-md gap-1 mx-auto"
-        >
+      <div className="flex flex-col justify-center items-center h-96 space-y-4">
+        <div className="relative">
           <svg
+            className="animate-spin h-16 w-16 text-blue-600"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-5 h-5"
           >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
             />
           </svg>
-          Back
-        </button>
-        <div>
-          Society profile is hidden as it is {society.status.toLowerCase()}.
         </div>
+        <p className="text-gray-700 font-semibold text-xl">
+          Loading society details...
+        </p>
       </div>
     );
   }
+
+  if (!society) {
+    return (
+      <div className="flex flex-col items-center justify-center h-96 space-y-4">
+        <div className="bg-red-50 border border-red-200 rounded-full p-4">
+          <CircleX className="w-12 h-12 text-red-500" />
+        </div>
+        <p className="text-xl font-semibold text-gray-800">Society not found</p>
+        <button
+          onClick={() => navigate("/societies")}
+          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Societies
+        </button>
+      </div>
+    );
+  }
+
+  if (society.status === "Pending" || society.status === "Rejected") {
+    return (
+      <div className="flex flex-col items-center justify-center h-96 space-y-6">
+        <div className="bg-gray-50 border border-gray-200 rounded-full p-4">
+          {society.status === "Pending" ? (
+            <Clock className="w-12 h-12 text-amber-500" />
+          ) : (
+            <CircleX className="w-12 h-12 text-red-500" />
+          )}
+        </div>
+        <div className="text-center space-y-2">
+          <p className="text-xl font-semibold text-gray-800">Access Restricted</p>
+          <p className="text-gray-600">
+            Society profile is hidden as it is {society.status.toLowerCase()}.
+          </p>
+        </div>
+        <button
+          onClick={() => navigate("/societies")}
+          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Societies
+        </button>
+      </div>
+    );
+  }
+
   const getStatusBadge = (status) => {
     const baseClasses =
-      "inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium select-none";
+      "inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold select-none";
 
     switch (status) {
       case "Active":
         return (
-          <span className={`${baseClasses} bg-green-100 text-green-800`}>
+          <span className={`${baseClasses} bg-emerald-50 text-emerald-700 border border-emerald-200`}>
             <CircleCheckBig className="w-4 h-4" /> Active
           </span>
         );
       case "Pending":
         return (
-          <span className={`${baseClasses} bg-yellow-100 text-yellow-800`}>
+          <span className={`${baseClasses} bg-amber-50 text-amber-700 border border-amber-200`}>
             <CircleAlert className="w-4 h-4" /> Pending
           </span>
         );
       case "Rejected":
         return (
-          <span className={`${baseClasses} bg-red-100 text-red-800`}>
+          <span className={`${baseClasses} bg-rose-50 text-rose-700 border border-rose-200`}>
             <CircleX className="w-4 h-4" /> Rejected
           </span>
         );
       case "Banned":
         return (
-          <span className={`${baseClasses} bg-gray-300 text-gray-700`}>
+          <span className={`${baseClasses} bg-gray-100 text-gray-700 border border-gray-300`}>
             <Ban className="w-4 h-4" /> Disabled
           </span>
         );
       default:
         return (
-          <span className={`${baseClasses} bg-gray-200 text-gray-700`}>
+          <span className={`${baseClasses} bg-gray-100 text-gray-700 border border-gray-200`}>
             {status}
           </span>
         );
@@ -171,7 +219,8 @@ const DetailProfile = () => {
           {
             label: "Disable",
             newStatus: "Banned",
-            color: "bg-[#5E686D] hover:bg-[#4C585B]",
+            color: "bg-gray-600 hover:bg-gray-700",
+            icon: <Ban className="w-4 h-4" />,
           },
         ];
       case "Banned":
@@ -179,7 +228,8 @@ const DetailProfile = () => {
           {
             label: "Activate",
             newStatus: "Active",
-            color: "bg-green-600 hover:bg-green-700",
+            color: "bg-emerald-600 hover:bg-emerald-700",
+            icon: <CircleCheckBig className="w-4 h-4" />,
           },
         ];
       case "Rejected":
@@ -187,7 +237,8 @@ const DetailProfile = () => {
           {
             label: "Approve",
             newStatus: "Active",
-            color: "bg-green-600 hover:bg-green-700",
+            color: "bg-emerald-600 hover:bg-emerald-700",
+            icon: <CircleCheckBig className="w-4 h-4" />,
           },
         ];
       default:
@@ -209,168 +260,201 @@ const DetailProfile = () => {
       ? (society.activeJobs / society.totalJobsPosted) * 100
       : 0;
 
-  const ProgressBar = ({ label, count, percent, colorClass }) => (
-    <div className="mb-5">
-      <div className="flex justify-between text-sm font-medium mb-1 text-gray-700">
-        <span>{label}</span>
-        <span>
-          {count} ({percent.toFixed(1)}%)
+  const ProgressBar = ({ label, count, percent, colorClass, icon }) => (
+    <div className="mb-6">
+      <div className="flex items-center justify-between text-sm font-semibold mb-2 text-gray-800">
+        <span className="flex items-center gap-2">
+          {icon}
+          {label}
+        </span>
+        <span className="text-gray-600">
+          {count} <span className="text-xs font-normal">({percent.toFixed(1)}%)</span>
         </span>
       </div>
-      <div className="w-full h-5 bg-gray-200 rounded-full overflow-hidden">
+      <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
         <div
           style={{ width: `${percent}%` }}
-          className={`${colorClass} h-5 rounded-full transition-all duration-500`}
+          className={`${colorClass} h-3 rounded-full transition-all duration-700 ease-out`}
         />
       </div>
     </div>
   );
 
   return (
-    <div className="bg-white rounded-lg shadow border border-gray-200">
-      {/* Top bar */}
-      <div className="flex items-center justify-between mt-3 px-3">
-        <button
+    <div className="space-y-6">
+         <button
           onClick={() => navigate(-1)}
-          className="flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm sm:text-md px-2 sm:px-4"
-          aria-label="Go Back"
+          className="flex items-center gap-2 text-black font-medium text-sm  transition-colors"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            className="w-4 h-4 mr-1"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5"
-            />
-          </svg>
+          <ArrowLeft className="w-4 h-4" />
           Back
         </button>
-      </div>
+      {/* Header Card */}
+      <div className="bg-white rounded-xl shadow p-4 text-black">
+     
 
-      {/* Main Details */}
-      <div className="px-4 sm:px-6 py-6 space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-4">
-          <div>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="space-y-2">
             <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-                {society.name}
-              </h2>
-              {getStatusBadge(society.status)}
+              <h1 className="text-3xl font-bold">{society.name}</h1>
+              <div className="bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full">
+                <span className="text-sm font-semibold">{getStatusBadge(society.status)}</span>
+              </div>
             </div>
-            <div className="text-gray-500 text-sm mt-1">{society.location}</div>
+            <div className="flex items-center gap-2 text-black">
+              <MapPin className="w-4 h-4" />
+              <span className="text-sm">{society.location}</span>
+            </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap sm:flex-wrap md:flex-nowrap lg:flex-nowrap justify-end gap-2 pt-4 md:pt-0 sticky bottom-0 bg-white z-20">
-            {getActionButtons().map(({ label, newStatus, color }) => (
-              <button
-                key={label}
-                onClick={() => handleChangeStatus(newStatus)}
-                className={`${color} px-4 py-2 rounded text-white text-sm font-semibold whitespace-nowrap`}
-              >
-                {label}
-              </button>
-            ))}
+          {/* Quick Stats */}
+          {/* <div className="flex gap-4">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
+              <div className="text-2xl font-bold">{society.totalJobsPosted}</div>
+              <div className="text-xs text-black">Total Jobs</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
+              <div className="text-2xl font-bold">{society.activeJobs}</div>
+              <div className="text-xs text-black">Active Jobs</div>
+            </div>
+          </div> */}
+              <div className="flex flex-wrap gap-3 justify-end">
+        {getActionButtons().map(({ label, newStatus, color, icon }) => (
+          <button
+            key={label}
+            onClick={() => handleChangeStatus(newStatus)}
+            className={`${color} flex items-center gap-2 px-5 py-2.5 rounded-lg text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all`}
+          >
+            {icon}
+            {label}
+          </button>
+        ))}
 
-            <button
-              onClick={() => navigate(`/edit-society/${society.id}`)}
-              className="p-2 rounded bg-blue-100 text-blue-600 hover:bg-blue-200 text-sm font-medium w-fit lg:px-4 lg:py-2 lg:flex lg:items-center lg:gap-2"
-            >
-              <Pencil className="w-4 h-4" />
-              <span className="hidden lg:inline">Edit Profile</span>
-            </button>
-            <button
-              onClick={() => {
-                if (
-                  window.confirm(
-                    "Are you sure you want to delete this society?"
-                  )
-                ) {
-                  navigate("/societies");
-                }
-              }}
-              className="p-2 rounded bg-red-100 text-red-600 hover:bg-red-200 text-sm font-medium w-fit lg:px-4 lg:py-2 lg:flex lg:items-center lg:gap-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              <span className="hidden lg:inline">Delete Vendor</span>
-            </button>
-          </div>
+        <button
+          onClick={() => navigate(`/edit-society/${society.id}`)}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 text-sm font-semibold transition-colors"
+        >
+          <Pencil className="w-4 h-4" />
+          Edit Profile
+        </button>
+
+        {/* <button
+          onClick={() => {
+            if (
+              window.confirm(
+                "Are you sure you want to delete this society?"
+              )
+            ) {
+              navigate("/societies");
+            }
+          }}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 text-sm font-semibold transition-colors"
+        >
+          <Trash2 className="w-4 h-4" />
+          Delete Society
+        </button> */}
+      </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-0 sm:gap-2 border-b bg-white px-1 sm:px-0">
-          {["basic info", "jobDetails", "jobStatus"].map((tab) => (
+            {/* Action Buttons */}
+  
+      </div>
+
+  
+
+      {/* Tabs */}
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <div className="flex flex-wrap border-b border-gray-200 bg-gray-50">
+          {[
+            { key: "basic info", label: "Basic Info", icon: <FileUser className="w-4 h-4" /> },
+            { key: "jobDetails", label: "Job Details", icon: <Briefcase className="w-4 h-4" /> },
+          ].map((tab) => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 text-sm sm:text-base font-medium ${
-                activeTab === tab
-                  ? "border-b-2 border-blue-500 text-blue-600"
-                  : "text-gray-600"
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors ${
+                activeTab === tab.key
+                  ? "border-b-2 border-blue-600 text-blue-600 bg-white"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
               }`}
             >
-              {tab === "basic info"
-                ? "Basic Info"
-                : tab === "jobDetails"
-                ? "Job Details"
-                : "Job Status"}
+              {tab.icon}
+              {tab.label}
             </button>
           ))}
         </div>
 
-        {/* Main Content */}
-        <div className="min-h-32 mt-4">
+        {/* Tab Content */}
+        <div className="p-6">
           {activeTab === "basic info" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Contact Info */}
-              <div className="bg-white rounded-2xl shadow p-5 sm:p-6 space-y-4 border border-gray-100">
-                <h2 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-gray-700">
-                  <FileUser className="text-blue-600 w-5 h-5" />
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl shadow-md p-6 border border-blue-200">
+                <h3 className="flex items-center gap-2 text-lg font-bold text-gray-800 mb-5">
+                  <div className="bg-blue-600 p-2 rounded-lg">
+                    <FileUser className="text-white w-5 h-5" />
+                  </div>
                   Contact Information
-                </h2>
-                <div className="space-y-3 text-gray-700 text-sm">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-gray-500" />
-                    <span className="font-medium text-gray-800">
-                      {society.contactPerson}
-                    </span>
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+                    <div className="bg-blue-100 p-2 rounded-lg">
+                      <User className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Contact Person</p>
+                      <p className="font-semibold text-gray-900">{society.contactPerson}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <PhoneCall className="w-4 h-4 text-gray-500" />
-                    <span className="font-medium text-gray-800">
-                      {society.phone}
-                    </span>
+                  <div className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+                    <div className="bg-emerald-100 p-2 rounded-lg">
+                      <PhoneCall className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Phone Number</p>
+                      <p className="font-semibold text-gray-900">{society.phone}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Mails className="w-4 h-4 text-gray-500" />
-                    <span className="font-medium text-gray-800">
-                      {society.email}
-                    </span>
+                  <div className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+                    <div className="bg-purple-100 p-2 rounded-lg">
+                      <Mail className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Email Address</p>
+                      <p className="font-semibold text-gray-900 break-all">{society.email}</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Address */}
-              <div className="bg-white rounded-2xl shadow p-5 sm:p-6 space-y-4 border border-gray-100">
-                <h2 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-gray-700">
-                  <MapPinHouse className="text-blue-600 w-5 h-5" />
-                  Address Details
-                </h2>
-                <div className="space-y-3 text-gray-700 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-gray-500" />
-                    <span className="font-medium text-gray-800">
-                      {society.address}
-                    </span>
+              <div className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 rounded-xl shadow-md p-6 border border-emerald-200">
+                <h3 className="flex items-center gap-2 text-lg font-bold text-gray-800 mb-5">
+                  <div className="bg-emerald-600 p-2 rounded-lg">
+                    <MapPin className="text-white w-5 h-5" />
                   </div>
-                  <div className="flex items-center gap-2 ml-6 text-gray-600">
-                    {society.city} - {society.pincode}
+                  Address Details
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+                    <div className="bg-emerald-100 p-2 rounded-lg">
+                      <Building2 className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Street Address</p>
+                      <p className="font-semibold text-gray-900">{society.address}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
+                    <div className="bg-amber-100 p-2 rounded-lg">
+                      <MapPin className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">City & Pincode</p>
+                      <p className="font-semibold text-gray-900">
+                        {society.city} - {society.pincode}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -378,89 +462,175 @@ const DetailProfile = () => {
           )}
 
           {activeTab === "jobDetails" && (
-            <div className="overflow-x-auto rounded-lg shadow-sm border border-gray-200">
-              <table className="min-w-full bg-white text-sm">
-                <thead className="bg-gray-50 text-gray-600">
-                  <tr>
-                    {[
-                      "Job ID",
-                      "Title",
-                      "Type",
-                      "Posted Date",
-                      "Status",
-                      "Assigned Vendor",
-                      "Price",
-                    ].map((th) => (
-                      <th
-                        key={th}
-                        className="text-left px-4 py-3 border-b whitespace-nowrap"
-                      >
-                        {th}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {society.jobDetails.map((job) => {
-                    let statusClass = "bg-gray-100 text-gray-700";
-                    if (job.status === "Completed")
-                      statusClass = "bg-green-100 text-green-700";
-                    else if (job.status === "Active")
-                      statusClass = "bg-blue-100 text-blue-700";
-                    else if (job.status === "Pending")
-                      statusClass = "bg-yellow-100 text-yellow-700";
+            <div>
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto rounded-lg border border-gray-200">
+                <table className="min-w-full bg-white text-sm">
+                  <thead className="bg-gradient-to-r from-gray-100 to-gray-50">
+                    <tr>
+                      {[
+                        { label: "Job ID", icon: <Activity className="w-3.5 h-3.5" /> },
+                        { label: "Title", icon: <Briefcase className="w-3.5 h-3.5" /> },
+                        { label: "Type", icon: <ListTodo className="w-3.5 h-3.5" /> },
+                        { label: "Posted Date", icon: <Calendar className="w-3.5 h-3.5" /> },
+                        { label: "Status", icon: <Activity className="w-3.5 h-3.5" /> },
+                        { label: "Vendor", icon: <UserCheck className="w-3.5 h-3.5" /> },
+                        { label: "Price", icon: <DollarSign className="w-3.5 h-3.5" /> },
+                      ].map((th) => (
+                        <th
+                          key={th.label}
+                          className="text-left px-6 py-4 font-bold text-xs text-gray-700 uppercase tracking-wider border-b-2 border-gray-200"
+                        >
+                          <div className="flex items-center gap-2">
+                            {th.icon}
+                            {th.label}
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {society.jobDetails.map((job, index) => {
+                      let statusClass = "bg-gray-100 text-gray-700 border-gray-300";
+                      if (job.status === "Completed")
+                        statusClass = "bg-emerald-100 text-emerald-700 border-emerald-300";
+                      else if (job.status === "Active")
+                        statusClass = "bg-blue-100 text-blue-700 border-blue-300";
+                      else if (job.status === "Pending")
+                        statusClass = "bg-amber-100 text-amber-700 border-amber-300";
 
-                    return (
-                      <tr key={job.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 border-b">{job.id}</td>
-                        <td className="px-4 py-3 border-b">{job.title}</td>
-                        <td className="px-4 py-3 border-b">{job.type}</td>
-                        <td className="px-4 py-3 border-b">{job.postedDate}</td>
-                        <td className="px-4 py-3 border-b">
-                          <span
-                            className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${statusClass}`}
-                          >
-                            {job.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 border-b">
-                          {job.assignedVendor}
-                        </td>
-                        <td className="px-4 py-3 border-b">₹{job.price}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      return (
+                        <tr 
+                          key={job.id} 
+                          className={`hover:bg-blue-50 transition-colors ${
+                            index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                          }`}
+                        >
+                          <td className="px-6 py-4 font-mono text-xs font-semibold text-gray-700">
+                            {job.id}
+                          </td>
+                          <td className="px-6 py-4 font-semibold text-gray-900">{job.title}</td>
+                          <td className="px-6 py-4">
+                            <span className="inline-flex items-center px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-medium border border-purple-200">
+                              {job.type}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-gray-600">{job.postedDate}</td>
+                          <td className="px-6 py-4">
+                            <span
+                              className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${statusClass}`}
+                            >
+                              {job.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-gray-700">{job.assignedVendor}</td>
+                          <td className="px-6 py-4 font-bold text-emerald-600">₹{job.price.toLocaleString()}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-4">
+                {society.jobDetails.map((job) => {
+                  let statusClass = "bg-gray-100 text-gray-700 border-gray-300";
+                  if (job.status === "Completed")
+                    statusClass = "bg-emerald-100 text-emerald-700 border-emerald-300";
+                  else if (job.status === "Active")
+                    statusClass = "bg-blue-100 text-blue-700 border-blue-300";
+                  else if (job.status === "Pending")
+                    statusClass = "bg-amber-100 text-amber-700 border-amber-300";
+
+                  return (
+                    <div
+                      key={job.id}
+                      className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-bold text-gray-900">{job.title}</p>
+                          <p className="text-xs text-gray-500 font-mono mt-1">{job.id}</p>
+                        </div>
+                        <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${statusClass}`}>
+                          {job.status}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div>
+                          <p className="text-gray-500 text-xs mb-1">Type</p>
+                          <p className="font-semibold text-gray-900">{job.type}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500 text-xs mb-1">Posted</p>
+                          <p className="font-semibold text-gray-900">{job.postedDate}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500 text-xs mb-1">Vendor</p>
+                          <p className="font-semibold text-gray-900">{job.assignedVendor}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500 text-xs mb-1">Price</p>
+                          <p className="font-bold text-emerald-600">₹{job.price.toLocaleString()}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
-          {activeTab === "jobStatus" && (
-            <section className="bg-white rounded-xl shadow-md p-5 sm:p-6 max-w-xl mx-auto">
-              <h2 className="flex items-center gap-2 text-md font-semibold text-gray-700 mb-6">
-                <ListTodo className="text-blue-600 w-5 h-5" />
-                Job Status
-              </h2>
-              <ProgressBar
-                label="Total Jobs"
-                count={society.totalJobsPosted}
-                percent={100}
-                colorClass="bg-blue-500"
-              />
-              <ProgressBar
-                label="Active Jobs"
-                count={society.activeJobs}
-                percent={activePercent}
-                colorClass="bg-yellow-400"
-              />
-              <ProgressBar
-                label="Completed Jobs"
-                count={completedJobs}
-                percent={completedPercent}
-                colorClass="bg-green-500"
-              />
-            </section>
-          )}
+          {/* {activeTab === "jobStatus" && (
+            <div className="max-w-3xl mx-auto">
+              <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-lg p-8 border border-gray-200">
+                <h3 className="flex items-center gap-2 text-xl font-bold text-gray-800 mb-8">
+                  <div className="bg-blue-600 p-2 rounded-lg">
+                    <TrendingUp className="text-white w-5 h-5" />
+                  </div>
+                  Job Performance Overview
+                </h3>
+                
+                <ProgressBar
+                  label="Total Jobs Posted"
+                  count={society.totalJobsPosted}
+                  percent={100}
+                  colorClass="bg-gradient-to-r from-blue-500 to-blue-600"
+                  icon={<Briefcase className="w-4 h-4 text-blue-600" />}
+                />
+                <ProgressBar
+                  label="Active Jobs"
+                  count={society.activeJobs}
+                  percent={activePercent}
+                  colorClass="bg-gradient-to-r from-amber-400 to-amber-500"
+                  icon={<Clock className="w-4 h-4 text-amber-600" />}
+                />
+                <ProgressBar
+                  label="Completed Jobs"
+                  count={completedJobs}
+                  percent={completedPercent}
+                  colorClass="bg-gradient-to-r from-emerald-500 to-emerald-600"
+                  icon={<CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                />
+
+                <div className="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-gray-200">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-blue-600">{society.totalJobsPosted}</div>
+                    <div className="text-xs text-gray-500 mt-1">Total</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-amber-600">{society.activeJobs}</div>
+                    <div className="text-xs text-gray-500 mt-1">Active</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-emerald-600">{completedJobs}</div>
+                    <div className="text-xs text-gray-500 mt-1">Completed</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )} */}
         </div>
       </div>
     </div>
