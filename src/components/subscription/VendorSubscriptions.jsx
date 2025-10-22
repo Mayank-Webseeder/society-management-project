@@ -9,16 +9,95 @@ import {
   CreditCard,
   Download,
   User,
+  Calendar,
+  CheckCircle2,
+  AlertCircle,
+  XOctagon,
+  TrendingUp,
+  FileText,
+  Trash2,
+  Trash,
 } from "lucide-react";
-import { IoCloudDownloadOutline } from "react-icons/io5";
-import axios from "axios";
-import { getToken } from "../../utils/Token";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
 
 const VendorSubscriptions = () => {
-  const [subscriptions, setSubscriptions] = useState([]);
-  const [subscriptionHistory, setSubscriptionHistory] = useState([]);
+  const [subscriptions, setSubscriptions] = useState([
+    {
+      _id: "687f2d0fb425015d9dde6678",
+      vendorName: "ABC Enterprises",
+      startDate: "2024-06-01",
+      endDate: "2024-09-01",
+      subscriptionStatus: "Active",
+      paymentStatus: "Paid",
+      paymentDetails: {
+        transactionId: "TXN123456789",
+        amount: "₹5,000",
+        method: "UPI",
+        status: "Paid",
+        dateTime: "2024-06-01 10:30 AM",
+      },
+    },
+    {
+      _id: "687f2d0fb425015d9dde6679",
+      vendorName: "XYZ Services",
+      startDate: "2024-07-01",
+      endDate: "2024-08-01",
+      subscriptionStatus: "Cancelled",
+      paymentStatus: "Unpaid",
+      paymentDetails: {
+        transactionId: "TXN987654321",
+        amount: "₹1,500",
+        method: "Netbanking",
+        status: "Pending",
+        dateTime: "2024-07-01 12:00 PM",
+      },
+    },
+    {
+      _id: "687f2d0fb425015d9dde6680",
+      vendorName: "Delta Corp",
+      startDate: "2024-05-15",
+      endDate: "2025-05-15",
+      subscriptionStatus: "Active",
+      paymentStatus: "Paid",
+      paymentDetails: {
+        transactionId: "TXN1122334455",
+        amount: "₹12,000",
+        method: "Credit Card",
+        status: "Paid",
+        dateTime: "2024-05-15 09:45 AM",
+      },
+    },
+    {
+      _id: "687f2d0fb425015d9dde6681",
+      vendorName: "Omega Solutions",
+      startDate: "2024-04-01",
+      endDate: "2024-07-01",
+      subscriptionStatus: "Cancelled",
+      paymentStatus: "Failed",
+      paymentDetails: {
+        transactionId: "TXN5566778899",
+        amount: "₹3,000",
+        method: "Debit Card",
+        status: "Failed",
+        dateTime: "2024-04-01 02:20 PM",
+      },
+    },
+    {
+      _id: "687f2d0fb425015d9dde6682",
+      vendorName: "Nova Enterprises",
+      startDate: "2024-03-10",
+      endDate: "2024-06-10",
+      subscriptionStatus: "Active",
+      paymentStatus: "Paid",
+      paymentDetails: {
+        transactionId: "TXN9988776655",
+        amount: "₹1,500",
+        method: "UPI",
+        status: "Failed",
+        dateTime: "2024-03-10 11:00 AM",
+      },
+    },
+  ]);
+
   const [paymentModal, setPaymentModal] = useState({
     open: false,
     payment: null,
@@ -26,135 +105,39 @@ const VendorSubscriptions = () => {
     history: [],
   });
 
+  const [stats, setStats] = useState({
+    total: 0,
+    active: 0,
+    cancelled: 0,
+  });
+
   useEffect(() => {
-    setSubscriptions([
-      {
-        _id: "687f2d0fb425015d9dde6678",
-        vendorName: "ABC Enterprises",
-        startDate: "2024-06-01",
-        endDate: "2024-09-01",
-        subscriptionStatus: "Active",
-        paymentStatus: "Paid",
-        paymentDetails: {
-          transactionId: "TXN123456789",
-          amount: "₹5,000",
-          method: "UPI",
-          status: "Paid",
-          dateTime: "2024-06-01 10:30 AM",
-        },
-      },
-      {
-        _id: "687f2d0fb425015d9dde6679",
-        vendorName: "XYZ Services",
-        startDate: "2024-07-01",
-        endDate: "2024-08-01",
-        subscriptionStatus: "Cancelled",
-        paymentStatus: "Unpaid",
-        paymentDetails: {
-          transactionId: "TXN987654321",
-          amount: "₹1,500",
-          method: "Netbanking",
-          status: "Pending",
-          dateTime: "2024-07-01 12:00 PM",
-        },
-      },
-      {
-        _id: "687f2d0fb425015d9dde6680",
-        vendorName: "Delta Corp",
-        startDate: "2024-05-15",
-        endDate: "2025-05-15",
-        subscriptionStatus: "Active",
-        paymentStatus: "Paid",
-        paymentDetails: {
-          transactionId: "TXN1122334455",
-          amount: "₹12,000",
-          method: "Credit Card",
-          status: "Paid",
-          dateTime: "2024-05-15 09:45 AM",
-        },
-      },
-      {
-        _id: "687f2d0fb425015d9dde6681",
-        vendorName: "Omega Solutions",
-        startDate: "2024-04-01",
-        endDate: "2024-07-01",
-        subscriptionStatus: "Cancelled",
-        paymentStatus: "Failed",
-        paymentDetails: {
-          transactionId: "TXN5566778899",
-          amount: "₹3,000",
-          method: "Debit Card",
-          status: "Failed",
-          dateTime: "2024-04-01 02:20 PM",
-        },
-      },
-      {
-        _id: "687f2d0fb425015d9dde6682",
-        vendorName: "Nova Enterprises",
-        startDate: "2024-03-10",
-        endDate: "2024-06-10",
-        subscriptionStatus: "Active",
-        paymentStatus: "Paid",
-        paymentDetails: {
-          transactionId: "TXN9988776655",
-          amount: "₹1,500",
-          method: "UPI",
-          status: "Failed",
-          dateTime: "2024-03-10 11:00 AM",
-        },
-      },
-    ]);
-
-    const token = getToken();
-
-    const fetchSubscription = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/admin/all-subscriptions`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        console.log("all subscription", res.data);
-
-        const apiData = res.data.subscriptions || [];
-
-        setSubscriptions((prev) => {
-          const merged = [...prev];
-          apiData.forEach((apiSub) => {
-            const exists = merged.find((m) => m._id === apiSub._id);
-            if (!exists) merged.push(apiSub);
-          });
-          return merged;
-        });
-      } catch (error) {
-        console.error("Failed to fetch subscriptions:", error);
-      }
-    };
-
-    fetchSubscription();
-  }, []);
+    const total = subscriptions.length;
+    const active = subscriptions.filter(s => s.subscriptionStatus === "Active").length;
+    const cancelled = subscriptions.filter(s => s.subscriptionStatus === "Cancelled").length;
+    setStats({ total, active, cancelled });
+  }, [subscriptions]);
 
   const fetchSubscriptionHistory = async (vendorId) => {
-    try {
-      const token = getToken();
-      const res = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/admin/vendor-subscription-history/${vendorId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      console.log("Sub history", res.data);
-      return res.data.history || [];
-    } catch (error) {
-      console.error("Failed to fetch subscription history:", error);
-      return [];
-    }
+    // Mock history data
+    return [
+      {
+        _id: "hist1",
+        price: "5000",
+        subscriptionStatus: "Active",
+        paymentStatus: "Paid",
+        startDate: "2024-01-01",
+        endDate: "2024-12-31",
+      },
+      {
+        _id: "hist2",
+        price: "4500",
+        subscriptionStatus: "Cancelled",
+        paymentStatus: "Paid",
+        startDate: "2023-01-01",
+        endDate: "2023-12-31",
+      },
+    ];
   };
 
   const handleCancel = (id) => {
@@ -164,7 +147,6 @@ const VendorSubscriptions = () => {
           sub._id === id ? { ...sub, subscriptionStatus: "Cancelled" } : sub
         )
       );
-      alert("Subscription marked as Cancelled.");
     }
   };
 
@@ -179,17 +161,10 @@ const VendorSubscriptions = () => {
     };
 
     const csvRows = [];
-
     csvRows.push(
-      [
-        "Vendor Name",
-        "Start Date",
-        "End Date",
-        "Payment Status",
-        "Subscription Status",
-      ]
+      ["Vendor Name", "Start Date", "End Date", "Payment Status", "Subscription Status"]
         .map(sanitizeCSVField)
-        .join(", ")
+        .join(",")
     );
 
     subscriptions.forEach((row) => {
@@ -208,7 +183,7 @@ const VendorSubscriptions = () => {
           row.subscriptionStatus || "N/A",
         ]
           .map(sanitizeCSVField)
-          .join(", ")
+          .join(",")
       );
     });
 
@@ -221,133 +196,298 @@ const VendorSubscriptions = () => {
     link.click();
   };
 
-  const exportPDF = () => {
-    if (!paymentModal.payment || !paymentModal.vendorInfo) return;
-
-    const doc = new jsPDF();
-
-    // Title
-    doc.setFontSize(18);
-    doc.text("Payment Details", 14, 20);
-
-    // Vendor & Payment info
-    doc.setFontSize(12);
-    doc.text(`Vendor: ${paymentModal.vendorInfo.vendorName}`, 14, 30);
-    const cleanAmount = paymentModal.payment.amount.replace(/[^\d.,]/g, "");
-    doc.text(`Amount: Rs. ${cleanAmount}`, 14, 40);
-    doc.text(`Method: ${paymentModal.payment.method}`, 14, 50);
-    doc.text(`Date & Time: ${paymentModal.payment.dateTime}`, 14, 60);
-    doc.text(`Transaction ID: ${paymentModal.payment.transactionId}`, 14, 70);
-    doc.text(`Payment Status: ${paymentModal.payment.status}`, 14, 80);
-
-    // Subscription history table
-    if (paymentModal.history?.length > 0) {
-      const tableColumn = [
-        "Price",
-        "Subscription Status",
-        "Payment Status",
-        "Start Date",
-        "End Date",
-      ];
-      const tableRows = paymentModal.history.map((item) => [
-        `Rs.${item.price || item.planPrice}`,
-        item.subscriptionStatus || "N/A",
-        item.paymentStatus || "N/A",
-        new Date(item.startDate).toLocaleDateString(),
-        new Date(item.endDate).toLocaleDateString(),
-      ]);
-
-      doc.autoTable({
-        startY: 90,
-        head: [tableColumn],
-        body: tableRows,
-        theme: "grid",
-      });
-    } else {
-      doc.text("No past subscription history available.", 14, 90);
+  const getPaymentStatusIcon = (status) => {
+    switch (status) {
+      case "Paid":
+        return <CheckCircle2 className="w-4 h-4 text-emerald-600" />;
+      case "Pending":
+        return <Clock className="w-4 h-4 text-amber-600" />;
+      case "Failed":
+        return <XOctagon className="w-4 h-4 text-rose-600" />;
+      default:
+        return <AlertCircle className="w-4 h-4 text-gray-400" />;
     }
-
-    doc.save(`${paymentModal.vendorInfo.vendorName}_payment_details.pdf`);
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-        <h3 className="text-2xl font-bold text-gray-800">
-          Vendor Subscriptions
-        </h3>
-        <button
-          onClick={exportExcel}
-          className="flex items-center justify-center gap-2 text-sm font-medium px-4 py-2 rounded-lg bg-[#44a59f] text-white hover:bg-[#76bcb8] border border-[#3D8D7A] transition shadow-sm"
-        >
-          <IoCloudDownloadOutline className="w-5 h-5" /> Export Excel
-        </button>
+    <div >
+      <div className="flex flex-col gap-4">
+        {/* Header Section */}
+        <div className="flex flex-col   sm:flex-row justify-between items-start sm:items-center gap-6">
+          <div>
+            <h1 className="text-xl font-bold ">
+              Vendor Subscriptions
+            </h1>
+
+          </div>
+          <button
+            onClick={exportExcel}
+            className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 hover:scale-105 transition-all duration-200"
+          >
+            <Download className="w-5 h-5 group-hover:animate-bounce" />
+            Export Data
+          </button>
+        </div>
+
+        {/* Stats Cards */}
+   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+  {/* Total Subscriptions */}
+  <div className="bg-blue-200 rounded-2xl p-6 shadow  text-black">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-sm  opacity-90">Total Subscriptions</p>
+        <p className="text-3xl font-bold mt-2">{stats.total}</p>
       </div>
+      <div className="w-14 h-14 rounded-xl bg-gray-50 flex items-center justify-center shadow-inner">
+        <TrendingUp className="w-7 h-7 text-black" />
+      </div>
+    </div>
+  </div>
 
-      {/* in table for large screen */}
-      <div className="hidden lg:block overflow-x-auto">
-        <table className="min-w-full bg-white rounded-2xl shadow-xl overflow-hidden">
-          <thead className="bg-[#e3f3e7] text-green-700 text-md">
-            <tr>
-              <th className="px-5 py-4 text-left">Vendor Name</th>
-              <th className="px-5 py-4 text-left">Start Date</th>
-              <th className="px-5 py-4 text-left">End Date</th>
-              <th className="px-5 py-4 text-left">Payment Status</th>
-              <th className="px-5 py-4 text-left">Subscription Status</th>
-              <th className="px-5 py-4 text-center">Payment Details</th>
-              <th className="px-5 py-4 text-center">Cancel</th>
-            </tr>
-          </thead>
-          <tbody>
-            {subscriptions.map((sub, index) => (
-              <tr
-                key={sub._id + "-" + index}
-                className="border-b hover:bg-[#f3f6f3] transition group"
-              >
-                <td className="px-5 py-4 font-medium text-gray-800">
-                  {sub.vendor?.name || sub.vendorName || "N/A"}
-                </td>
-                <td className="px-5 py-4">
-                  {sub.startDate
-                    ? new Date(sub.startDate).toISOString().split("T")[0]
-                    : "N/A"}
-                </td>
+  {/* Active Plans */}
+  <div className="bg-emerald-200 rounded-2xl p-6 shadow  text-black">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-sm  opacity-90">Active Plans</p>
+        <p className="text-3xl font-bold mt-2">{stats.active}</p>
+      </div>
+      <div className="w-14 h-14 rounded-xl bg-gray-50 flex items-center justify-center shadow-inner">
+        <CheckCircle2 className="w-7 h-7 text-black" />
+      </div>
+    </div>
+  </div>
 
-                <td className="px-5 py-4">
-                  {sub.endDate
-                    ? new Date(sub.endDate).toISOString().split("T")[0]
-                    : "N/A"}
-                </td>
-                <td className="px-7 py-4">
-                  <span
-                    className={`text-sm font-medium ${
-                      sub.paymentStatus === "Paid"
-                        ? "text-green-700"
-                        : "text-red-700"
-                    }`}
+  {/* Cancelled */}
+  <div className="bg-rose-200 rounded-2xl p-6  shadow text-black">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-sm  opacity-90">Cancelled</p>
+        <p className="text-3xl font-bold mt-2">{stats.cancelled}</p>
+      </div>
+      <div className="w-14 h-14 rounded-xl bg-gray-50 flex items-center justify-center shadow-inner">
+        <XOctagon className="w-7 h-7 text-black" />
+      </div>
+    </div>
+  </div>
+</div>
+
+
+        {/* Desktop Table */}
+        <div className="hidden mt-5 lg:block bg-white rounded-2xl shadow-xl border border-slate-200/60 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-slate-200">
+              <thead>
+                <tr className="bg-[#E5E7EB]">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                    Vendor Name
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                    Duration
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                    Payment
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {subscriptions.map((sub, index) => (
+                  <tr
+                    key={sub._id + "-" + index}
+                    className="hover:bg-gradient-to-r hover:from-slate-50 hover:to-emerald-50/30 transition-all duration-200 group"
                   >
-                    {sub.paymentStatus || "N/A"}
-                  </span>
-                </td>
-                <td className="px-5 py-4">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center">
+                          <User className="w-5 h-5 text-emerald-700" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-slate-900">
+                            {sub.vendor?.name || sub.vendorName || "N/A"}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1 text-sm">
+                        <div className="flex items-center gap-2 text-slate-600">
+                          <Calendar className="w-4 h-4 text-emerald-600" />
+                          <span>
+                            {sub.startDate
+                              ? new Date(sub.startDate).toLocaleDateString()
+                              : "N/A"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-slate-600">
+                          <Calendar className="w-4 h-4 text-rose-600" />
+                          <span>
+                            {sub.endDate
+                              ? new Date(sub.endDate).toLocaleDateString()
+                              : "N/A"}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        {getPaymentStatusIcon(sub.paymentStatus)}
+                        <span
+                          className={`text-sm font-semibold ${
+                            sub.paymentStatus === "Paid"
+                              ? "text-emerald-700"
+                              : sub.paymentStatus === "Pending"
+                              ? "text-amber-700"
+                              : "text-rose-700"
+                          }`}
+                        >
+                          {sub.paymentStatus || "N/A"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm ${
+                          sub.subscriptionStatus === "Active"
+                            ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
+                            : "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
+                        }`}
+                      >
+                        {sub.subscriptionStatus === "Active" ? (
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        ) : (
+                          <div className="w-2 h-2 rounded-full bg-rose-500" />
+                        )}
+                        {sub.subscriptionStatus}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-2">
+                        <button
+                          className="p-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 hover:scale-110 transition-all duration-200 shadow-sm"
+                          onClick={async () => {
+                            const vendorId = sub.vendorId || sub.vendor || sub._id;
+                            const historyData = await fetchSubscriptionHistory(vendorId);
+                            setPaymentModal({
+                              open: true,
+                              payment: sub.paymentDetails,
+                              vendorInfo: { vendorName: sub.vendorName },
+                              history: historyData,
+                            });
+                          }}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          className="p-2 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 hover:scale-110 transition-all duration-200 shadow-sm"
+                          onClick={() => handleCancel(sub._id)}
+                        >
+                        <Trash  className="w-4 h-4"></Trash>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="block lg:hidden space-y-4">
+          {subscriptions.map((sub) => (
+            <div
+              key={sub._id}
+              className="bg-white rounded-2xl shadow-lg border border-slate-200/60 overflow-hidden hover:shadow-xl transition-all duration-300"
+            >
+              {/* Card Header */}
+              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 px-5 py-4 border-b border-emerald-100">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center">
+                      <User className="w-6 h-6 text-emerald-700" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-lg">
+                        {sub.vendor?.name || sub.vendorName || "N/A"}
+                      </h3>
+                    </div>
+                  </div>
                   <span
-                    className={`inline-block px-3 py-1 rounded-full text-sm font-semibold shadow-sm ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm ${
                       sub.subscriptionStatus === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700 line-through"
+                        ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
+                        : "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
                     }`}
                   >
+                    {sub.subscriptionStatus === "Active" ? (
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    ) : (
+                      <div className="w-2 h-2 rounded-full bg-rose-500" />
+                    )}
                     {sub.subscriptionStatus}
                   </span>
-                </td>
-                <td className="px-5 py-4 text-center">
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-5 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                      Start Date
+                    </p>
+                    <div className="flex items-center gap-2 text-slate-900 font-semibold">
+                      <Calendar className="w-4 h-4 text-emerald-600" />
+                      {sub.startDate
+                        ? new Date(sub.startDate).toLocaleDateString()
+                        : "N/A"}
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                      End Date
+                    </p>
+                    <div className="flex items-center gap-2 text-slate-900 font-semibold">
+                      <Calendar className="w-4 h-4 text-rose-600" />
+                      {sub.endDate
+                        ? new Date(sub.endDate).toLocaleDateString()
+                        : "N/A"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100">
+                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">
+                    Payment Status
+                  </p>
+                  <div className="flex items-center gap-2">
+                    {getPaymentStatusIcon(sub.paymentStatus)}
+                    <span
+                      className={`text-sm font-bold ${
+                        sub.paymentStatus === "Paid"
+                          ? "text-emerald-700"
+                          : sub.paymentStatus === "Pending"
+                          ? "text-amber-700"
+                          : "text-rose-700"
+                      }`}
+                    >
+                      {sub.paymentStatus || "N/A"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-2">
                   <button
-                    className="px-3 py-1 text-blue-700 rounded-full text-sm font-medium hover:underline transition flex items-center gap-1 mx-auto"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold hover:from-blue-700 hover:to-blue-800 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:scale-105 transition-all duration-200"
                     onClick={async () => {
                       const vendorId = sub.vendorId || sub.vendor || sub._id;
-                      const historyData = await fetchSubscriptionHistory(
-                        vendorId
-                      );
+                      const historyData = await fetchSubscriptionHistory(vendorId);
                       setPaymentModal({
                         open: true,
                         payment: sub.paymentDetails,
@@ -356,262 +496,238 @@ const VendorSubscriptions = () => {
                       });
                     }}
                   >
-                    <Eye className="w-4 h-4" /> View
+                    <Eye className="w-4 h-4" />
+                    View Details
                   </button>
-                </td>
-                <td className="px-5 py-4 text-center">
                   <button
-                    className="px-3 py-1 text-red-700 rounded-full text-sm font-medium hover:underline transition flex items-center gap-1 mx-auto"
+                    className="px-4 py-2.5 rounded-xl bg-rose-50 text-rose-700 font-semibold hover:bg-rose-100 border border-rose-200 hover:scale-105 transition-all duration-200"
                     onClick={() => handleCancel(sub._id)}
                   >
-                    <XCircle className="w-4 h-4" /> Cancel
+                    <XCircle className="w-5 h-5" />
                   </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Cards for small & medium screens */}
-      <div className="block lg:hidden space-y-5">
-        {subscriptions.map((sub) => (
-          <div
-            key={sub._id}
-            className="bg-white border border-gray-200 rounded-2xl shadow-md p-5 hover:shadow-xl transition"
-          >
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <User className="w-4 h-4 text-gray-500" />
-                {sub.vendor?.name || sub.vendorName || "N/A"}
-              </h3>
-              <span
-                className={`text-xs px-3 py-1 rounded-full font-semibold w-fit ${
-                  sub.subscriptionStatus === "Active"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-600 line-through"
-                }`}
-              >
-                {sub.subscriptionStatus}
-              </span>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t mt-4 mb-3" />
-
-            {/* Details */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
-              <div className="space-y-1">
-                <p className="text-gray-500">Start Date</p>
-                <p className="font-medium">
-                  {sub.startDate
-                    ? new Date(sub.startDate).toISOString().split("T")[0]
-                    : "N/A"}
-                </p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-gray-500">End Date</p>
-                <p className="font-medium">
-                  {sub.endDate
-                    ? new Date(sub.endDate).toISOString().split("T")[0]
-                    : "N/A"}
-                </p>
-              </div>
-              <div className="space-y-1 sm:col-span-2">
-                <p className="text-gray-500">Payment Status</p>
-                <p
-                  className={`font-semibold ${
-                    sub.paymentStatus === "Paid"
-                      ? "text-green-700"
-                      : "text-red-700"
-                  }`}
-                >
-                  {sub.paymentStatus || "N/A"}
-                </p>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="mt-5 flex justify-end gap-3">
-              {/* Cancel Button */}
-              <button
-                className="flex items-center gap-2 text-xs sm:text-sm px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg font-semibold text-red-600 border border-transparent hover:border-red-200 hover:bg-red-50 transition-colors"
-                onClick={() => handleCancel(sub._id)}
-              >
-                <XCircle className="w-3 h-3 sm:w-5 sm:h-5" /> Cancel
-              </button>
-
-              {/* View Details Button */}
-              <button
-                className="flex items-center justify-center gap-2 text-xs sm:text-sm px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg border border-gray-300 bg-white text-gray-800 font-semibold hover:bg-gray-100 hover:border-gray-400 transition-shadow shadow-sm hover:shadow-md active:scale-[0.98] active:shadow-sm focus:outline-none focus:ring-1"
-                onClick={async () => {
-                  const vendorId = sub.vendorId || sub.vendor || sub._id;
-                  const historyData = await fetchSubscriptionHistory(vendorId);
-                  setPaymentModal({
-                    open: true,
-                    payment: sub.paymentDetails,
-                    vendorInfo: { vendorName: sub.vendorName },
-                    history: historyData,
-                  });
-                }}
-              >
-                <Eye className="w-4 h-4 sm:w-5 sm:h-5" /> View Details
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {paymentModal.open && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl w-full max-w-lg p-6 space-y-5 shadow-xl border border-[#e3f3e7]">
-            {/* Header */}
-            <div className="flex justify-between items-center pb-3 border-b">
-              <h3 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-                <BadgeDollarSign className="w-6 h-6 text-green-700" /> Payment
-                Details
-              </h3>
-              <button
-                onClick={() =>
-                  setPaymentModal({
-                    open: false,
-                    payment: null,
-                    vendorInfo: null,
-                  })
-                }
-                className="text-gray-500 hover:text-[#164B60] transition"
-              >
-                <XCircle className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* Vendor Info */}
-            <div className="text-gray-700 space-y-2 text-sm">
-              <div className="flex justify-between">
-                <p>
-                  <strong>Vendor:</strong> {paymentModal.vendorInfo?.vendorName}
-                </p>
-              </div>
-            </div>
-
-            {/* Payment Details */}
-            <div className="space-y-3 text-[15px] text-gray-800 bg-[#f9fdf9] p-4 rounded-lg border border-[#e6f3ea]">
-              <p className="flex items-center gap-2">
-                <Banknote className="w-4 h-4 text-emerald-700" />
-                <span>
-                  <strong>Amount:</strong> {paymentModal.payment.amount}
-                </span>
-              </p>
-              <p className="flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-blue-700" />
-                <span>
-                  <strong>Method:</strong> {paymentModal.payment.method}
-                </span>
-              </p>
-              <p className="flex items-center gap-2">
-                <CalendarCheck className="w-4 h-4 text-indigo-700" />
-                <span>
-                  <strong>Date & Time:</strong> {paymentModal.payment.dateTime}
-                </span>
-              </p>
-              <p className="flex items-center gap-2 text-gray-700">
-                <span className="font-semibold">Transaction ID:</span>{" "}
-                {paymentModal.payment.transactionId}
-              </p>
-              <p className="flex items-center gap-2">
-                <span className="font-semibold">Payment Status:</span>
-                <span
-                  className={`ml-1 inline-block px-2 rounded-full font-medium ${
-                    paymentModal.payment.status === "Paid"
-                      ? " text-green-700"
-                      : paymentModal.payment.status === "Pending"
-                      ? " text-yellow-700 italic"
-                      : " text-red-700"
-                  }`}
-                >
-                  {paymentModal.payment.status}
-                </span>
-              </p>
-            </div>
-
-            {/* --- Past Subscriptions Section --- */}
-            {paymentModal.history.map((item) => (
-              <div
-                key={item._id}
-                className="p-3 border border-[#e8f1ec] rounded-lg bg-[#f5fbf7] text-sm text-gray-700 space-y-2"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <span>
-                    <strong>Price:</strong> ₹{item.price || item.planPrice}
-                  </span>
-                  <span>
-                    <strong>Subscription Status:</strong>{" "}
-                    <span
-                      className={`${
-                        item.subscriptionStatus === "Active"
-                          ? "text-green-700"
-                          : "text-red-600 line-through"
-                      }`}
-                    >
-                      {item.subscriptionStatus}
-                    </span>
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
-                  <span>
-                    <strong>Start:</strong>{" "}
-                    {new Date(item.startDate).toLocaleDateString()}
-                  </span>
-                  <span>
-                    <strong>End:</strong>{" "}
-                    {new Date(item.endDate).toLocaleDateString()}
-                  </span>
-                </div>
-
-                <div className="text-xs text-gray-600">
-                  <strong>Payment Status:</strong>{" "}
-                  <span
-                    className={`${
-                      item.paymentStatus === "Paid"
-                        ? "text-green-700"
-                        : item.paymentStatus === "Pending"
-                        ? "text-yellow-700 italic"
-                        : "text-red-700"
-                    }`}
-                  >
-                    {item.paymentStatus}
-                  </span>
                 </div>
               </div>
-            ))}
-
-            {/* Action Buttons */}
-            <div className="flex justify-between gap-3 pt-3">
-              <button
-                onClick={exportPDF}
-                className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg bg-[#57A6A1] text-white hover:bg-[#48938d] w-full justify-center shadow-sm"
-              >
-                <Download className="w-4 h-4" /> Download
-                PDF
-              </button>
-              <button
-                className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 w-full justify-center"
-                onClick={() =>
-                  setPaymentModal({
-                    open: false,
-                    payment: null,
-                    vendorInfo: null,
-                  })
-                }
-              >
-                Close
-              </button>
             </div>
-          </div>
+          ))}
         </div>
-      )}
+
+        {/* Payment Modal */}
+        {paymentModal.open && (
+          <div className="fixed top-0 inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200">
+              {/* Modal Header */}
+              <div className="bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <FileText className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Payment Details</h3>
+                      <p className="text-emerald-50 text-sm">
+                        {paymentModal.vendorInfo?.vendorName}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setPaymentModal({
+                        open: false,
+                        payment: null,
+                        vendorInfo: null,
+                        history: [],
+                      })
+                    }
+                    className="w-10 h-10 rounded-xl bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                  >
+                    <XCircle className="w-5 h-5 text-white" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 space-y-6 max-h-[calc(100vh-300px)] overflow-y-auto">
+                {/* Current Payment Info */}
+                <div className="bg-gradient-to-br from-slate-50 to-emerald-50/30 rounded-2xl p-5 space-y-4 border border-slate-200">
+                  <h4 className="font-bold text-slate-900 flex items-center gap-2">
+                    <BadgeDollarSign className="w-5 h-5 text-emerald-600" />
+                    Current Payment Information
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                        <Banknote className="w-5 h-5 text-emerald-700" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-600 font-medium">Amount</p>
+                        <p className="text-lg font-bold text-slate-900">
+                          {paymentModal.payment.amount}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                        <CreditCard className="w-5 h-5 text-blue-700" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-600 font-medium">Payment Method</p>
+                        <p className="text-lg font-bold text-slate-900">
+                          {paymentModal.payment.method}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                        <CalendarCheck className="w-5 h-5 text-purple-700" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-600 font-medium">Date & Time</p>
+                        <p className="text-sm font-semibold text-slate-900">
+                          {paymentModal.payment.dateTime}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                        paymentModal.payment.status === "Paid"
+                          ? "bg-emerald-100"
+                          : paymentModal.payment.status === "Pending"
+                          ? "bg-amber-100"
+                          : "bg-rose-100"
+                      }`}>
+                        {getPaymentStatusIcon(paymentModal.payment.status)}
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-600 font-medium">Status</p>
+                        <p className={`text-sm font-bold ${
+                          paymentModal.payment.status === "Paid"
+                            ? "text-emerald-700"
+                            : paymentModal.payment.status === "Pending"
+                            ? "text-amber-700"
+                            : "text-rose-700"
+                        }`}>
+                          {paymentModal.payment.status}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-200">
+                    <p className="text-xs text-slate-600 font-medium mb-1">Transaction ID</p>
+                    <p className="text-sm font-mono font-semibold text-slate-900 bg-white px-3 py-2 rounded-lg border border-slate-200">
+                      {paymentModal.payment.transactionId}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Subscription History */}
+                {paymentModal.history.length > 0 && (
+                  <div>
+                    <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-slate-600" />
+                      Subscription History
+                    </h4>
+                    <div className="space-y-3">
+                      {paymentModal.history.map((item) => (
+                        <div
+                          key={item._id}
+                          className="bg-white rounded-xl p-4 border border-slate-200 hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-lg font-bold text-slate-900">
+                              ₹{item.price || item.planPrice}
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                                  item.subscriptionStatus === "Active"
+                                    ? "bg-emerald-100 text-emerald-800"
+                                    : "bg-rose-100 text-rose-800"
+                                }`}
+                              >
+                                {item.subscriptionStatus === "Active" ? (
+                                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                ) : (
+                                  <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                                )}
+                                {item.subscriptionStatus}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                              <p className="text-slate-500 text-xs mb-1">Start Date</p>
+                              <p className="text-slate-900 font-semibold">
+                                {new Date(item.startDate).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-slate-500 text-xs mb-1">End Date</p>
+                              <p className="text-slate-900 font-semibold">
+                                {new Date(item.endDate).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="mt-3 pt-3 border-t border-slate-100">
+                            <div className="flex items-center gap-2">
+                              {getPaymentStatusIcon(item.paymentStatus)}
+                              <span className="text-xs text-slate-600">Payment:</span>
+                              <span
+                                className={`text-sm font-bold ${
+                                  item.paymentStatus === "Paid"
+                                    ? "text-emerald-700"
+                                    : item.paymentStatus === "Pending"
+                                    ? "text-amber-700"
+                                    : "text-rose-700"
+                                }`}
+                              >
+                                {item.paymentStatus}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex gap-3">
+                <button
+                  onClick={() => {
+                    // PDF export logic would go here
+                    alert("PDF export functionality");
+                  }}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:from-emerald-700 hover:to-teal-700 hover:scale-105 transition-all duration-200"
+                >
+                  <Download className="w-4 h-4" />
+                  Download PDF
+                </button>
+                <button
+                  className="px-6 py-3 rounded-xl bg-white text-slate-700 font-semibold border border-slate-300 hover:bg-slate-50 hover:scale-105 transition-all duration-200"
+                  onClick={() =>
+                    setPaymentModal({
+                      open: false,
+                      payment: null,
+                      vendorInfo: null,
+                      history: [],
+                    })
+                  }
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

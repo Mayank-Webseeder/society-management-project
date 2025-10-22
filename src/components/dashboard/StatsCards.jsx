@@ -15,7 +15,7 @@ const StatsCards = ({ statsData }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 mt-3 gap-5 md:gap-6">
       {statsData.map((stat, index) => {
         const Icon = icons[index % icons.length];
 

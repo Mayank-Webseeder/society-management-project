@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { UserCheck } from "lucide-react";
+import { FaRupeeSign } from "react-icons/fa";
 
 const RevenueBreakdown = () => {
   const plan = {
@@ -49,31 +50,39 @@ const RevenueBreakdown = () => {
         Revenue Breakdown
       </h3>
 
-      <div className="flex flex-col md:flex-row md:gap-6">
-        {/* Total Revenue */}
-        <div className="w-full md:w-1/2 max-w-sm mx-auto md:mx-0 p-6 rounded-3xl border border-indigo-200 bg-gradient-to-tr from-indigo-50 to-purple-100 shadow-lg flex flex-col justify-center items-center hover:shadow-2xl transition-transform duration-300">
-          <h4 className="text-lg font-semibold text-indigo-700 mb-2 tracking-wide">
-            Total Revenue
-          </h4>
-          <div className="text-5xl font-extrabold bg-gradient-to-r from-indigo-700 to-purple-600 text-transparent bg-clip-text">
-            <CountUp end={plan.value} duration={3} separator="," prefix="₹" />
-          </div>
-        </div>
-
-        {/* Active Users */}
-        <div className="w-full md:w-1/2 max-w-sm mx-auto md:mx-0 p-6 rounded-3xl border border-yellow-300 bg-gradient-to-tr from-yellow-50 to-yellow-100 shadow-md flex flex-col justify-center items-center hover:shadow-xl transition-transform duration-300 relative mt-6 md:mt-0">
-          <div className="absolute -top-6 bg-yellow-400 rounded-full p-3 shadow-lg">
-            <UserCheck size={28} className="text-white" />
-          </div>
-          <h4 className="mt-6 text-lg font-semibold text-yellow-700 mb-1 tracking-wide">
-            Active Users
-          </h4>
-          <div className="text-2xl font-bold text-yellow-800">
-            {plan.activeUsers.toLocaleString()}
-          </div>
-          <div className="text-lg text-yellow-700 mt-1">users</div>
-        </div>
+<div className="flex flex-col sm:flex-row flex-wrap gap-4 lg:gap-6">
+  {/* Total Revenue */}
+  <div className="bg-indigo-200 w-full lg:w-[20vw] rounded-2xl p-6 shadow">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-black text-sm font-medium">Total Revenue</p>
+        <p className="text-3xl font-bold text-black mt-2">
+          <CountUp end={plan.value} duration={3} separator="," prefix="₹" />
+        </p>
       </div>
+      <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-gray-50 shadow-inner">
+        <FaRupeeSign className="w-7 h-7 text-black" />
+      </div>
+    </div>
+  </div>
+
+  {/* Active Users */}
+  <div className="bg-amber-200 w-full lg:w-[20vw] rounded-2xl p-6 shadow">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-black text-sm font-medium">Active Users</p>
+        <p className="text-3xl font-bold text-black mt-2">
+          {plan.activeUsers.toLocaleString()}
+        </p>
+      </div>
+      <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-gray-50 shadow-inner">
+        <UserCheck className="w-7 h-7 text-black" />
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
       {/* Monthly Revenue Trend */}
       <div className="p-0 md:p-6 rounded-2xl shadow-lg bg-white mt-6 w-full max-w-full overflow-x-auto">

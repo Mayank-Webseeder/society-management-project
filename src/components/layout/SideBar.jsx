@@ -256,13 +256,14 @@ const SideBar = () => {
   };
 
   return (
-    <aside
-      className={`h-screen ${
-        expanded ? "w-64" : "w-16"
-      } transition-all duration-300 bg-gradient-to-b from-[#2d5e6c] to-[#0B2E36] text-white flex flex-col shadow-xl border-r border-white/20 overflow-hidden`}
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={() => setExpanded(false)}
-    >
+<aside
+  className={`fixed top-0 left-0 h-screen z-50 transition-all duration-300 
+    ${expanded ? "w-64 bg-gradient-to-b from-[#2d5e6c] to-[#0B2E36]/95 backdrop-blur-md" : "w-16 bg-[#0B2E36]/90"} 
+    text-white flex flex-col shadow-2xl border-r border-white/20 overflow-hidden`}
+  onMouseEnter={() => setExpanded(true)}
+  onMouseLeave={() => setExpanded(false)}
+>
+
       <div className="flex items-center justify-center p-4 border-b border-white/10 mb-4 h-16">
         <span
           className={`text-xl font-bold tracking-wide whitespace-nowrap overflow-hidden transition-all duration-200 ${
