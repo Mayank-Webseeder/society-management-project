@@ -11,6 +11,7 @@ import {
   User,
   Calendar,
   CheckCircle2,
+   CheckCircle,
   AlertCircle,
   XOctagon,
   TrendingUp,
@@ -18,6 +19,7 @@ import {
   Trash2,
   Trash,
 } from "lucide-react";
+
 
 const VendorSubscriptions = () => {
   const [subscriptions, setSubscriptions] = useState([
@@ -230,46 +232,28 @@ const VendorSubscriptions = () => {
         </div>
 
         {/* Stats Cards */}
-   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-  {/* Total Subscriptions */}
-  <div className="bg-blue-200 rounded-2xl p-6 shadow  text-black">
-    <div className="flex items-center justify-between">
+{/* Stats Cards */}
+<div className="grid grid-cols-1 max-w-4xl sm:grid-cols-3 gap-4 sm:gap-6">
+  {[
+    { label: "Total Subscriptions", value: stats.total, icon: TrendingUp, bg: "bg-blue-200" },
+    { label: "Active Plans", value: stats.active, icon: CheckCircle2, bg: "bg-emerald-200" },
+    { label: "Cancelled", value: stats.cancelled, icon: XCircle, bg: "bg-rose-200" },
+  ].map(({ label, value, icon: Icon, bg }, index) => (
+    <div
+      key={index}
+      className={`${bg}   rounded-2xl p-4  shadow text-black flex items-center justify-between min-h-[20px]`}
+    >
       <div>
-        <p className="text-sm  opacity-90">Total Subscriptions</p>
-        <p className="text-3xl font-bold mt-2">{stats.total}</p>
+        <p className="text-sm opacity-90">{label}</p>
+        <p className="text-3xl font-bold mt-1">{value}</p>
       </div>
-      <div className="w-14 h-14 rounded-xl bg-gray-50 flex items-center justify-center shadow-inner">
-        <TrendingUp className="w-7 h-7 text-black" />
+      <div className="bg-gray-50 p-3 rounded-full">
+        <Icon className="w-6 h-6 text-black" />
       </div>
     </div>
-  </div>
-
-  {/* Active Plans */}
-  <div className="bg-emerald-200 rounded-2xl p-6 shadow  text-black">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm  opacity-90">Active Plans</p>
-        <p className="text-3xl font-bold mt-2">{stats.active}</p>
-      </div>
-      <div className="w-14 h-14 rounded-xl bg-gray-50 flex items-center justify-center shadow-inner">
-        <CheckCircle2 className="w-7 h-7 text-black" />
-      </div>
-    </div>
-  </div>
-
-  {/* Cancelled */}
-  <div className="bg-rose-200 rounded-2xl p-6  shadow text-black">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-sm  opacity-90">Cancelled</p>
-        <p className="text-3xl font-bold mt-2">{stats.cancelled}</p>
-      </div>
-      <div className="w-14 h-14 rounded-xl bg-gray-50 flex items-center justify-center shadow-inner">
-        <XOctagon className="w-7 h-7 text-black" />
-      </div>
-    </div>
-  </div>
+  ))}
 </div>
+
 
 
         {/* Desktop Table */}
@@ -299,6 +283,16 @@ const VendorSubscriptions = () => {
                 {subscriptions.map((sub, index) => (
                   <tr
                     key={sub._id + "-" + index}
+                    onClick={async () => {
+          const vendorId = sub.vendorId || sub.vendor || sub._id;
+          const historyData = await fetchSubscriptionHistory(vendorId);
+          setPaymentModal({
+            open: true,
+            payment: sub.paymentDetails,
+            vendorInfo: { vendorName: sub.vendor?.name || sub.vendorName },
+            history: historyData,
+          });
+        }}
                     className="hover:bg-gradient-to-r hover:from-slate-50 hover:to-emerald-50/30 transition-all duration-200 group"
                   >
                     <td className="px-6 py-4">
@@ -349,44 +343,40 @@ const VendorSubscriptions = () => {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm ${
-                          sub.subscriptionStatus === "Active"
-                            ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
-                            : "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
-                        }`}
-                      >
-                        {sub.subscriptionStatus === "Active" ? (
-                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        ) : (
-                          <div className="w-2 h-2 rounded-full bg-rose-500" />
-                        )}
-                        {sub.subscriptionStatus}
-                      </span>
-                    </td>
+                <td className="px-6 py-4">
+  <span
+    className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm ${
+      sub.subscriptionStatus === "Active"
+        ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
+        : sub.subscriptionStatus === "Pending"
+        ? "bg-yellow-100 text-yellow-800 ring-1 ring-yellow-200"
+        : "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
+    }`}
+  >
+    {/* Status Icon */}
+    {sub.subscriptionStatus === "Active" && (
+      <CheckCircle className="w-3 h-3 text-emerald-500 animate-pulse" />
+    )}
+    {sub.subscriptionStatus === "Pending" && (
+      <Clock className="w-3 h-3 text-yellow-500 animate-pulse" />
+    )}
+    {sub.subscriptionStatus === "Cancelled" && (
+      <XCircle className="w-3 h-3 text-rose-500" />
+    )}
+
+    {/* Status Text */}
+    {sub.subscriptionStatus || "N/A"}
+  </span>
+</td>
+
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
+                    
                         <button
-                          className="p-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 hover:scale-110 transition-all duration-200 shadow-sm"
-                          onClick={async () => {
-                            const vendorId = sub.vendorId || sub.vendor || sub._id;
-                            const historyData = await fetchSubscriptionHistory(vendorId);
-                            setPaymentModal({
-                              open: true,
-                              payment: sub.paymentDetails,
-                              vendorInfo: { vendorName: sub.vendorName },
-                              history: historyData,
-                            });
-                          }}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          className="p-2 rounded-lg bg-rose-50 text-rose-700 hover:bg-rose-100 hover:scale-110 transition-all duration-200 shadow-sm"
+                          className="p-2 rounded-lg  text-rose-700 hover:bg-rose-100 hover:scale-110 transition-all duration-200"
                           onClick={() => handleCancel(sub._id)}
                         >
-                        <Trash  className="w-4 h-4"></Trash>
+                        <Trash2  className="w-4 h-4"></Trash2>
                         </button>
                       </div>
                     </td>

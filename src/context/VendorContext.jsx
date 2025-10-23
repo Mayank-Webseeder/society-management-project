@@ -294,11 +294,19 @@ const VendorProvider = ({ children }) => {
     }
   };
 
-  const handleDeleteVendor = (id) => {
-    if (window.confirm("Are you sure you want to delete this vendor?")) {
-      setVendors((prev) => prev.filter((v) => v.id !== id && v._id !== id));
-    }
-  };
+const handleDeleteVendor = (id) => {
+  if (window.confirm("Are you sure you want to delete this vendor?")) {
+    // Optionally: call your API here if needed
+    // await axios.delete(`https://backendfullstack-if68.onrender.com/api/v1/vendor/${id}`);
+
+    // Update local state (removes from UI)
+    setVendors((prev) => prev.filter((v) => v.id !== id && v._id !== id));
+
+    // ✅ Then refresh the page
+    window.location.reload();
+  }
+};
+
 
   return (
     <VendorContext.Provider

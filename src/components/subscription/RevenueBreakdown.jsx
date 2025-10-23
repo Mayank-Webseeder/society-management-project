@@ -34,6 +34,21 @@ const RevenueBreakdown = () => {
     { month: "Nov", revenue: 70000 },
     { month: "Dec", revenue: 80000 },
   ];
+  const statsCards = [
+    {
+      label: "Total Revenue",
+      value: plan.value,
+      isCurrency: true,
+      icon: FaRupeeSign,
+      bg: "bg-indigo-200",
+    },
+    {
+      label: "Active Users",
+      value: plan.activeUsers,
+      icon: UserCheck,
+      bg: "bg-amber-200",
+    },
+  ];
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -51,36 +66,28 @@ const RevenueBreakdown = () => {
       </h3>
 
 <div className="flex flex-col sm:flex-row flex-wrap gap-4 lg:gap-6">
-  {/* Total Revenue */}
-  <div className="bg-indigo-200 w-full lg:w-[20vw] rounded-2xl p-6 shadow">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-black text-sm font-medium">Total Revenue</p>
-        <p className="text-3xl font-bold text-black mt-2">
-          <CountUp end={plan.value} duration={3} separator="," prefix="₹" />
-        </p>
-      </div>
-      <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-gray-50 shadow-inner">
-        <FaRupeeSign className="w-7 h-7 text-black" />
-      </div>
-    </div>
-  </div>
+        {statsCards.map(({ label, value, icon: Icon, bg, isCurrency }, index) => (
+          <div
+            key={index}
+            className={`${bg} w-full lg:w-[20vw] rounded-2xl p-4 shadow flex items-center justify-between min-h-[80px]`}
+          >
+            <div>
+              <p className="text-black text-sm font-medium">{label}</p>
+              <p className="text-3xl font-bold text-black mt-1">
+                {isCurrency ? (
+                  <CountUp end={value} duration={3} separator="," prefix="₹" />
+                ) : (
+                  value.toLocaleString()
+                )}
+              </p>
+            </div>
 
-  {/* Active Users */}
-  <div className="bg-amber-200 w-full lg:w-[20vw] rounded-2xl p-6 shadow">
-    <div className="flex items-center justify-between">
-      <div>
-        <p className="text-black text-sm font-medium">Active Users</p>
-        <p className="text-3xl font-bold text-black mt-2">
-          {plan.activeUsers.toLocaleString()}
-        </p>
+            <div className="bg-gray-50 p-3 rounded-full">
+              <Icon className="w-6 h-6 text-black" />
+            </div>
+          </div>
+        ))}
       </div>
-      <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-gray-50 shadow-inner">
-        <UserCheck className="w-7 h-7 text-black" />
-      </div>
-    </div>
-  </div>
-</div>
 
 
 

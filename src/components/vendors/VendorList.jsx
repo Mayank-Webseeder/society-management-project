@@ -1,5 +1,7 @@
 import React, { useState, useEffect, } from "react";
-import { Search, Trash2, Star, Eye, Trash } from "lucide-react";
+import { Search, Trash2, Star, Eye, Trash,   CircleCheckBig,Ban,
+  CircleAlert,
+  CircleX,  } from "lucide-react";
 import { Link,useNavigate } from "react-router-dom";
 import { useVendorContext } from "../../context/VendorContext";
 import { Users, UserCheck, Clock, UserX, ShieldAlert } from "lucide-react";
@@ -77,37 +79,37 @@ const VendorList = () => {
     switch (status) {
       case "Active":
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-            Active
+          <span className="flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+           <CircleCheckBig className="w-3.5 h-3.5 mr-1.5" /> Active
           </span>
         );
       case "Pending":
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-            Pending
+          <span className="flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+            <CircleAlert className="w-3.5 h-3.5 mr-1.5" /> Pending
           </span>
         );
       case "Rejected":
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-            Rejected
+          <span className="flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+            <CircleX className="w-3.5 h-3.5 mr-1.5" />  Rejected
           </span>
         );
       case "Blacklisted":
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-300 text-gray-700">
-            Blacklisted
+          <span className="flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-gray-100 text-gray-700 border border-gray-300">
+           <Ban className="w-3.5 h-3.5 mr-1.5" /> Blacklisted
           </span>
         );
       case "Disabled":
         return (
           <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-300 text-gray-700">
-            Blacklisted
+          <Ban className="w-3.5 h-3.5 mr-1.5" />  Blacklisted
           </span>
         );
       default:
         return (
-          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+          <span className="flex items-center px-3 py-1.5 text-xs font-medium rounded-full bg-gray-50 text-gray-700 border border-gray-200">
             {status}
           </span>
         );
@@ -259,16 +261,16 @@ const VendorList = () => {
            <div className="hidden md:block rounded-2xl  overflow-x-auto scrollbar-hide max-h-[55vh] border border-gray-200 shadow">
   <table className="min-w-full  text-sm">
     {/* --- Table Head --- */}
-    <thead className="bg-gray-200 font-light sticky top-0 z-20 text-balck uppercase tracking-wide">
+    <thead className="bg-[#E5E7EB]">
       <tr>
-        <th className="px-6 py-3 text-left font-semibold">Name</th>
-        <th className="px-6 py-3 text-left font-semibold">Location</th>
-        <th className="px-6 py-3 text-left font-semibold">Services</th>
-        <th className="px-6 py-3 text-center font-semibold">Ratings</th>
-        <th className="px-6 py-3 text-center font-semibold">Jobs</th>
-        <th className="px-6 py-3 text-left font-semibold">Status</th>
-        <th className="px-6 py-3 text-left font-semibold">Subscription</th>
-        <th className="px-6 py-3 text-center font-semibold">Actions</th>
+        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Name</th>
+        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Location</th>
+        <th className=" py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Services</th>
+        <th className=" py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Ratings</th>
+        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Jobs</th>
+        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Status</th>
+        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Subscription</th>
+        <th className="py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Actions</th>
       </tr>
     </thead>
 
@@ -287,16 +289,16 @@ const VendorList = () => {
 
     }
   }}
-      className="hover:bg-gray-50 cursor-pointer transition-colors duration-150"
+      className="hover:bg-blue-50 cursor-pointer transition-colors duration-150"
     >
       {/* Name */}
-      <td className="px-6 py-4 font-medium text-gray-900">{vendor.name}</td>
+      <td className="px-6 py-3 font-medium text-blue-600">{vendor.name || "N/A"}</td>
 
       {/* Location */}
-      <td className="px-6 py-4 text-gray-600">{vendor.location}</td>
+      <td className="px-6 py-3 text-gray-600">{vendor.location || "N/A"}</td>
 
       {/* Services Provided */}
-      <td className="px-6 py-4 text-gray-600">
+      <td className=" py-3 text-gray-600">
         {vendor.servicesProvided.length === 0
           ? "-"
           : vendor.servicesProvided.length <= 2
@@ -305,20 +307,23 @@ const VendorList = () => {
       </td>
 
       {/* Ratings */}
-      <td className="px-6 py-4 text-center">
-        <div className="flex justify-center items-center gap-1 text-gray-800">
+      <td className=" py-3">
+        <div className=" flex items-center gap-1 text-gray-800">
           {vendor.rating > 0 ? vendor.rating : 0}
           <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
         </div>
       </td>
 
-      {/* Total Jobs */}
-      <td className="px-6 py-4 text-center text-gray-700">
-        {vendor.totalJobsApplied ?? "-"}
+  
+
+        <td className="px-6 ">
+        <span className=" px-3 py-2 rounded-full bg-purple-50 text-purple-700 text-sm font-medium">
+         {vendor.totalJobsApplied || "N/A"}
+        </span>
       </td>
 
       {/* Status Dropdown */}
-      <td className="px-6 py-4 relative vendor-status-dropdown">
+      <td className=" py-3 relative vendor-status-dropdown">
         <button
           onClick={() =>
             setSelectVendor(
@@ -328,9 +333,9 @@ const VendorList = () => {
                 : vendor // open new one
             )
           }
-          className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold border border-gray-300 rounded-full hover:bg-gray-100 transition"
+          className="inline-flex items-center justify-center px-6 py-2 rounded-full  text-cyan-700 text-sm font-medium"
         >
-          {getStatusBadge(vendor.status)}
+       {getStatusBadge(vendor.status || "N/A")}
         </button>
 
         {(selectVendor?.id || selectVendor?._id) ===
@@ -406,12 +411,12 @@ const VendorList = () => {
               : "text-gray-600 border-gray-200"
           }`}
         >
-          {vendor.subscriptionStatus}
+          {vendor.subscriptionStatus || "N/A"}
         </span>
       </td>
 
       {/* Actions */}
-      <td className="px-6 py-4 text-center flex justify-center gap-4">
+      <td className="px-6 py-4 text-center flex  gap-4">
         {/* <Link
           to={`/vendor-details/${vendor.id}`}
           className="text-gray-700 hover:text-black transition"
@@ -421,10 +426,10 @@ const VendorList = () => {
         </Link> */}
         <button
           onClick={() => handleDeleteVendor(vendor.id)}
-          className="text-red-500 hover:text-red-600 transition"
+          className="text-red-500 py-2 hover:text-red-600 transition"
           title="Delete Vendor"
         >
-          <Trash className="w-4 h-4" />
+          <Trash2 className="w-4 h-4" />
         </button>
       </td>
     </tr>
@@ -562,7 +567,7 @@ const VendorList = () => {
                       </Link>
                       <button
                         onClick={() => handleDeleteVendor(vendor.id)}
-                        className="text-red-500 hover:text-red-700"
+                        className="text-red-500 flex  hover:text-red-700"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

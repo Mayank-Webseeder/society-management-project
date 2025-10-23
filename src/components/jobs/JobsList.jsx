@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, Trash, Briefcase, CheckCircle, Clock, XCircle, Eye } from "lucide-react";
+import { Search, Trash2, Briefcase, CheckCircle, Clock, XCircle, Eye } from "lucide-react";
 import { Link,useNavigate } from "react-router-dom";
 import { useJobContext } from "../../context/JobContext";
 
@@ -146,20 +146,18 @@ const JobsList = () => {
       </div>
 
       {/* === JOB TABLE === */}
-      {filteredJobs.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">No Job List Found</div>
-      ) : (
-  <div className="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-sm">
+{/* === JOB TABLE === */}
+<div className="rounded-2xl border border-gray-200 shadow max-h-[55vh] overflow-auto scrollbar-hide">
   <table className="min-w-full divide-y divide-gray-200 text-gray-700">
-    <thead className="bg-gray-200 text-gray-700 uppercase text-sm font-semibold">
+    <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
       <tr>
-        <th className="px-6 py-3 text-left">Society</th>
-        <th className="px-6 py-3 text-left">Title</th>
-        <th className="px-6 py-3 text-left">Created</th>
-        <th className="px-6 py-3 text-left">Status</th>
-        <th className="px-6 py-3 text-left">Stage</th>
-        <th className="px-6 py-3 text-left">Quotation</th>
-        <th className="px-6 py-3 text-center">Action</th>
+        <th className="px-6 py-4 text-left">Society</th>
+        <th className="px-6 py-4 text-left">Title</th>
+        <th className="px-6 py-4 text-left">Created</th>
+        <th className="px-6 py-4 text-left">Status</th>
+        <th className="px-6 py-4 text-left">Stage</th>
+        <th className="px-6 py-4 text-left">Quotation</th>
+        <th className="px-6 py-4 text-center">Action</th>
       </tr>
     </thead>
 
@@ -168,72 +166,90 @@ const JobsList = () => {
         <tr
           key={job._id}
           onClick={(e) => {
-            // prevent navigation when clicking buttons/links/icons
             if (
               e.target.closest("button") ||
               e.target.closest("a") ||
               e.target.closest("svg")
-            ) {
+            )
               return;
-            }
             navigate(`/job-details/${job._id}`);
           }}
-          className={`cursor-pointer transition-colors ${
+          className={`cursor-pointer transition-all ${
             index % 2 === 0 ? "bg-white" : "bg-gray-50"
-          } hover:bg-blue-50`}
+          } hover:bg-blue-50/70`}
         >
-          <td className="px-6 py-3  text-gray-900">
-            {job.societyName}
+          {/* Society */}
+          <td className="px-6 py-4 font-medium text-blue-600 flex items-center gap-2">
+            {job.societyName || <span className="text-gray-400">N/A</span>}
           </td>
-          <td className="px-6 py-3">{job.title}</td>
-          <td className="px-6 py-3 text-gray-600">
-            {new Date(job.createdAt).toLocaleDateString()}
+
+          {/* Title */}
+          <td className="px-6 py-4">
+            {job.title || <span className="text-gray-400 italic">N/A</span>}
+          </td>
+
+          {/* Created */}
+          <td className="px-6 py-4 text-gray-600">
+            {job.createdAt
+              ? new Date(job.createdAt).toLocaleDateString()
+              : <span className="text-gray-400 italic">N/A</span>}
           </td>
 
           {/* Status */}
-          <td className="px-6 py-3">
+          <td className="px-6 py-4">
             <span
-              className={`px-3 py-1 text-xs font-semibold rounded-full ${
+              className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full ${
                 job.status === "Open"
-                  ? "bg-green-200 text-black"
+                  ? "bg-green-100 text-green-700"
                   : job.status === "In Progress"
-                  ? "bg-yellow-200 text-black"
-                  : "bg-red-200 text-black"
+                  ? "bg-yellow-100 text-yellow-700"
+                  : job.status === "Closed"
+                  ? "bg-rose-100 text-rose-700"
+                  : "bg-gray-200 text-gray-600"
               }`}
             >
-              {job.status}
+              {job.status === "Open" && <CheckCircle className="w-3 h-3" />}
+              {job.status === "In Progress" && <Clock className="w-3 h-3" />}
+              {job.status === "Closed" && <XCircle className="w-3 h-3" />}
+              {job.status || "N/A"}
             </span>
           </td>
 
           {/* Stage */}
-          <td className="px-6 py-3 capitalize text-gray-700">
-            {job.jobStage}
+          <td className="px-6 py-4 capitalize text-gray-700 flex items-center gap-2">
+            {job.jobStage || <span className="text-gray-400 italic">N/A</span>}
           </td>
 
           {/* Quotation */}
-          <td className="px-6 py-3">
-            {job.quotationRequired ? (
-              <span className="bg-blue-500 text-white px-3 py-1 text-xs rounded-full font-medium">
-                Yes
-              </span>
-            ) : (
-              <span className="bg-gray-400 text-white px-3 py-1 text-xs rounded-full font-medium">
-                No
-              </span>
-            )}
+          <td className="px-6 py-4">
+            <span
+              className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full ${
+                job.quotationRequired
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-gray-200 text-gray-600"
+              }`}
+            >
+              {job.quotationRequired ? (
+                <>
+                  <CheckCircle className="w-3 h-3" /> Yes
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-3 h-3" /> No
+                </>
+              )}
+            </span>
           </td>
 
           {/* Action Buttons */}
-          <td className="px-6 py-3 text-center">
-            <div className="flex items-center justify-center gap-3">
-    
-
+          <td className="px-6 py-4 text-center">
+            <div className="flex justify-center gap-3">
               <button
                 onClick={() => handleDelete(job._id)}
-                className="p-1 rounded-md hover:bg-rose-100 text-rose-600 transition"
+                className="p-2 rounded-lg hover:bg-rose-50 text-rose-600 hover:text-rose-700 transition"
                 title="Delete Job"
               >
-                <Trash className="w-4 h-4" />
+                <Trash2 className="w-4 h-4" />
               </button>
             </div>
           </td>
@@ -243,7 +259,9 @@ const JobsList = () => {
   </table>
 </div>
 
-      )}
+
+
+
     </div>
   );
 };
