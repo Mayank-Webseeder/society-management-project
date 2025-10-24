@@ -12,6 +12,7 @@ import { MdDateRange } from "react-icons/md";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import { FaBriefcase,  FaFileSignature, FaFileAlt } from "react-icons/fa";
 
 const mockJobs = [
   {
@@ -190,7 +191,7 @@ const JobReport = () => {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
+      <div className="bg-white border rounded-xl shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
         {["from", "to", "society", "vendor", "location"].map((field) => (
           <div key={field} className="w-full sm:w-auto flex-1 min-w-[150px]">
             <label className="block text-sm font-medium text-gray-700 capitalize mb-1">
@@ -224,23 +225,37 @@ const JobReport = () => {
         ))}
       </div>
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <div className="col-span-1 xs:col-span-2 md:col-span-3 lg:col-span-1">
-          <Card title="Total Jobs" count={totalJobs} big />
-        </div>
 
-        <div className="col-span-1 lg:col-span-1">
-          <Card title="Open Jobs" count={openJobs} />
-        </div>
+<div className="flex flex-wrap gap-4 w-full">
+  <Card
+    title="Total Jobs"
+    count={totalJobs}
+    icon={FaBriefcase}
+    bgColor="bg-blue-200"
+  />
 
-        <div className="col-span-1 lg:col-span-1">
-          <Card title="With Quote" count={jobsWithQuotation} />
-        </div>
+  <Card
+    title="Open Jobs"
+    count={openJobs}
+    icon={FaClipboardList}
+    bgColor="bg-green-200"
+  />
 
-        <div className="col-span-1 lg:col-span-1">
-          <Card title="No Quote" count={jobsWithoutQuotation} />
-        </div>
-      </div>
+  <Card
+    title="With Quote"
+    count={jobsWithQuotation}
+    icon={FaFileSignature}
+    bgColor="bg-yellow-200"
+  />
+
+  <Card
+    title="No Quote"
+    count={jobsWithoutQuotation}
+    icon={FaFileAlt}
+    bgColor="bg-red-200"
+  />
+</div>
+
       {/* Status Bar + Table */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="bg-white p-2 lg:p-6 rounded-2xl shadow space-y-5">
@@ -322,72 +337,100 @@ const JobReport = () => {
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-xl shadow p-1 xl:p-6">
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+      <div className="bg-white rounded-xl">
+     
+
+           <div className=" flex items-center justify-between mb-4 ">
+     <div>
+                <h2 className="text-lg font-semibold flex items-center gap-2">
           <FaClipboardList className="text-gray-700 text-2xl" /> Job Details
         </h2>
+     </div>
+        <button
+          onClick={handleExportPDF}
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
+          aria-label="Export PDF"
+        >
+          <FaRegFilePdf className="text-red-500 text-xl" />
+          <span className="text-base">Export PDF</span>
+        </button>
+      </div>
 
         {/* Table for lg */}
-        <div className="hidden md:block">
-          <table className="w-full text-md">
-            <thead>
-              <tr className="text-gray-700 border-b bg-gray-50">
-                <th className="py-3 text-left px-4">Society</th>
-                <th className="py-3 text-left px-4">Vendor</th>
-                <th className="py-3 text-left px-4">Status</th>
-                <th className="py-3 text-left px-4">Category</th>
-                <th className="py-3 text-left px-4">Location</th>
-                <th className="py-3 text-left px-4">Quotation</th>
-                <th className="py-3 text-left px-4">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredJobs.length > 0 ? (
-                filteredJobs.map((job) => (
-                  <tr
-                    key={job.id}
-                    className="bg-white border-b last:border-none hover:shadow-md hover:scale-[1.007] transition-all duration-300 rounded-md last:rounded-b-xl"
-                  >
-                    <td className="px-4 py-4 font-semibold text-gray-800">
-                      {job.society}
-                    </td>
-                    <td className="px-4 py-4">{job.vendor}</td>
-                    <td className="px-4 py-4 capitalize">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-bold ${
-                          job.status === "open"
-                            ? "text-green-700"
-                            : job.status === "in progress"
-                            ? "text-yellow-700"
-                            : job.status === "completed"
-                            ? "text-blue-700"
-                            : job.status === "cancelled"
-                            ? "text-red-700"
-                            : "text-gray-700"
-                        }`}
-                      >
-                        {job.status.charAt(0).toUpperCase() +
-                          job.status.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4">{job.category}</td>
-                    <td className="px-4 py-4">{job.location}</td>
-                    <td className="px-4 py-4">
-                      {job.quotationRequested ? "Yes" : "No"}
-                    </td>
-                    <td className="px-4 py-4">{job.createdAt}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="py-6 text-center text-gray-500">
-                    No Data Found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+    <div className="hidden md:block">
+  <div className="overflow-hidden rounded-2xl border border-gray-100">
+    <table className="w-full text-sm text-gray-700">
+      <thead className="bg-gray-100 text-gray-600 uppercase text-xs font-semibold tracking-wide">
+        <tr>
+          <th className="py-3.5 px-5 text-left">Society</th>
+          <th className="py-3.5 px-5 text-left">Vendor</th>
+          <th className="py-3.5 px-5 text-left">Status</th>
+          <th className="py-3.5 px-5 text-left">Category</th>
+          <th className="py-3.5 px-5 text-left">Location</th>
+          <th className="py-3.5 px-5 text-left">Quotation</th>
+          <th className="py-3.5 px-5 text-left">Date</th>
+        </tr>
+      </thead>
+
+      <tbody className="divide-y divide-gray-100">
+        {filteredJobs.length > 0 ? (
+          filteredJobs.map((job) => (
+            <tr
+              key={job.id}
+              className="bg-white hover:bg-gray-50 hover:shadow-md transition-all duration-300"
+            >
+              <td className="px-5 py-4 font-medium text-gray-800">
+                {job.society}
+              </td>
+              <td className="px-5 py-4 text-gray-700">{job.vendor}</td>
+              <td className="px-5 py-4 capitalize">
+                <span
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
+                    job.status === "open"
+                      ? "bg-green-100 text-green-700"
+                      : job.status === "in progress"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : job.status === "completed"
+                      ? "bg-blue-100 text-blue-700"
+                      : job.status === "cancelled"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                </span>
+              </td>
+              <td className="px-5 py-4 text-gray-700">{job.category}</td>
+              <td className="px-5 py-4 text-gray-700">{job.location}</td>
+              <td className="px-5 py-4">
+                <span
+                  className={`text-xs font-semibold px-2 py-1 rounded-md ${
+                    job.quotationRequested
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {job.quotationRequested ? "Yes" : "No"}
+                </span>
+              </td>
+              <td className="px-5 py-4 text-gray-600">{job.createdAt}</td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td
+              colSpan="7"
+              className="py-6 text-center text-gray-500 font-medium"
+            >
+              No Data Found
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
         {/* Card View for sm and md */}
         <div className="md:hidden space-y-4">
@@ -463,50 +506,24 @@ const JobReport = () => {
         </div>
       </div>
       {/* Export Buttons */}
-      <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
-        <button
-          onClick={handleExportPDF}
-          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
-          aria-label="Export PDF"
-        >
-          <FaRegFilePdf className="text-red-500 text-xl" />
-          <span className="text-base">Export PDF</span>
-        </button>
-
-        <button
-          onClick={handleExportExcel}
-          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
-          aria-label="Export Excel"
-        >
-          <FaRegFileExcel className="text-green-600 text-xl" />
-          <span className="text-base">Export Excel</span>
-        </button>
-      </div>
+   
     </div>
   );
 };
 
-const Card = ({ title, count, big }) => (
+const Card = ({ title, count, icon: Icon, bgColor = "bg-gray-100" }) => (
   <div
-    className={`rounded-2xl bg-[#f9fafb] shadow-md ${
-      big ? "py-4" : "p-4"
-    } text-center hover:shadow-lg transition-shadow duration-300 h-full flex flex-col justify-between`}
+    className={`flex justify-between items-center rounded-2xl shadow p-5 transition-all min-w-[280px] ${bgColor}`}
   >
-    <h3
-      className={`font-semibold ${
-        big ? "text-lg text-gray-800" : "text-sm text-gray-700"
-      }`}
-    >
-      {title}
-    </h3>
-    <p
-      className={`font-bold ${
-        big ? "text-4xl text-gray-900" : "text-xl text-gray-900"
-      }`}
-    >
-      {count}
-    </p>
+    <div>
+      <p className="text-sm text-gray-700 font-medium">{title}</p>
+      <p className="text-3xl font-bold mt-1">{count}</p>
+    </div>
+    <div className="bg-white p-3 rounded-full shadow-sm">
+      <Icon className="text-gray-800 text-xl" />
+    </div>
   </div>
 );
+
 
 export default JobReport;

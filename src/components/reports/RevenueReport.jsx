@@ -11,6 +11,7 @@ import {
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import {  FaUndoAlt } from "react-icons/fa";
 
 // ✅ Cleaned mock data — no planType now
 const mockPayments = [
@@ -165,7 +166,7 @@ const RevenueReport = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
+      <div className="bg-white border rounded-xl shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
         {["from", "to"].map((field) => (
           <div key={field} className="w-full sm:w-auto min-w-[150px]">
             <label
@@ -187,31 +188,39 @@ const RevenueReport = () => {
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-4">
-        <div className="col-span-2 md:col-span-3 lg:col-span-2">
-          <Card
-            title="Total Revenue"
-            count={`₹${totalRevenue.toLocaleString()}`}
-            big
-          />
-        </div>
-        <div className="col-span-1 lg:col-span-2">
-          <Card
-            title="Pending Payments"
-            count={`₹${pendingPayments.toLocaleString()}`}
-          />
-        </div>
-        <div className="col-span-1 lg:col-span-2">
-          <Card
-            title="Refunds / Discounts"
-            count={`₹${totalRefunds.toLocaleString()}`}
-          />
-        </div>
-      </div>
+    <div className="flex flex-wrap gap-4 w-full">
+  <div className="">
+    <Card
+      title="Total Revenue"
+      count={`₹${totalRevenue.toLocaleString()}`}
+      icon={FaRupeeSign}
+      bgColor="bg-blue-200"
+    />
+  </div>
+
+  <div className="col-span-1 lg:col-span-2">
+    <Card
+      title="Pending Payments"
+      count={`₹${pendingPayments.toLocaleString()}`}
+      icon={FaClock}
+      bgColor="bg-yellow-200"
+    />
+  </div>
+
+  <div className="col-span-1 lg:col-span-2">
+    <Card
+      title="Refunds / Discounts"
+      count={`₹${totalRefunds.toLocaleString()}`}
+      icon={FaUndoAlt}
+      bgColor="bg-red-200"
+    />
+  </div>
+</div>
+
 
       {/* Revenue by Period */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-4 sm:p-6 rounded-2xl shadow space-y-5 md:col-span-3">
+        <div className="bg-white border p-4 sm:p-6 rounded-2xl shadow space-y-5 md:col-span-3">
           <div className="px-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
             <h3 className="font-semibold text-gray-800 text-lg">
               Revenue by {period}
@@ -249,62 +258,68 @@ const RevenueReport = () => {
       </div>
 
       {/* Large screen table layout */}
-      <div className="bg-white rounded-xl shadow p-6 hidden md:block">
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-          Payment Details
-        </h2>
+{/* <div className="bg-white rounded-2xl shadow-sm p-6 hidden md:block">
+  <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-800">
+    Payment Details
+  </h2>
 
-        {/* Only adds scrollbar if actual overflow happens */}
-        <div className="overflow-x-auto max-w-full">
-          <table className="min-w-[700px] w-full text-md">
-            <thead>
-              <tr className="text-gray-700 bg-gray-50">
-                <th className="py-3 px-6 text-left">User</th>
-                <th className="py-3 px-6 text-left">Payment Status</th>
-                <th className="py-3 px-6 text-left">Payment Date</th>
-                <th className="py-3 px-6 text-left">Refund / Discount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPayments.length ? (
-                filteredPayments.map((p) => (
-                  <tr
-                    key={p.id}
-                    className="bg-white hover:shadow-md transition-all duration-300"
-                  >
-                    <td className="px-6 py-4 font-medium text-gray-800">
-                      {p.user}
-                    </td>
-                    <td
-                      className={`px-6 py-4 capitalize font-semibold ${
-                        p.paymentStatus === "completed"
-                          ? "text-green-700"
-                          : p.paymentStatus === "pending"
-                          ? "text-yellow-700"
-                          : p.paymentStatus === "refunded"
-                          ? "text-red-700"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      {p.paymentStatus}
-                    </td>
-                    <td className="px-6 py-4">{p.paymentDate}</td>
-                    <td className="px-12 py-4">
-                      ₹{p.refundOrDiscount.toLocaleString()}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" className="py-6 text-center text-gray-500">
-                    No Data Found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+  <div className="overflow-x-auto">
+    <table className="min-w-[800px] w-full border-collapse">
+      <thead>
+        <tr className="bg-gray-100 text-gray-700 text-sm uppercase tracking-wide">
+          <th className="py-3 px-6 text-left font-semibold">User</th>
+          <th className="py-3 px-6 text-left font-semibold">Payment Status</th>
+          <th className="py-3 px-6 text-left font-semibold">Payment Date</th>
+          <th className="py-3 px-6 text-left font-semibold">Refund / Discount</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {filteredPayments.length ? (
+          filteredPayments.map((p, index) => (
+            <tr
+              key={p.id}
+              className={`transition-all duration-200 ${
+                index % 2 === 0 ? "bg-white" : "bg-gray-50"
+              } hover:bg-gray-100`}
+            >
+              <td className="px-6 py-4 font-medium text-gray-800">
+                {p.user}
+              </td>
+              <td
+                className={`px-6 py-4 capitalize font-semibold ${
+                  p.paymentStatus === "completed"
+                    ? "text-green-600"
+                    : p.paymentStatus === "pending"
+                    ? "text-yellow-600"
+                    : p.paymentStatus === "refunded"
+                    ? "text-red-600"
+                    : "text-gray-700"
+                }`}
+              >
+                {p.paymentStatus}
+              </td>
+              <td className="px-6 py-4 text-gray-700">{p.paymentDate}</td>
+              <td className="px-6 py-4 font-medium text-gray-800">
+                ₹{p.refundOrDiscount.toLocaleString()}
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td
+              colSpan="4"
+              className="py-6 text-center text-gray-500 font-medium"
+            >
+              No Data Found
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div> */}
+
 
       <div className="space-y-4 md:hidden">
         <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
@@ -345,7 +360,7 @@ const RevenueReport = () => {
       </div>
 
       {/* Export Buttons */}
-      <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
+      {/* <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
         <button
           onClick={handleExportPDF}
           className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
@@ -363,31 +378,22 @@ const RevenueReport = () => {
           <FaRegFileExcel className="text-green-600 text-xl" />
           <span className="text-base">Export Excel</span>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-const Card = ({ title, count, big }) => (
+const Card = ({ title, count, icon: Icon, bgColor = "bg-gray-100" }) => (
   <div
-    className={`rounded-2xl bg-[#f9fafb] shadow-md ${
-      big ? "py-4" : "p-4"
-    } text-center hover:shadow-lg transition-shadow duration-300 h-full flex flex-col justify-between`}
+    className={`flex justify-between items-center rounded-2xl shadow p-5 transition-all min-w-[280px] ${bgColor}`}
   >
-    <h3
-      className={`font-semibold ${
-        big ? "text-lg text-gray-800" : "text-sm text-gray-700"
-      }`}
-    >
-      {title}
-    </h3>
-    <p
-      className={`font-bold ${
-        big ? "text-3xl text-gray-900" : "text-xl text-gray-900"
-      }`}
-    >
-      {count}
-    </p>
+    <div>
+      <p className="text-sm text-gray-700 font-medium">{title}</p>
+      <p className="text-3xl font-bold mt-1">{count}</p>
+    </div>
+    <div className="bg-white p-3 rounded-full shadow-sm">
+      <Icon className="text-gray-800 text-xl" />
+    </div>
   </div>
 );
 

@@ -101,7 +101,7 @@ const VendorProvider = ({ children }) => {
         totalJobsApplied: 15,
       },
       {
-        _id: "64e1fd3b7a9d8c0ff9f0a123",
+        id: 3,
         name: "Ravi Kumar",
         email: "ravi.kumar@example.com",
         phone: "+91-9988776655",

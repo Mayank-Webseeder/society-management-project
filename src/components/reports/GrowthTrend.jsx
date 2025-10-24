@@ -48,7 +48,7 @@ const GrowthTrend = ({ societies, vendors }) => {
 
   return (
     <div className="w-full">
-      <div className="max-w-4xl bg-white rounded-2xl shadow-xl p-4 sm:p-6 border border-gray-100">
+      <div className=" bg-white rounded-2xl  p-4 sm:p-6 border">
         <div className="mb-5">
           <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
             Growth Trend

@@ -7,6 +7,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 
+import { FaBuilding, FaUsers, FaBriefcase, FaCheckCircle } from "react-icons/fa";
+
 const mockReportData = {
   societies: [
     {
@@ -203,7 +205,7 @@ const PerformanceReport = () => {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
+      <div className="bg-white border rounded-xl shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
         {["from", "to", "location"].map((field) => (
           <div key={field} className="w-full sm:w-auto min-w-[150px]">
             <label className="block text-sm font-medium text-gray-700 capitalize mb-1">
@@ -224,32 +226,35 @@ const PerformanceReport = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-        {[
-          { title: "Total Societies", count: totalSocieties },
-          { title: "Total Vendors", count: totalVendors },
-          { title: "Total Jobs Posted", count: totalJobs },
-          { title: "Fulfillment Rate", count: `${fulfillmentRate}%` },
-        ].map(({ title, count }, i) => (
-          <div key={i} className="col-span-1 lg:col-span-2">
-            <Card title={title} count={count} />
-          </div>
-        ))}
-      </div>
+    
+
+<div className="flex flex-wrap gap-4 w-full">
+  {[
+    { title: "Total Societies", count: totalSocieties, icon: FaBuilding, bgColor: "bg-blue-200" },
+    { title: "Total Vendors", count: totalVendors, icon: FaUsers, bgColor: "bg-green-200" },
+    { title: "Total Jobs Posted", count: totalJobs, icon: FaBriefcase, bgColor: "bg-yellow-200" },
+    { title: "Fulfillment Rate", count: `${fulfillmentRate}%`, icon: FaCheckCircle, bgColor: "bg-purple-200" },
+  ].map(({ title, count, icon, bgColor }, i) => (
+    <div key={i} className="col-span-1 lg:col-span-2">
+      <Card title={title} count={count} icon={icon} bgColor={bgColor} />
+    </div>
+  ))}
+</div>
+
 
       {/* Vendor Speed Indicator */}
-      <div className="bg-white rounded-xl shadow p-6 flex flex-col lg:flex-row gap-8 justify-between items-center">
+      <div className="bg-white border rounded-xl shadow p-6 flex flex-col lg:flex-row gap-8 justify-between items-center">
         {/* Left: Response Gauge */}
-        <div className="flex-1 flex flex-col items-center space-y-4 min-w-[250px]">
+        <div className="flex-1 flex flex-col  rounded-lg items-center space-y-4 min-w-[250px]">
           <ResponseGauge avgResponseTime={avgResponseTime} />
           <p className="text-sm text-gray-600 text-center max-w-xs mb-4">
             Average hours vendors take to respond to job postings.
           </p>
         </div>
 
-        <div className="hidden lg:block h-20 border-l border-gray-200 mx-6" />
+        <div className="hidden lg:block h-44 border-l border-gray-200 mx-6" />
 
-        <div className="flex-1 flex flex-col items-center space-y-4 min-w-[280px]">
+        <div className="flex-1  flex flex-col items-center space-y-4 min-w-[280px]">
           <h3 className="font-semibold text-gray-800 text-xl mt-10 lg:mt-0 mb-2 lg:mb-14">
             Job Fulfillment
           </h3>
@@ -307,7 +312,7 @@ const PerformanceReport = () => {
       </div>
 
       {/* Export Buttons */}
-      <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
+      {/* <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
         <button
           onClick={handleExportPDF}
           className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
@@ -325,26 +330,22 @@ const PerformanceReport = () => {
           <FaRegFileExcel className="text-green-600 text-xl" />
           <span className="text-base">Export Excel</span>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-const Card = ({ title, count }) => (
+const Card = ({ title, count, icon: Icon, bgColor = "bg-gray-100" }) => (
   <div
-    className="rounded-2xl bg-[#f9fafb] shadow-md p-4 text-center space-y-2 hover:shadow-lg transition-shadow duration-300 flex flex-col justify-center min-h-[110px]"
-    style={{ width: "100%" }}
+    className={`flex justify-between items-center rounded-2xl shadow p-5 transition-all min-w-[280px] ${bgColor}`}
   >
-    <div className="w-full max-w-[160px] overflow-hidden">
-      <h3
-        className="truncate text-sm font-semibold text-gray-700"
-        title={title}
-      >
-        {title}
-      </h3>
+    <div>
+      <p className="text-sm text-gray-700 font-medium">{title}</p>
+      <p className="text-3xl font-bold mt-1">{count}</p>
     </div>
-
-    <p className="font-bold text-xl text-gray-900">{count}</p>
+    <div className="bg-white p-3 rounded-full shadow-sm">
+      <Icon className="text-gray-800 text-xl" />
+    </div>
   </div>
 );
 

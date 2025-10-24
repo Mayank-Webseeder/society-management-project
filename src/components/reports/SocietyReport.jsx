@@ -5,6 +5,7 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaClipboardList } from "react-icons/fa";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import { FaBriefcase, FaTimesCircle, FaCheckCircle, FaChartLine } from "react-icons/fa";
 
 const mockSocietyList = [
   {
@@ -167,81 +168,102 @@ const SocietyReport = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className=" flex flex-col gap-5">
       {/* Filter Form */}
-      <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-wrap sm:flex-row gap-4 items-start sm:items-end">
-        <div className="w-full sm:w-auto flex-1 min-w-[150px]">
-          <label className="block text-sm font-medium text-gray-700">
-            From
-          </label>
-          <input
-            type="date"
-            name="from"
-            value={filters.from}
-            onChange={handleFilterChange}
-            className="border rounded-md px-3 py-2 w-full"
-          />
-        </div>
-        <div className="w-full sm:w-auto flex-1 min-w-[150px]">
-          <label className="block text-sm font-medium text-gray-700">To</label>
-          <input
-            type="date"
-            name="to"
-            value={filters.to}
-            onChange={handleFilterChange}
-            className="border rounded-md px-3 py-2 w-full"
-          />
-        </div>
-        <div className="w-full sm:w-auto flex-1 min-w-[150px]">
-          <label className="block text-sm font-medium text-gray-700">
-            Status
-          </label>
-          <select
-            name="status"
-            value={filters.status}
-            onChange={handleFilterChange}
-            className="border rounded-md px-3 py-2 w-full"
-          >
-            <option value="">All</option>
-            <option value="approved">Approved</option>
-            <option value="pending">Pending</option>
-            <option value="rejected">Rejected</option>
-            <option value="banned">Banned</option>
-          </select>
-        </div>
-        <div className="w-full sm:w-auto flex-1 min-w-[150px]">
-          <label className="block text-sm font-medium text-gray-700">
-            Location
-          </label>
-          <input
-            type="text"
-            name="location"
-            value={filters.location}
-            onChange={handleFilterChange}
-            className="border rounded-md px-3 py-2 w-full"
-            placeholder="e.g., Indore"
-          />
-        </div>
-      </div>
+  <div className="bg-white p-4 rounded-2xl border-gray-200 border-2   flex flex-col sm:flex-row sm:flex-wrap gap-4 items-start sm:items-end">
+  {/* From Date */}
+  <div className="flex-1 min-w-[180px]">
+    <label className="block text-sm font-semibold text-gray-700 mb-1">From</label>
+    <input
+      type="date"
+      name="from"
+      value={filters.from}
+      onChange={handleFilterChange}
+      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition-all"
+    />
+  </div>
+
+  {/* To Date */}
+  <div className="flex-1 min-w-[180px]">
+    <label className="block text-sm font-semibold text-gray-700 mb-1">To</label>
+    <input
+      type="date"
+      name="to"
+      value={filters.to}
+      onChange={handleFilterChange}
+      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition-all"
+    />
+  </div>
+
+  {/* Status */}
+  <div className="flex-1 min-w-[180px]">
+    <label className="block text-sm font-semibold text-gray-700 mb-1">Status</label>
+    <select
+      name="status"
+      value={filters.status}
+      onChange={handleFilterChange}
+      className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition-all"
+    >
+      <option value="">All</option>
+      <option value="approved">Approved</option>
+      <option value="pending">Pending</option>
+      <option value="rejected">Rejected</option>
+      <option value="banned">Banned</option>
+    </select>
+  </div>
+
+  {/* Location */}
+  <div className="flex-1 min-w-[180px]">
+    <label className="block text-sm font-semibold text-gray-700 mb-1">Location</label>
+    <input
+      type="text"
+      name="location"
+      value={filters.location}
+      onChange={handleFilterChange}
+      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 outline-none transition-all"
+      placeholder="e.g., Indore"
+    />
+  </div>
+
+
+</div>
+
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-8 gap-4">
-        <div className="col-span-1 xs:col-span-2 md:col-span-3 lg:col-span-2">
-          <Card title="Total Societies" count={summary.total} big />
-        </div>
-        <Card title="Approved" count={summary.approved} />
-        <Card title="Pending" count={summary.pending} />
-        <Card title="Rejected" count={summary.rejected} />
-        <Card title="Banned" count={summary.banned} />
-        <Card title="Active" count={summary.active} />
-        <Card title="Inactive" count={summary.inactive} />
-      </div>
+     <div className=" flex w-full gap-4">
+        <Card
+          title="Total Societies"
+          count={summary.total}
+          icon={FaBriefcase}
+          bgColor="bg-purple-200"
+        />
+      <Card title="Rejected" count={summary.rejected} icon={FaTimesCircle} bgColor="bg-red-200" />
+      <Card title="Active" count={summary.active} icon={FaChartLine} bgColor="bg-green-200" />
+      <Card title="Inactive" count={summary.inactive} icon={FaCheckCircle} bgColor="bg-yellow-200" />
+    </div>
 
       {/* Table / Card View */}
-      <div className="bg-white rounded-xl shadow p-0 md:p-6">
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+      <div className="bg-white rounded-xl shadow">
+      
+
+            {/* Export Buttons */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3 px-2 sm:px-0">
+     <div>
+           <h2 className="text-lg font-semibold flex justify-between items-center gap-2">
           <FaClipboardList className="text-gray-700 text-2xl" /> Table View
         </h2>
+     </div>
+        <button
+          onClick={handleExportPDF}
+          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
+          aria-label="Export PDF"
+        >
+          <FaRegFilePdf className="text-red-500 text-xl" />
+          <span className="text-base">Export</span>
+        </button>
+
+
+      </div>
 
         {/* for small screen : Card */}
         <div className="space-y-4 md:hidden">
@@ -296,106 +318,78 @@ const SocietyReport = () => {
           )}
         </div>
 
+  
           {/* Large screen: Table */}
-          <div className="hidden md:block overflow-x-auto max-w-full">
-            <table className="min-w-[700px] w-full text-md">
-              <thead>
-              <tr className="text-gray-700 border-b">
-                <th className="py-3 text-left px-4">Name</th>
-                <th className="py-3 text-left px-4">Status</th>
-                <th className="py-3 text-left px-4">Date</th>
-                <th className="py-3 text-left px-4">Location</th>
-                <th className="py-3 text-left px-4">Jobs Posted</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredList.length > 0 ? (
-                filteredList.map((s) => (
-                  <tr
-                    key={s.id}
-                    className="bg-white border-b last:border-none hover:shadow-md hover:scale-[1.007] transition-all duration-300 rounded-md last:rounded-b-xl"
-                  >
-                    <td className="px-4 py-4 font-semibold text-gray-800">
-                      {s.name}
-                    </td>
-                    <td className="px-4 py-4">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-bold ${
-                          s.status === "approved"
-                            ? "text-green-700"
-                            : s.status === "pending"
-                            ? "text-yellow-700"
-                            : s.status === "rejected"
-                            ? "text-red-700"
-                            : "text-gray-700"
-                        }`}
-                      >
-                        {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4 text-gray-600">{s.createdAt}</td>
-                    <td className="px-4 py-4 text-gray-600">{s.location}</td>
-                    <td className="px-8 py-4 font-bold text-gray-900">
-                      {s.jobsPosted}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" className="py-6 text-center text-gray-500">
-                    No Data Found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+ <div className="overflow-x-auto w-full">
+  <table className="min-w-[700px] w-full text-sm border-collapse">
+    <thead className="bg-gray-200">
+      <tr className="text-gray-700 uppercase text-xs tracking-wider border-b border-gray-200">
+        <th className="py-3 px-4 text-left font-medium"> Society Name</th>
+        <th className="py-3 px-4 text-left font-medium">Status</th>
+        <th className="py-3 px-4 text-left font-medium">Date</th>
+        <th className="py-3 px-4 text-left font-medium">Location</th>
+        <th className="py-3 px-4 text-left font-medium">Jobs Posted</th>
+      </tr>
+    </thead>
+    <tbody className="bg-white">
+      {filteredList.length > 0 ? (
+        filteredList.map((s, index) => (
+          <tr
+            key={s.id}
+            className={`hover:shadow-md transition-transform duration-200 ${
+              index % 2 === 0 ? "bg-white" : "bg-gray-50"
+            }`}
+          >
+            <td className="px-4 py-4 font-medium text-gray-800">{s.name}</td>
+            <td className="px-4 py-4">
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  s.status === "approved"
+                    ? "bg-green-100 text-green-700"
+                    : s.status === "pending"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : s.status === "rejected"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-gray-100 text-gray-700"
+                }`}
+              >
+                {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
+              </span>
+            </td>
+            <td className="px-4 py-4 text-gray-600">{s.createdAt}</td>
+            <td className="px-4 py-4 text-gray-600">{s.location}</td>
+            <td className="px-4 py-4 font-bold text-gray-900">{s.jobsPosted}</td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="5" className="py-6 text-center text-gray-500">
+            No Data Found
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
       </div>
 
-      {/* Export Buttons */}
-      <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
-        <button
-          onClick={handleExportPDF}
-          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
-          aria-label="Export PDF"
-        >
-          <FaRegFilePdf className="text-red-500 text-xl" />
-          <span className="text-base">Export PDF</span>
-        </button>
-
-        <button
-          onClick={handleExportExcel}
-          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
-          aria-label="Export Excel"
-        >
-          <FaRegFileExcel className="text-green-600 text-xl" />
-          <span className="text-base">Export Excel</span>
-        </button>
-      </div>
     </div>
   );
 };
-const Card = ({ title, count, big }) => (
-  <div
-    className={`rounded-2xl bg-[#f9fafb] shadow-md ${
-      big ? "py-4" : "p-4"
-    } text-center space-y-2 hover:shadow-lg transition-shadow duration-300`}
-  >
-    <h3
-      className={`font-semibold ${
-        big ? "text-lg text-gray-800" : "text-sm text-gray-700"
-      }`}
+const Card = ({ title, count, icon: Icon, bgColor = "bg-gray-100" }) => (
+ <div
+      className={`flex justify-between items-center rounded-2xl shadow-sm p-5 transition-all min-w-[280px] duration-300 hover:shadow-md ${bgColor}`}
     >
-      {title}
-    </h3>
-    <p
-      className={`font-bold ${
-        big ? "text-4xl text-gray-900" : "text-2xl text-gray-900"
-      }`}
-    >
-      {count}
-    </p>
-  </div>
+      <div>
+        <p className="text-sm text-gray-700 font-medium">{title}</p>
+        <p className="text-3xl font-bold mt-1">{count}</p>
+      </div>
+      <div className="bg-white p-3 rounded-full shadow-sm">
+        <Icon className="text-gray-800 text-xl" />
+      </div>
+    </div>
 );
+
 
 export default SocietyReport;

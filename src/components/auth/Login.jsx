@@ -107,34 +107,34 @@ try {
   };
 
   // Loading Screen Component
-  const LoadingScreen = () => (
-    <div className="fixed inset-0 bg-gradient-to-br from-[#0933a6] to-[#51cedb] flex items-center justify-center z-50">
-      <div className="text-center">
-        <div className="relative mb-6">
-          <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center animate-pulse">
-            <img src= "/Logo.png" alt="Logo"className="w-25 h-25"/>
-          </div>
-          <div className="absolute -inset-2 border-2 border-white/30 rounded-full animate-spin"></div>
-        </div>
-        <h2 className="text-2xl font-bold text-white mb-2">
-          My Society Needs
-        </h2>
-        <div className="w-32 h-1 bg-white/30 rounded-full overflow-hidden mx-auto">
-          <div className="h-full bg-white rounded-full animate-pulse"></div>
-        </div>
-      </div>
-    </div>
-  );
+  // const LoadingScreen = () => (
+  //   <div className="fixed inset-0 bg-gradient-to-br from-[#0933a6] to-[#51cedb] flex items-center justify-center z-50">
+  //     <div className="text-center">
+  //       <div className="relative mb-6">
+  //         <div className="w-16 h-16 mx-auto bg-white/20 rounded-full flex items-center justify-center animate-pulse">
+  //           <img src= "/Logo.png" alt="Logo"className="w-25 h-25"/>
+  //         </div>
+  //         <div className="absolute -inset-2 border-2 border-white/30 rounded-full animate-spin"></div>
+  //       </div>
+  //       <h2 className="text-2xl font-bold text-white mb-2">
+  //         My Society Needs
+  //       </h2>
+  //       <div className="w-32 h-1 bg-white/30 rounded-full overflow-hidden mx-auto">
+  //         <div className="h-full bg-white rounded-full animate-pulse"></div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
-  if (pageLoading) {
-    return <LoadingScreen />;
-  }
+  // if (pageLoading) {
+  //   return <LoadingScreen />;
+  // }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-2 sm:p-4 relative">
-      <div className="w-full max-w-6xl mx-auto">
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-500">
-          <div className="flex flex-col lg:flex-row min-h-[600px]">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center relative">
+      <div className=" w-full ">
+        <div className="bg-white/90 min-h-screen backdrop-blur-md  shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-500">
+          <div className="flex flex-col lg:flex-row">
             {/* Left Side - Features Slider */}
             <div className="lg:w-1/2 h-[40vh] lg:h-auto relative bg-gradient-to-br from-[#0933a6] to-[#51cedb] overflow-hidden">
               <div className="absolute top-4 sm:top-10 left-4 sm:left-10 w-16 sm:w-32 h-16 sm:h-32 bg-white/10 rounded-full blur-xl animate-pulse"></div>
@@ -219,7 +219,7 @@ try {
             </div>
 
             {/* Right Side - Login Form*/}
-            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-6 lg:p-16 min-h-[60vh] lg:min-h-auto">
+            <div className="w-full min-h-screen  lg:w-1/2 flex flex-col justify-center items-center">
               <div className="w-full max-w-md">
                 <div className="text-center mb-6 sm:mb-8">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0933a6] mb-2 sm:mb-3">
@@ -325,10 +325,9 @@ try {
             </div>
           </div>
         </div>
-      </div>
-      {/* Footer Section */}
-      <footer className="absolute bottom-4 left-0 right-0 text-xs sm:text-sm text-gray-700 p-2">
-        <div className="w-full max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center text-center sm:text-left space-y-2 sm:space-y-0">
+           {/* Footer Section */}
+      <footer className="absolute w-[50vw] bottom-4 left-0 right-0 text-xs sm:text-sm text-gray-700 p-2">
+        <div className="  flex justify-between ">
           <p className="text-[#000f05]">
             © 2025 My Society Needs. All Rights Reserved.
           </p>
@@ -345,6 +344,8 @@ try {
           </p>
         </div>
       </footer>
+      </div>
+   
     </div>
   );
 };

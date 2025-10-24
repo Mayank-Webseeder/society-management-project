@@ -10,11 +10,15 @@ import {
   FaRupeeSign,
   FaStar,
   FaCalendarAlt,
+  FaUsers,
+  FaUserCheck,
+   FaUserTimes,
 } from "react-icons/fa";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { useMediaQuery } from "react-responsive";
+
 
 import {
   PieChart,
@@ -254,7 +258,7 @@ const VendorReport = () => {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
+      <div className="bg-white rounded-xl border shadow p-4 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
         {["from", "to", "category", "location"].map((field) => (
           <div key={field} className="w-full sm:w-auto flex-1 min-w-[150px]">
             <label
@@ -292,47 +296,54 @@ const VendorReport = () => {
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        <div className="col-span-1 xs:col-span-2 md:col-span-3 lg:col-span-1">
-          <Card title="Total Vendors" count={totalVendors} big />
-        </div>
+    <div className="flex w-full gap-4">
+  <div className="">
+    <Card
+      title="Total Vendors"
+      count={totalVendors}
+      icon={FaUsers}
+      bgColor="bg-blue-200"
+    />
+  </div>
 
-        <div className="col-span-1 lg:col-span-1">
-          <Card title="Active Vendors" count={activeVendors} />
-        </div>
+  <div className="">
+    <Card
+      title="Active Vendors"
+      count={activeVendors}
+      icon={FaUserCheck}
+      bgColor="bg-green-200"
+    />
+  </div>
 
-        <div className="col-span-1 lg:col-span-1">
-          <Card title="Inactive Vendors" count={inactiveVendors} />
-        </div>
+  <div className="">
+    <Card
+      title="Inactive Vendors"
+      count={inactiveVendors}
+      icon={FaUserTimes}
+      bgColor="bg-red-200"
+    />
+  </div>
 
-        <div className="col-span-1 lg:col-span-1">
-          <Card
-            title="Avg Rating"
-            count={
-              <div className="flex items-center justify-center gap-1 text-sm text-gray-800 font-semibold">
-                <FaStar className="text-yellow-500 text-sm mt-[1px]" />
-                {avgRating}
-              </div>
-            }
-          />
-        </div>
+ 
 
-        <div className="col-span-1 lg:col-span-1">
-          <Card
-            title="Total Revenue"
-            count={
-              <span className="text-lg sm:text-xl md:text-2xl xl:text-xl 2xl:text-2xl text-gray-900 font-bold whitespace-nowrap">
-                ₹{totalRevenue.toLocaleString("en-IN")}
-              </span>
-            }
-          />
-        </div>
-      </div>
+  <div className="">
+    <Card
+      title="Total Revenue"
+      count={
+        <span className="text-lg sm:text-xl md:text-2xl xl:text-xl 2xl:text-2xl text-gray-900 font-bold whitespace-nowrap">
+          ₹{totalRevenue.toLocaleString("en-IN")}
+        </span>
+      }
+      icon={FaRupeeSign}
+      bgColor="bg-purple-200"
+    />
+  </div>
+</div>
 
       {/* Chart + Table */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Pie Chart */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 min-h-[300px] flex flex-col">
+        <div className="bg-white border p-4 sm:p-5 rounded-2xl shadow transition-shadow duration-300 min-h-[300px] flex flex-col">
           <h2 className="font-bold text-lg sm:text-xl text-gray-800 mb-4 sm:mb-6">
             📊 Subscription Status
           </h2>
@@ -427,191 +438,184 @@ const VendorReport = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow">
-        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+      
+
+          <div className=" flex items-center justify-between py-3">
+  <div>
+                <h2 className="text-lg font-semibold flex items-center gap-2">
           <FaClipboardList className="text-gray-700 text-2xl" />
           Vendor Full Details
         </h2>
-
-        {totalVendors === 0 ? (
-          <p className="text-center text-gray-400 py-6">No data to display.</p>
-        ) : (
-          <>
-            <div className="block md:hidden space-y-5">
-              {filteredVendors.map((v) => (
-                <div
-                  key={v.id}
-                  className="rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 bg-white p-5"
-                >
-                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                    {v.name}
-                  </h3>
-
-                  <div className="space-y-3 text-gray-700 text-sm">
-                    <p className="flex items-center gap-2">
-                      <FaMapMarkerAlt className="text-gray-500" />
-                      <span>
-                        <strong>Location:</strong> {v.location}
-                      </span>
-                    </p>
-
-                    <p className="flex items-center gap-2">
-                      <FaTags className="text-gray-500" />
-                      <span>
-                        <strong>Category:</strong>{" "}
-                        {Array.isArray(v.category)
-                          ? v.category.join(", ")
-                          : v.category}
-                      </span>
-                    </p>
-
-                    <p className="flex items-center gap-2 capitalize">
-                      <FaTag className="text-gray-500" />
-                      <span>
-                        <strong>Subscription:</strong> {v.subscription}
-                      </span>
-                    </p>
-
-                    <p className="flex items-center gap-2 capitalize">
-                      {v.status === "active" ? (
-                        <FaCheckCircle className="text-green-600" />
-                      ) : (
-                        <FaTimesCircle className="text-red-600" />
-                      )}
-                      <span
-                        className={`font-semibold ${
-                          v.status === "active"
-                            ? "text-green-700"
-                            : "text-red-700"
-                        }`}
-                      >
-                        Status: {v.status}
-                      </span>
-                    </p>
-
-                    <p className="flex items-center gap-2 font-semibold text-gray-800">
-                      <FaRupeeSign />
-                      <span>Revenue: ₹{v.revenue.toLocaleString("en-IN")}</span>
-                    </p>
-
-                    <p className="flex items-center gap-2 text-gray-800">
-                      <FaStar className="text-yellow-500" />
-                      <span>Rating: {v.rating}</span>
-                    </p>
-
-                    <p className="flex items-center gap-2 text-gray-600">
-                      <FaCalendarAlt />
-                      <span>Registered: {v.registeredAt}</span>
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Table view for large screens */}
-            <div className="hidden md:block">
-              <table className="w-full text-md">
-                <thead>
-                  <tr className="text-gray-700 border-b">
-                    <th className="py-3 text-left px-4">Name</th>
-                    <th className="py-3 text-left px-4">Location</th>
-                    <th className="py-3 text-left px-4">Category</th>
-                    <th className="py-3 text-left px-4">Subscription</th>
-                    <th className="py-3 text-left px-4">Status</th>
-                    <th className="py-3 text-left px-4">Revenue (₹)</th>
-                    <th className="py-3 text-left px-4">Rating</th>
-                    <th className="py-3 text-left px-4">Registered</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredVendors.map((v) => (
-                    <tr
-                      key={v.id}
-                      className="bg-white border-b last:border-none hover:shadow-md hover:scale-[1.007] transition-all duration-300 rounded-md last:rounded-b-xl"
-                    >
-                      <td className="px-4 py-4 font-semibold text-gray-800">
-                        {v.name}
-                      </td>
-                      <td className="px-4 py-4 text-gray-600">{v.location}</td>
-                      <td className="px-4 py-4 text-gray-600">
-                        {Array.isArray(v.category)
-                          ? v.category.join(", ")
-                          : v.category}
-                      </td>
-                      <td className="px-4 py-4 text-gray-600 capitalize">
-                        {v.subscription}
-                      </td>
-                      <td className="px-4 py-4 capitalize">
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-bold ${
-                            v.status === "active"
-                              ? "text-green-700"
-                              : "text-red-700"
-                          }`}
-                        >
-                          {v.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 text-gray-800 font-semibold">
-                        ₹{v.revenue.toLocaleString("en-IN")}
-                      </td>
-                      <td className="px-4 py-4 text-gray-800">⭐ {v.rating}</td>
-                      <td className="px-4 py-4 text-gray-600">
-                        {v.registeredAt}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
-      </div>
-
-      {/* Export Buttons */}
-      <div className="flex flex-col sm:flex-row justify-end gap-3 px-2 sm:px-0">
+  </div>
         <button
           onClick={handleExportPDF}
           className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
           aria-label="Export PDF"
         >
           <FaRegFilePdf className="text-red-500 text-xl" />
-          <span className="text-base">Export PDF</span>
+          <span className="text-base">Export</span>
         </button>
 
-        <button
-          onClick={handleExportExcel}
-          className="flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-3 rounded-lg border font-medium bg-white shadow hover:bg-gray-100 transition"
-          aria-label="Export Excel"
-        >
-          <FaRegFileExcel className="text-green-600 text-xl" />
-          <span className="text-base">Export Excel</span>
-        </button>
       </div>
+
+    {totalVendors === 0 ? (
+  <p className="text-center text-gray-400 py-6">No data to display.</p>
+) : (
+  <>
+    {/* Mobile card view */}
+    <div className="block md:hidden space-y-5">
+      {filteredVendors.map((v) => (
+        <div
+          key={v.id}
+          className="rounded-2xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 bg-white p-5"
+        >
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">
+            {v.name}
+          </h3>
+
+          <div className="space-y-2 text-gray-700 text-sm">
+            <p className="flex items-center gap-2">
+              <FaMapMarkerAlt className="text-gray-500" />
+              <span><strong>Location:</strong> {v.location}</span>
+            </p>
+
+            <p className="flex items-center gap-2">
+              <FaTags className="text-gray-500" />
+              <span>
+                <strong>Category:</strong>{" "}
+                {Array.isArray(v.category)
+                  ? v.category.join(", ")
+                  : v.category}
+              </span>
+            </p>
+
+            <p className="flex items-center gap-2 capitalize">
+              <FaTag className="text-gray-500" />
+              <span>
+                <strong>Subscription:</strong> {v.subscription}
+              </span>
+            </p>
+
+            <p className="flex items-center gap-2 capitalize">
+              {v.status === "active" ? (
+                <FaCheckCircle className="text-green-600" />
+              ) : (
+                <FaTimesCircle className="text-red-600" />
+              )}
+              <span
+                className={`font-semibold ${
+                  v.status === "active"
+                    ? "text-green-700"
+                    : "text-red-700"
+                }`}
+              >
+                Status: {v.status}
+              </span>
+            </p>
+
+            <p className="flex items-center gap-2 font-semibold text-gray-800">
+              <FaRupeeSign />
+              <span>Revenue: ₹{v.revenue.toLocaleString("en-IN")}</span>
+            </p>
+
+            <p className="flex items-center gap-2 text-gray-800">
+              <FaStar className="text-yellow-500" />
+              <span>Rating: {v.rating}</span>
+            </p>
+
+            <p className="flex items-center gap-2 text-gray-600">
+              <FaCalendarAlt />
+              <span>Registered: {v.registeredAt}</span>
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* Table view for large screens */}
+    <div className="hidden md:block overflow-x-auto rounded-xl shadow-sm border border-gray-200">
+      <table className="w-full text-sm text-left border-collapse">
+        <thead className="bg-gray-100 sticky top-0 z-10">
+          <tr className="text-gray-700 uppercase text-xs tracking-wide">
+            <th className="py-4 px-5 font-semibold">Name</th>
+            <th className="py-4 px-5 font-semibold">Location</th>
+            <th className="py-4 px-5 font-semibold">Category</th>
+            <th className="py-4 px-5 font-semibold">Subscription</th>
+            <th className="py-4 px-5 font-semibold">Status</th>
+            <th className="py-4 px-5 font-semibold">Revenue (₹)</th>
+            <th className="py-4 px-5 font-semibold">Rating</th>
+            <th className="py-4 px-5 font-semibold">Registered</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredVendors.map((v, idx) => (
+            <tr
+              key={v.id}
+              className={`${
+                idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+              } hover:bg-blue-50 hover:shadow-md transition-all duration-200`}
+            >
+              <td className="px-5 py-4 font-medium text-gray-800">
+                {v.name}
+              </td>
+              <td className="px-5 py-4 text-gray-600">{v.location}</td>
+              <td className="px-5 py-4 text-gray-600">
+                {Array.isArray(v.category)
+                  ? v.category.join(", ")
+                  : v.category}
+              </td>
+              <td className="px-5 py-4 capitalize text-gray-600">
+                {v.subscription}
+              </td>
+              <td className="px-5 py-4 capitalize">
+                <span
+                  className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                    v.status === "active"
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {v.status}
+                </span>
+              </td>
+              <td className="px-5 py-4 font-semibold text-gray-800">
+                ₹{v.revenue.toLocaleString("en-IN")}
+              </td>
+              <td className="px-5 py-4 text-gray-800">
+                <FaStar className="inline text-yellow-500 mr-1" />
+                {v.rating}
+              </td>
+              <td className="px-5 py-4 text-gray-600">
+                {v.registeredAt}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </>
+)}
+
+      </div>
+
+      {/* Export Buttons */}
+    
     </div>
   );
 };
 
-const Card = ({ title, count, big }) => (
-  <div
-    className={`rounded-2xl bg-[#f9fafb] shadow-md ${
-      big ? "py-4" : "p-4"
-    } text-center hover:shadow-lg transition-shadow duration-300 h-full flex flex-col justify-between`}
-  >
-    <h3
-      className={`font-semibold ${
-        big ? "text-lg text-gray-800" : "text-sm text-gray-700"
-      }`}
+const Card = ({ title, count, icon: Icon, bgColor = "bg-gray-100" }) => (
+ <div
+      className={`flex justify-between items-center rounded-2xl shadow p-5 transition-all min-w-[280px] ${bgColor}`}
     >
-      {title}
-    </h3>
-    <p
-      className={`font-bold ${
-        big ? "text-4xl text-gray-900" : "text-xl text-gray-900"
-      }`}
-    >
-      {count}
-    </p>
-  </div>
+      <div>
+        <p className="text-sm text-gray-700 font-medium">{title}</p>
+        <p className="text-3xl font-bold mt-1">{count}</p>
+      </div>
+      <div className="bg-white p-3 rounded-full shadow-sm">
+        <Icon className="text-gray-800 text-xl" />
+      </div>
+    </div>
 );
 
 export default VendorReport;

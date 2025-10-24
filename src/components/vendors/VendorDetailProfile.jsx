@@ -10,6 +10,7 @@ import {
   Star,
   StarHalf,
   CheckCircle2,
+  CheckCircle,
   Clock,
   TrendingUp,
   FileText,
@@ -17,8 +18,48 @@ import {
   ChevronLeft,
   BadgeCheck,
   Briefcase,
-  XCircle
+  XCircle,
+  AlertCircle
 } from "lucide-react";
+
+const mockVendors = [
+  {
+    id: 1,
+    name: "John Doe",
+    subscription: {
+      plan: "Premium",
+      price: 999,
+      startDate: "2024-04-01",
+      endDate: "2025-03-31",
+      paymentStatus: "Paid",
+      renewalDue: false,
+    },
+  },
+  {
+    id: 2,
+    name: "Priya Sharma",
+    subscription: {
+      plan: "Standard",
+      price: 699,
+      startDate: "2023-04-01",
+      endDate: "2024-03-31",
+      paymentStatus: "Paid",
+      renewalDue: true,
+    },
+  },
+  {
+    id: 3,
+    name: "Ravi Kumar",
+    subscription: {
+      plan: "Basic",
+      price: 499,
+      startDate: "2023-01-01",
+      endDate: "2023-12-31",
+      paymentStatus: "Unpaid",
+      renewalDue: true,
+    },
+  },
+];
 
 const VendorDetailProfile = () => {
   const navigate = useNavigate();
@@ -382,60 +423,84 @@ const VendorDetailProfile = () => {
 
     
 
-   {activeTab === "subscription" && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 max-w-2xl">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <CreditCard className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900">Subscription Details</h2>
-                </div>
+{activeTab === "subscription" && (
+  <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
+    {/* <div className="flex items-center gap-3 mb-6">
+      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+        <CreditCard className="w-6 h-6 text-blue-600" />
+      </div>
+      <h2 className="text-2xl font-bold text-gray-900">Subscription Details</h2>
+    </div> */}
 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <span className="font-medium text-gray-600">Plan Price</span>
-                    <span className="text-2xl font-bold text-gray-900">₹</span>
-                  </div>
+<div className="overflow-x-auto min-h-[50vh]">
+  <table className="min-w-full border-b border-gray-300">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Plan</th>
+        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Price</th>
+        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Payment Status</th>
+        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Start Date</th>
+        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">End Date</th>
+        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Renewal Due</th>
+      </tr>
+    </thead>
+    <tbody className="bg-white">
+      {mockVendors.map((vendor) => {
+        const subscription = vendor.subscription || {};
+        return (
+          <tr key={vendor.id || vendor._id} className="hover:bg-gray-50 border-b border-gray-200">
+            <td className="px-6 py-4 font-medium text-gray-800">{subscription.plan || "N/A"}</td>
+            <td className="px-6 py-4 font-semibold text-gray-900">
+              {subscription.price ? `₹${subscription.price}` : "N/A"}
+            </td>
+            <td className="px-6 py-4">
+              {subscription.paymentStatus ? (
+                <span
+                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold ${
+                    subscription.paymentStatus === "Paid"
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-rose-100 text-rose-700"
+                  }`}
+                >
+                  {subscription.paymentStatus === "Paid" ? (
+                    <CheckCircle className="w-4 h-4" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4" />
+                  )}
+                  {subscription.paymentStatus}
+                </span>
+              ) : (
+                <span className="text-gray-400">N/A</span>
+              )}
+            </td>
+            <td className="px-6 py-4 text-gray-700">{subscription.startDate || "--"}</td>
+            <td className="px-6 py-4 text-gray-700">{subscription.endDate || "--"}</td>
+            <td className="px-6 py-4">
+              {subscription.renewalDue !== undefined ? (
+                <span
+                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold ${
+                    subscription.renewalDue
+                      ? "bg-amber-100 text-amber-700"
+                      : "bg-emerald-100 text-emerald-700"
+                  }`}
+                >
+                  {subscription.renewalDue ? "Yes" : "No"}
+                </span>
+              ) : (
+                <span className="text-gray-400">N/A</span>
+              )}
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>
 
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <span className="font-medium text-gray-600">Payment Status</span>
-                    <span
-                      className={`px-3 py-1.5 rounded-lg font-semibold text-sm ${
-                        vendor.subscription.paymentStatus === "Paid"
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-rose-100 text-rose-700"
-                      }`}
-                    >
-                      {vendor.subscription.paymentStatus}
-                    </span>
-                  </div>
+  </div>
+)}
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-gray-50 rounded-xl">
-                      <span className="text-sm text-gray-600 block mb-1">Start Date</span>
-                      <span className="font-semibold text-gray-900">{vendor.subscription.startDate}</span>
-                    </div>
-                    <div className="p-4 bg-gray-50 rounded-xl">
-                      <span className="text-sm text-gray-600 block mb-1">End Date</span>
-                      <span className="font-semibold text-gray-900">{vendor.subscription.endDate}</span>
-                    </div>
-                  </div>
 
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <span className="font-medium text-gray-600">Renewal Due</span>
-                    <span
-                      className={`px-3 py-1.5 rounded-lg font-semibold text-sm ${
-                        vendor.subscription.renewalDue
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-emerald-100 text-emerald-700"
-                      }`}
-                    >
-                      {vendor.subscription.renewalDue ? "Yes" : "No"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
             {activeTab === "job history" && (
            
               <div>
