@@ -243,7 +243,7 @@ const SocietyReport = () => {
     </div>
 
       {/* Table / Card View */}
-      <div className="bg-white rounded-xl shadow">
+      <div className="bg-white shadow">
       
 
             {/* Export Buttons */}
@@ -320,50 +320,64 @@ const SocietyReport = () => {
 
   
           {/* Large screen: Table */}
- <div className="overflow-x-auto w-full">
-  <table className="min-w-[700px] w-full text-sm border-collapse">
-    <thead className="bg-gray-200">
-      <tr className="text-gray-700 uppercase text-xs tracking-wider border-b border-gray-200">
-        <th className="py-3 px-4 text-left font-medium"> Society Name</th>
-        <th className="py-3 px-4 text-left font-medium">Status</th>
-        <th className="py-3 px-4 text-left font-medium">Date</th>
-        <th className="py-3 px-4 text-left font-medium">Location</th>
-        <th className="py-3 px-4 text-left font-medium">Jobs Posted</th>
+<div className="overflow-x-auto w-full bg-white rounded-2xl  border">
+  <table className="min-w-[700px] w-full text-sm text-gray-700 border-collapse">
+    <thead className="bg-gradient-to-r from-gray-100 to-gray-200">
+      <tr className="text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+        <th className="py-4 px-5 rounded-tl-2xl">Society Name</th>
+        <th className="py-4 px-5">Status</th>
+        <th className="py-4 px-5">Date</th>
+        <th className="py-4 px-5">Location</th>
+        <th className="py-4 px-5 rounded-tr-2xl">Jobs Posted</th>
       </tr>
     </thead>
-    <tbody className="bg-white">
+
+    <tbody>
       {filteredList.length > 0 ? (
         filteredList.map((s, index) => (
           <tr
             key={s.id}
-            className={`hover:shadow-md transition-transform duration-200 ${
+            className={`transition-all duration-300  hover:shadow-md ${
               index % 2 === 0 ? "bg-white" : "bg-gray-50"
             }`}
           >
-            <td className="px-4 py-4 font-medium text-gray-800">{s.name}</td>
-            <td className="px-4 py-4">
+            <td className="px-5 py-4 font-semibold text-gray-800 whitespace-nowrap">
+              {s.name}
+            </td>
+
+            <td className="px-5 py-4">
               <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm ${
                   s.status === "approved"
-                    ? "bg-green-100 text-green-700"
+                    ? "bg-green-100 text-green-700 border border-green-200"
                     : s.status === "pending"
-                    ? "bg-yellow-100 text-yellow-700"
+                    ? "bg-yellow-100 text-yellow-700 border border-yellow-200"
                     : s.status === "rejected"
-                    ? "bg-red-100 text-red-700"
-                    : "bg-gray-100 text-gray-700"
+                    ? "bg-red-100 text-red-700 border border-red-200"
+                    : "bg-gray-100 text-gray-700 border border-gray-200"
                 }`}
               >
                 {s.status.charAt(0).toUpperCase() + s.status.slice(1)}
               </span>
             </td>
-            <td className="px-4 py-4 text-gray-600">{s.createdAt}</td>
-            <td className="px-4 py-4 text-gray-600">{s.location}</td>
-            <td className="px-4 py-4 font-bold text-gray-900">{s.jobsPosted}</td>
+
+            <td className="px-5 py-4 text-gray-600 whitespace-nowrap">
+              {s.createdAt}
+            </td>
+
+            <td className="px-5 py-4 text-gray-600">{s.location}</td>
+
+            <td className="px-5 py-4 font-bold text-gray-900">
+              {s.jobsPosted}
+            </td>
           </tr>
         ))
       ) : (
         <tr>
-          <td colSpan="5" className="py-6 text-center text-gray-500">
+          <td
+            colSpan="5"
+            className="py-8 text-center text-gray-500 font-medium bg-gray-50 rounded-b-2xl"
+          >
             No Data Found
           </td>
         </tr>
@@ -371,6 +385,7 @@ const SocietyReport = () => {
     </tbody>
   </table>
 </div>
+
 
       </div>
 
