@@ -515,24 +515,24 @@ const VendorDetailProfile = () => {
       icon: Briefcase,
       bg: "bg-blue-200",
     },
-    {
-      label: "Completed",
-      value: vendor.completedJobs,
-      icon: CheckCircle2,
-      bg: "bg-green-200",
-    },
-    {
-      label: "Ongoing",
-      value: vendor.ongoingJobs,
-      icon: Clock,
-      bg: "bg-amber-200",
-    },
-    {
-      label: "Cancelled",
-      value: vendor.cancelledJobs || 0,
-      icon: XCircle,
-      bg: "bg-red-200",
-    },
+    // {
+    //   label: "Completed",
+    //   value: vendor.completedJobs,
+    //   icon: CheckCircle2,
+    //   bg: "bg-green-200",
+    // },
+    // {
+    //   label: "Ongoing",
+    //   value: vendor.ongoingJobs,
+    //   icon: Clock,
+    //   bg: "bg-amber-200",
+    // },
+    // {
+    //   label: "Cancelled",
+    //   value: vendor.cancelledJobs || 0,
+    //   icon: XCircle,
+    //   bg: "bg-red-200",
+    // },
   ].map(({ label, value, icon: Icon, bg }, index) => (
     <div
       key={index}
@@ -563,8 +563,6 @@ const VendorDetailProfile = () => {
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Job ID</th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Price</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
                       </tr>
                     </thead>
@@ -574,8 +572,8 @@ const VendorDetailProfile = () => {
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{job.id}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job.title}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.type}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">₹{job.price}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          {/* <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">₹{job.price}</td> */}
+                          {/* <td className="px-6 py-4 whitespace-nowrap">
                             <span
                               className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-lg ${
                                 job.status === "Completed"
@@ -587,7 +585,7 @@ const VendorDetailProfile = () => {
                             >
                               {job.status}
                             </span>
-                          </td>
+                          </td> */}
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.date}</td>
                         </tr>
                       ))}

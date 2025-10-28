@@ -475,7 +475,6 @@ const DetailProfile = () => {
                         { label: "Posted Date", icon: <Calendar className="w-3.5 h-3.5" /> },
                         { label: "Status", icon: <Activity className="w-3.5 h-3.5" /> },
                         { label: "Vendor", icon: <UserCheck className="w-3.5 h-3.5" /> },
-                        { label: "Price", icon: <DollarSign className="w-3.5 h-3.5" /> },
                       ].map((th) => (
                         <th
                           key={th.label}
@@ -524,7 +523,6 @@ const DetailProfile = () => {
                             </span>
                           </td>
                           <td className="px-6 py-4 text-gray-700">{job.assignedVendor}</td>
-                          <td className="px-6 py-4 font-bold text-emerald-600">₹{job.price.toLocaleString()}</td>
                         </tr>
                       );
                     })}
