@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Pencil, Trash2, Wrench } from "lucide-react";
-import { GoDotFill } from "react-icons/go";
+import { Pencil, Trash, Trash2, Wrench } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { getToken } from "../../utils/Token";
 
 const ServicesList = () => {
   const [services, setServices] = useState([]);
@@ -21,83 +18,23 @@ const ServicesList = () => {
 
   const navigate = useNavigate();
 
+  // 🧩 Mock Data
   const mockServices = [
-    {
-      id: 1,
-      name: "Plumber",
-      category: "Home Services",
-      vendorsCount: 12,
-    },
-    {
-      id: 2,
-      name: "Electrician",
-      category: "Home Services",
-      vendorsCount: 8,
-    },
-    {
-      id: 3,
-      name: "Carpenter",
-      category: "Home Services",
-      vendorsCount: 9,
-    },
-    {
-      id: 4,
-      name: "CCTV Installation",
-      category: "Security Services",
-      vendorsCount: 4,
-    },
-    {
-      id: 5,
-      name: "Maid Services",
-      category: "Cleaning Services",
-      vendorsCount: 11,
-    },
-    {
-      id: 6,
-      name: "Driver on Demand",
-      category: "Transport Services",
-      vendorsCount: 5,
-    },
-    {
-      id: 7,
-      name: "Gardening",
-      category: "Outdoor Services",
-      vendorsCount: 7,
-    },
+    { id: 1, name: "Plumber", category: "Home Services", vendorsCount: 12 },
+    { id: 2, name: "Electrician", category: "Home Services", vendorsCount: 8 },
+    { id: 3, name: "Carpenter", category: "Home Services", vendorsCount: 9 },
+    { id: 4, name: "CCTV Installation", category: "Security Services", vendorsCount: 4 },
+    { id: 5, name: "Maid Services", category: "Cleaning Services", vendorsCount: 11 },
+    { id: 6, name: "Driver on Demand", category: "Transport Services", vendorsCount: 5 },
+    { id: 7, name: "Gardening", category: "Outdoor Services", vendorsCount: 7 },
   ];
 
+  // 🧠 Use mock data only
   useEffect(() => {
-    const fetchVendorsByRole = async () => {
-      const token = getToken();
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/admin/vendors-by-role`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        const vendorsByRole = res.data || [];
-        //console.log("Vendor by role", res.data);
-
-        // Map API data directly to services:
-        const merged = mockServices.map((service) => {
-          const found = vendorsByRole.find(
-            (v) => v.role.toLowerCase() === service.name.toLowerCase()
-          );
-          return {
-            ...service,
-            vendorsCount: found ? found.vendorCount : service.vendorsCount,
-          };
-        });
-
-        setServices(merged);
-      } catch (error) {
-        console.error("API fetch failed, using mock data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchVendorsByRole();
+    setTimeout(() => {
+      setServices(mockServices);
+      setLoading(false);
+    }, 500); // small delay to simulate loading
   }, []);
 
   const handleVendorClick = (serviceName) => {
@@ -137,11 +74,7 @@ const ServicesList = () => {
       setServices((prev) =>
         prev.map((item) =>
           item.id === currentEditId
-            ? {
-                ...item,
-                ...formData,
-                vendorsCount: parseInt(formData.vendorsCount),
-              }
+            ? { ...item, ...formData, vendorsCount: parseInt(formData.vendorsCount) }
             : item
         )
       );
@@ -168,6 +101,7 @@ const ServicesList = () => {
       setServices(services.filter((serv) => serv.id !== id));
     }
   };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-40 gap-4">
@@ -199,7 +133,7 @@ const ServicesList = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-white rounded-lg shadow h-screen">
       <div className="px-4 py-4 border-b border-gray-200">
         {/* Header */}
         <div className="flex justify-end items-center mb-4">
@@ -212,13 +146,13 @@ const ServicesList = () => {
         </div>
 
         {/* Services List */}
-        <div className="space-y-4">
+        <div className="space-y-4 max-h-[75vh] overflow-y-auto scrollbar-hide overflow-hidden">
           {services.map((service) => (
             <div
               key={service.id}
               className="flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-xl px-4 sm:px-5 py-4 border border-[#F0F0F0] bg-white transition-transform duration-200 hover:scale-[1.01] hover:shadow-md gap-4"
             >
-              {/* Service Info - 33% */}
+              {/* Service Info */}
               <div className="flex items-center gap-4 w-full sm:w-1/3">
                 <div className="w-11 h-11 rounded-lg flex items-center justify-center text-xl shadow-sm bg-gradient-to-br from-[#EDEDED] to-[#F7F7F7] text-[#5A5A5A]">
                   <Wrench size={20} />
@@ -231,7 +165,7 @@ const ServicesList = () => {
                 </div>
               </div>
 
-              {/* Vendors Count*/}
+              {/* Vendors Count */}
               <div
                 onClick={() => handleVendorClick(service.name)}
                 className="w-full sm:w-1/3 text-md md:text-sm font-semibold text-slate-600 cursor-pointer hover:underline hover:text-[#00809D] text-left sm:text-center"
@@ -249,7 +183,7 @@ const ServicesList = () => {
                   <Pencil size={18} />
                 </button>
                 <button
-                  className="p-2 rounded-md text-gray-600 transition hover:bg-red-100 hover:text-red-700"
+                  className="p-2 rounded-md text-red-600 transition hover:bg-red-100 hover:text-red-700"
                   title="Delete"
                   onClick={() => handleDelete(service.id)}
                 >
