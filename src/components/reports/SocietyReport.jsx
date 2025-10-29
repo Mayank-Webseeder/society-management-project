@@ -5,7 +5,7 @@ import { FaMapMarkerAlt, FaCalendarAlt, FaClipboardList } from "react-icons/fa";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { FaBriefcase, FaTimesCircle, FaCheckCircle, FaChartLine } from "react-icons/fa";
+import {  FaRegBuilding , FaRegTimesCircle, FaRegCheckCircle, FaChartLine } from "react-icons/fa";
 
 const mockSocietyList = [
   {
@@ -234,12 +234,12 @@ const SocietyReport = () => {
         <Card
           title="Total Societies"
           count={summary.total}
-          icon={FaBriefcase}
+          icon={FaRegBuilding}
           bgColor="bg-purple-200"
         />
-      <Card title="Rejected" count={summary.rejected} icon={FaTimesCircle} bgColor="bg-red-200" />
+      <Card title="Rejected" count={summary.rejected} icon={FaRegTimesCircle} bgColor="bg-red-200" />
       <Card title="Active" count={summary.active} icon={FaChartLine} bgColor="bg-green-200" />
-      <Card title="Inactive" count={summary.inactive} icon={FaCheckCircle} bgColor="bg-yellow-200" />
+      <Card title="Inactive" count={summary.inactive} icon={FaRegCheckCircle} bgColor="bg-yellow-200" />
     </div>
 
       {/* Table / Card View */}

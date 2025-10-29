@@ -18,6 +18,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { useMediaQuery } from "react-responsive";
+import { FiUsers } from "react-icons/fi";
 
 
 import {
@@ -301,7 +302,7 @@ const VendorReport = () => {
     <Card
       title="Total Vendors"
       count={totalVendors}
-      icon={FaUsers}
+      icon={FiUsers}
       bgColor="bg-blue-200"
     />
   </div>

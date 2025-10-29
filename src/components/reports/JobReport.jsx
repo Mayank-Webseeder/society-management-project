@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaRegFileExcel, FaRegFilePdf } from "react-icons/fa6";
 import {
-  FaClipboardList,
   FaUsers,
   FaLocationDot,
   FaWrench,
@@ -12,7 +11,10 @@ import { MdDateRange } from "react-icons/md";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { FaBriefcase,  FaFileSignature, FaFileAlt } from "react-icons/fa";
+import { FaBriefcase,  FaFileAlt } from "react-icons/fa";
+import { LiaFileSignatureSolid } from "react-icons/lia";
+import { LuClipboardList } from "react-icons/lu";
+
 
 const mockJobs = [
   {
@@ -237,14 +239,14 @@ const JobReport = () => {
   <Card
     title="Open Jobs"
     count={openJobs}
-    icon={FaClipboardList}
+    icon={LuClipboardList}
     bgColor="bg-green-200"
   />
 
   <Card
     title="With Quote"
     count={jobsWithQuotation}
-    icon={FaFileSignature}
+    icon={LiaFileSignatureSolid}
     bgColor="bg-yellow-200"
   />
 
@@ -343,7 +345,7 @@ const JobReport = () => {
            <div className=" flex items-center justify-between mb-4 ">
      <div>
                 <h2 className="text-lg font-semibold flex items-center gap-2">
-          <FaClipboardList className="text-gray-700 text-2xl" /> Job Details
+          <LuClipboardList  className="text-gray-700 text-2xl" /> Job Details
         </h2>
      </div>
         <button
