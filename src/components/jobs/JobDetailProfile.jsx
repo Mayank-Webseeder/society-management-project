@@ -283,9 +283,7 @@ const JobDetailProfile = () => {
                           <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             Applied Date
                           </th>
-                          <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Quotation
-                          </th>
+
                           <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             Status
                           </th>
@@ -316,9 +314,7 @@ const JobDetailProfile = () => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                               {vendor.appliedDate}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                              ₹{vendor.quotation}
-                            </td>
+                            
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
                                 {vendor.status}
@@ -386,9 +382,7 @@ const JobDetailProfile = () => {
                               <span className="text-sm text-gray-600">
                                 Applied: {vendor.appliedDate}
                               </span>
-                              <span className="text-lg font-bold text-gray-900">
-                                ₹{vendor.quotation}
-                              </span>
+                           
                             </div>
                           </div>
                         </div>
@@ -440,7 +434,7 @@ const JobDetailProfile = () => {
                             Selected
                           </span>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                           <div className="flex items-center gap-2 text-gray-700">
                             <PhoneCall className="w-4 h-4" />
                             <span>{job.selectedVendor.contact}</span>
@@ -453,9 +447,7 @@ const JobDetailProfile = () => {
                             <Calendar className="w-4 h-4" />
                             <span>Selected: {job.selectedVendor.appliedDate}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-gray-700">
-                            <span className="font-bold text-lg">₹{job.selectedVendor.quotation}</span>
-                          </div>
+                       
                         </div>
                       </div>
                     </div>

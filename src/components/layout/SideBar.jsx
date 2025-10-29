@@ -240,7 +240,7 @@ const SideBar = () => {
   return (
 <aside
   className={`fixed top-0 left-0 h-screen z-50 transition-all duration-300 
-    ${expanded ? "w-64 bg-gradient-to-b from-[#2d5e6c] to-[#0B2E36]/95 backdrop-blur-md" : "w-16 bg-[#0B2E36]/90"} 
+    ${expanded ? "w-64 bg-[#0B2E36] " : "w-16 bg-[#0B2E36]"} 
     text-white flex flex-col shadow-2xl border-r border-white/20 overflow-hidden`}
   onMouseEnter={() => setExpanded(true)}
   onMouseLeave={() => setExpanded(false)}
@@ -252,7 +252,7 @@ const SideBar = () => {
             expanded ? "opacity-100 w-auto" : "opacity-0 w-0"
           }`}
         >
-          Welcome!
+        My society needs
         </span>
         {!expanded && (
           <svg

@@ -19,86 +19,55 @@ import {
   Trash2,
   Trash,
 } from "lucide-react";
+import axios from "axios";
 
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const SUBSCRIPTIONS_API = `${API_BASE_URL}/api/admin/all-subscriptions`;
 const VendorSubscriptions = () => {
-  const [subscriptions, setSubscriptions] = useState([
-    {
-      _id: "687f2d0fb425015d9dde6678",
-      vendorName: "ABC Enterprises",
-      startDate: "2024-06-01",
-      endDate: "2024-09-01",
-      subscriptionStatus: "Active",
-      paymentStatus: "Paid",
-      paymentDetails: {
-        transactionId: "TXN123456789",
-        amount: "₹5,000",
-        method: "UPI",
-        status: "Paid",
-        dateTime: "2024-06-01 10:30 AM",
-      },
-    },
-    {
-      _id: "687f2d0fb425015d9dde6679",
-      vendorName: "XYZ Services",
-      startDate: "2024-07-01",
-      endDate: "2024-08-01",
-      subscriptionStatus: "Cancelled",
-      paymentStatus: "Unpaid",
-      paymentDetails: {
-        transactionId: "TXN987654321",
-        amount: "₹1,500",
-        method: "Netbanking",
-        status: "Pending",
-        dateTime: "2024-07-01 12:00 PM",
-      },
-    },
-    {
-      _id: "687f2d0fb425015d9dde6680",
-      vendorName: "Delta Corp",
-      startDate: "2024-05-15",
-      endDate: "2025-05-15",
-      subscriptionStatus: "Active",
-      paymentStatus: "Paid",
-      paymentDetails: {
-        transactionId: "TXN1122334455",
-        amount: "₹12,000",
-        method: "Credit Card",
-        status: "Paid",
-        dateTime: "2024-05-15 09:45 AM",
-      },
-    },
-    {
-      _id: "687f2d0fb425015d9dde6681",
-      vendorName: "Omega Solutions",
-      startDate: "2024-04-01",
-      endDate: "2024-07-01",
-      subscriptionStatus: "Cancelled",
-      paymentStatus: "Failed",
-      paymentDetails: {
-        transactionId: "TXN5566778899",
-        amount: "₹3,000",
-        method: "Debit Card",
-        status: "Failed",
-        dateTime: "2024-04-01 02:20 PM",
-      },
-    },
-    {
-      _id: "687f2d0fb425015d9dde6682",
-      vendorName: "Nova Enterprises",
-      startDate: "2024-03-10",
-      endDate: "2024-06-10",
-      subscriptionStatus: "Active",
-      paymentStatus: "Paid",
-      paymentDetails: {
-        transactionId: "TXN9988776655",
-        amount: "₹1,500",
-        method: "UPI",
-        status: "Failed",
-        dateTime: "2024-03-10 11:00 AM",
-      },
-    },
-  ]);
+   const [loading, setLoading] = useState(true);
+   const [subscriptions, setSubscriptions] = useState([]);
+    //  const [stats, setStats] = useState({ total: 0, active: 0, cancelled: 0 });
+  const [error, setError] = useState("");
+  const token = localStorage.getItem("token"); 
+ 
+
+   useEffect(() => {
+    const fetchSubscriptions = async () => {
+      try {
+        setLoading(true);
+
+        // ✅ Replace this with your actual API endpoint
+       const response = await axios.get(SUBSCRIPTIONS_API, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+          });
+
+        if (response.data?.subscriptions) {
+          setSubscriptions(response.data.subscriptions);
+        } else if (Array.isArray(response.data)) {
+          setSubscriptions(response.data);
+        } else {
+          setError("Invalid response format from server");
+        }
+      } catch (err) {
+        console.error("Error fetching subscriptions:", err);
+        setError("Failed to fetch data from server");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubscriptions();
+  }, []);
+
+  useEffect(() => {
+    const total = subscriptions.length;
+    const active = subscriptions.filter((s) => s.subscriptionStatus === "Active").length;
+    const cancelled = subscriptions.filter((s) => s.subscriptionStatus === "Cancelled").length;
+    setStats({ total, active, cancelled });
+  }, [subscriptions]);
+
 
   const [paymentModal, setPaymentModal] = useState({
     open: false,
@@ -258,10 +227,10 @@ const VendorSubscriptions = () => {
 
         {/* Desktop Table */}
         <div className="hidden mt-5 lg:block bg-white rounded-2xl shadow-xl border border-slate-200/60 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200">
+          <div className="overflow-x-auto h-[50vh]">
+            <table className="min-w-full divide-y border  divide-slate-200">
               <thead>
-                <tr className="bg-[#E5E7EB]">
+                <tr className="bg-[#E5E7EB] ">
                   <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
                     Vendor Name
                   </th>
@@ -271,35 +240,33 @@ const VendorSubscriptions = () => {
                   <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
                     Payment
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                  {/* <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
                     Status
-                  </th>
+                  </th> */}
                   <th className="px-6 py-4 text-center text-xs font-semibold text-emerald-900 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y   divide-slate-100">
                 {subscriptions.map((sub, index) => (
                   <tr
                     key={sub._id + "-" + index}
-                    onClick={async () => {
-          const vendorId = sub.vendorId || sub.vendor || sub._id;
-          const historyData = await fetchSubscriptionHistory(vendorId);
-          setPaymentModal({
-            open: true,
-            payment: sub.paymentDetails,
-            vendorInfo: { vendorName: sub.vendor?.name || sub.vendorName },
-            history: historyData,
-          });
-        }}
-                    className="hover:bg-gradient-to-r hover:from-slate-50 hover:to-emerald-50/30 transition-all duration-200 group"
+        //             onClick={async () => {
+        //   const vendorId = sub.vendorId || sub.vendor || sub._id;
+        //   const historyData = await fetchSubscriptionHistory(vendorId);
+        //   setPaymentModal({
+        //     open: true,
+        //     payment: sub.paymentDetails,
+        //     vendorInfo: { vendorName: sub.vendor?.name || sub.vendorName },
+        //     history: historyData,
+        //   });
+        // }}
+                    className="hover:bg-gradient-to-r  hover:from-slate-50 hover:to-emerald-50/30 transition-all duration-200 group"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center">
-                          <User className="w-5 h-5 text-emerald-700" />
-                        </div>
+                    
                         <div>
                           <p className="font-semibold text-slate-900">
                             {sub.vendor?.name || sub.vendorName || "N/A"}
@@ -327,7 +294,7 @@ const VendorSubscriptions = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    {/* <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         {getPaymentStatusIcon(sub.paymentStatus)}
                         <span
@@ -342,7 +309,7 @@ const VendorSubscriptions = () => {
                           {sub.paymentStatus || "N/A"}
                         </span>
                       </div>
-                    </td>
+                    </td> */}
                 <td className="px-6 py-4">
   <span
     className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm ${

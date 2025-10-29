@@ -22,44 +22,44 @@ import {
   AlertCircle
 } from "lucide-react";
 
-const mockVendors = [
-  {
-    id: 1,
-    name: "John Doe",
-    subscription: {
-      plan: "Premium",
-      price: 999,
-      startDate: "2024-04-01",
-      endDate: "2025-03-31",
-      paymentStatus: "Paid",
-      renewalDue: false,
-    },
-  },
-  {
-    id: 2,
-    name: "Priya Sharma",
-    subscription: {
-      plan: "Standard",
-      price: 699,
-      startDate: "2023-04-01",
-      endDate: "2024-03-31",
-      paymentStatus: "Paid",
-      renewalDue: true,
-    },
-  },
-  {
-    id: 3,
-    name: "Ravi Kumar",
-    subscription: {
-      plan: "Basic",
-      price: 499,
-      startDate: "2023-01-01",
-      endDate: "2023-12-31",
-      paymentStatus: "Unpaid",
-      renewalDue: true,
-    },
-  },
-];
+// const mockVendors = [
+//   {
+//     id: 1,
+//     name: "John Doe",
+//     subscription: {
+//       plan: "Premium",
+//       price: 999,
+//       startDate: "2024-04-01",
+//       endDate: "2025-03-31",
+//       paymentStatus: "Paid",
+//       renewalDue: false,
+//     },
+//   },
+//   {
+//     id: 2,
+//     name: "Priya Sharma",
+//     subscription: {
+//       plan: "Standard",
+//       price: 699,
+//       startDate: "2023-04-01",
+//       endDate: "2024-03-31",
+//       paymentStatus: "Paid",
+//       renewalDue: true,
+//     },
+//   },
+//   {
+//     id: 3,
+//     name: "Ravi Kumar",
+//     subscription: {
+//       plan: "Basic",
+//       price: 499,
+//       startDate: "2023-01-01",
+//       endDate: "2023-12-31",
+//       paymentStatus: "Paid",
+//       renewalDue: true,
+//     },
+//   },
+// ];
 
 const VendorDetailProfile = () => {
   const navigate = useNavigate();
@@ -242,21 +242,21 @@ const VendorDetailProfile = () => {
               <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
                 <div className="flex items-end gap-4">
                   <div className="w-24 h-24 rounded-2xl bg-white shadow-lg border-4 border-white flex items-center justify-center text-3xl font-bold text-blue-600">
-                    {vendor.name.charAt(0)}
+                    {vendor.name.charAt(0) || "N/A"}
                   </div>
                   <div className="pb-2">
                     <div className="flex items-center gap-3 flex-wrap mb-2">
-                      <h1 className="text-2xl font-bold text-gray-900">{vendor.name}</h1>
-                      {getStatusBadge(vendor.status)}
+                      <h1 className="text-2xl font-bold text-gray-900">{vendor.name || "N/A"}</h1>
+                      {getStatusBadge(vendor.status || "N/A")}
                     </div>
                     <div className="flex items-center gap-4 text-sm text-gray-600">
                       <span className="flex items-center gap-1.5">
                         <MapPin className="w-4 h-4" />
-                        {vendor.location}
+                        {vendor.location || "N/A"}
                       </span>
                       <span className="flex items-center gap-1.5">
                         <Briefcase className="w-4 h-4" />
-                        ID: {vendor.id}
+                        ID: {vendor.id || "N/A"}
                       </span>
                     </div>
                   </div>
@@ -306,7 +306,7 @@ const VendorDetailProfile = () => {
                     }`}
                   >
                     <Icon className="w-4 h-4" />
-                    <span className="hidden sm:inline">{tab.id}</span>
+                    <span className="hidden sm:inline">{tab.id || "N/A"}</span>
                   </button>
                 );
               })}
@@ -334,7 +334,7 @@ const VendorDetailProfile = () => {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-0.5">Phone</p>
-                        <p className="font-medium text-gray-900">{vendor.phone}</p>
+                        <p className="font-medium text-gray-900">{vendor.phone || "N/A"}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
@@ -343,7 +343,7 @@ const VendorDetailProfile = () => {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-0.5">Email</p>
-                        <p className="font-medium text-gray-900 break-all">{vendor.email}</p>
+                        <p className="font-medium text-gray-900 break-all">{vendor.email || "N/A"}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
@@ -352,7 +352,7 @@ const VendorDetailProfile = () => {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500 mb-0.5">Location</p>
-                        <p className="font-medium text-gray-900">{vendor.location}</p>
+                        <p className="font-medium text-gray-900">{vendor.location || "N/A"}</p>
                       </div>
                     </div>
                   </div>
@@ -373,7 +373,7 @@ const VendorDetailProfile = () => {
                         className="flex items-center gap-2 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100"
                       >
                         <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                        <span className="font-medium text-gray-800 text-sm">{service}</span>
+                        <span className="font-medium text-gray-800 text-sm">{service || "N/A"}</span>
                       </div>
                     ))}
                   </div>
@@ -395,8 +395,8 @@ const VendorDetailProfile = () => {
                           <FileText className="w-6 h-6 text-blue-600" />
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-900 mb-1">{doc.name}</h4>
-                          <p className="text-sm text-gray-500">{doc.type}</p>
+                          <h4 className="font-semibold text-gray-900 mb-1">{doc.name || "N/A"}</h4>
+                          <p className="text-sm text-gray-500">{doc.type || "N/A"}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4 sm:flex-row-reverse">
@@ -407,7 +407,7 @@ const VendorDetailProfile = () => {
                               : "bg-amber-50 text-amber-700 border border-amber-200"
                           }`}
                         >
-                          {doc.status}
+                          {doc.status || "N/A"}
                         </span>
                         <span className="text-sm text-gray-600">
                           {doc.uploadedOn !== "--" ? doc.uploadedOn : "Not Uploaded"}
@@ -437,8 +437,8 @@ const VendorDetailProfile = () => {
     <thead className="bg-gray-100">
       <tr>
         <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Plan</th>
-        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Price</th>
-        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Payment Status</th>
+        {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Price</th> */}
+        {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Payment Status</th> */}
         <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Start Date</th>
         <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">End Date</th>
         <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Renewal Due</th>
@@ -450,10 +450,10 @@ const VendorDetailProfile = () => {
         return (
           <tr key={vendor.id || vendor._id} className="hover:bg-gray-50 border-b border-gray-200">
             <td className="px-6 py-4 font-medium text-gray-800">{subscription.plan || "N/A"}</td>
-            <td className="px-6 py-4 font-semibold text-gray-900">
+            {/* <td className="px-6 py-4 font-semibold text-gray-900">
               {subscription.price ? `₹${subscription.price}` : "N/A"}
-            </td>
-            <td className="px-6 py-4">
+            </td> */}
+            {/* <td className="px-6 py-4">
               {subscription.paymentStatus ? (
                 <span
                   className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold ${
@@ -472,9 +472,9 @@ const VendorDetailProfile = () => {
               ) : (
                 <span className="text-gray-400">N/A</span>
               )}
-            </td>
-            <td className="px-6 py-4 text-gray-700">{subscription.startDate || "--"}</td>
-            <td className="px-6 py-4 text-gray-700">{subscription.endDate || "--"}</td>
+            </td> */}
+            <td className="px-6 py-4 text-gray-700">{subscription.startDate || "N/A"}</td>
+            <td className="px-6 py-4 text-gray-700">{subscription.endDate || "N/A"}</td>
             <td className="px-6 py-4">
               {subscription.renewalDue !== undefined ? (
                 <span

@@ -7,18 +7,18 @@ import {
   FaTag,
   FaCheckCircle,
   FaTimesCircle,
-  FaRupeeSign,
   FaStar,
   FaCalendarAlt,
   FaUsers,
-  FaUserCheck,
-   FaUserTimes,
 } from "react-icons/fa";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { useMediaQuery } from "react-responsive";
-import { FiUsers } from "react-icons/fi";
+import { FiUsers , FiUserCheck,FiUserX } from "react-icons/fi";
+import { MdCurrencyRupee } from "react-icons/md";
+import { LiaRupeeSignSolid } from "react-icons/lia";
+
 
 
 import {
@@ -311,7 +311,7 @@ const VendorReport = () => {
     <Card
       title="Active Vendors"
       count={activeVendors}
-      icon={FaUserCheck}
+      icon={FiUserCheck}
       bgColor="bg-green-200"
     />
   </div>
@@ -320,7 +320,7 @@ const VendorReport = () => {
     <Card
       title="Inactive Vendors"
       count={inactiveVendors}
-      icon={FaUserTimes}
+      icon={FiUserX }
       bgColor="bg-red-200"
     />
   </div>
@@ -335,7 +335,7 @@ const VendorReport = () => {
           ₹{totalRevenue.toLocaleString("en-IN")}
         </span>
       }
-      icon={FaRupeeSign}
+      icon={MdCurrencyRupee}
       bgColor="bg-purple-200"
     />
   </div>
@@ -515,7 +515,8 @@ const VendorReport = () => {
             </p>
 
             <p className="flex items-center gap-2 font-semibold text-gray-800">
-              <FaRupeeSign />
+              <LiaRupeeSignSolid  />
+              
               <span>Revenue: ₹{v.revenue.toLocaleString("en-IN")}</span>
             </p>
 

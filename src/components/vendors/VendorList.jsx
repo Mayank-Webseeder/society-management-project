@@ -164,18 +164,7 @@ const VendorList = () => {
       icon: UserCheck,
       bg: "bg-green-200",
     },
-    {
-      label: "Pending",
-      value: vendors.filter((v) => v.status === "Pending").length,
-      icon: Clock,
-      bg: "bg-yellow-200",
-    },
-    {
-      label: "Rejected",
-      value: vendors.filter((v) => v.status === "Rejected").length,
-      icon: UserX,
-      bg: "bg-red-200",
-    },
+
     {
       label: "Blacklisted",
       value: vendors.filter((v) => v.status === "Blacklisted").length,
@@ -268,7 +257,7 @@ const VendorList = () => {
         <th className=" py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Services</th>
         <th className=" py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Ratings</th>
         <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Jobs</th>
-        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Status</th>
+        {/* <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Status</th> */}
         <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Subscription</th>
         <th className="py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Actions</th>
       </tr>
@@ -278,7 +267,7 @@ const VendorList = () => {
 <tbody className="divide-y divide-gray-200 bg-white">
   {filteredVendors.map((vendor) => (
     <tr
-      key={vendor.id || vendor._id} 
+      key={vendor.id} 
       onClick={(e) => {
     if (
       !e.target.closest(".vendor-status-dropdown") &&
@@ -323,7 +312,7 @@ const VendorList = () => {
       </td>
 
       {/* Status Dropdown */}
-      <td className=" py-3 relative vendor-status-dropdown">
+      {/* <td className=" py-3 relative vendor-status-dropdown">
         <button
           onClick={() =>
             setSelectVendor(
@@ -398,7 +387,7 @@ const VendorList = () => {
             )}
           </div>
         )}
-      </td>
+      </td> */}
 
       {/* Subscription */}
       <td className="px-6 py-4">

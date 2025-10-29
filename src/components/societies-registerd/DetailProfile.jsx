@@ -27,140 +27,161 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSocietyContext } from "../../context/SocietyContext";
 
 const DetailProfile = () => {
-  const { societyId } = useParams();
+  // const { societyId } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("basic info");
+  // const [society, setSociety] = useState(null);
+  // const [loading, setLoading] = useState(true);
+
+  const { id: societyId } = useParams();
+  const { societies, loading } = useSocietyContext();
   const [society, setSociety] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSociety = async () => {
-      const data = {
-        id: societyId,
-        name: "Ocean View Apartments",
-        status: "Active",
-        location: "Rajendra Nagar",
-        contactPerson: "Ravi Kumar",
-        phone: "9876543210",
-        email: "ravi.kumar@example.com",
-        address: "Sector 45, Gurugram",
-        city: "Gurugram",
-        pincode: "122003",
-        totalJobsPosted: 25,
-        activeJobs: 7,
-        jobDetails: [
-          {
-            id: "J001",
-            title: "Plumbing Work",
-            type: "Maintenance",
-            postedDate: "2024-06-15",
-            status: "Completed",
-            assignedVendor: "Suresh Patel",
-            price: 4000,
-          },
-          {
-            id: "J002",
-            title: "Electrical Issue Fix",
-            type: "Repair",
-            postedDate: "2024-06-18",
-            status: "Active",
-            assignedVendor: "Amit Singh",
-            price: 2500,
-          },
-          {
-            id: "J003",
-            title: "Pest Control",
-            type: "Service",
-            postedDate: "2024-06-20",
-            status: "Pending",
-            assignedVendor: "Priya Sharma",
-            price: 1500,
-          },
-        ],
-      };
-      setSociety(data);
-      setLoading(false);
-    };
-
-    fetchSociety();
-  }, [societyId]);
+    if (societies.length > 0) {
+      const found = societies.find(
+        (item) => item._id === societyId || item.id === societyId
+      );
+      setSociety(found || null);
+    }
+  }, [societies, societyId]);
 
   if (loading) {
-    return (
-      <div className="flex flex-col justify-center items-center h-96 space-y-4">
-        <div className="relative">
-          <svg
-            className="animate-spin h-16 w-16 text-blue-600"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-            />
-          </svg>
-        </div>
-        <p className="text-gray-700 font-semibold text-xl">
-          Loading society details...
-        </p>
-      </div>
-    );
+    return <div className="text-center mt-10 text-gray-500">Loading...</div>;
   }
 
   if (!society) {
-    return (
-      <div className="flex flex-col items-center justify-center h-96 space-y-4">
-        <div className="bg-red-50 border border-red-200 rounded-full p-4">
-          <CircleX className="w-12 h-12 text-red-500" />
-        </div>
-        <p className="text-xl font-semibold text-gray-800">Society not found</p>
-        <button
-          onClick={() => navigate("/societies")}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Societies
-        </button>
-      </div>
-    );
+    return <div className="text-center mt-10 text-gray-500">Society not found 😕</div>;
   }
 
-  if (society.status === "Pending" || society.status === "Rejected") {
-    return (
-      <div className="flex flex-col items-center justify-center h-96 space-y-6">
-        <div className="bg-gray-50 border border-gray-200 rounded-full p-4">
-          {society.status === "Pending" ? (
-            <Clock className="w-12 h-12 text-amber-500" />
-          ) : (
-            <CircleX className="w-12 h-12 text-red-500" />
-          )}
-        </div>
-        <div className="text-center space-y-2">
-          <p className="text-xl font-semibold text-gray-800">Access Restricted</p>
-          <p className="text-gray-600">
-            Society profile is hidden as it is {society.status.toLowerCase()}.
-          </p>
-        </div>
-        <button
-          onClick={() => navigate("/societies")}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Societies
-        </button>
-      </div>
-    );
-  }
+  // useEffect(() => {
+  //   const fetchSociety = async () => {
+  //     const data = {
+  //       id: societyId,
+  //       name: "Ocean View Apartments",
+  //       status: "Active",
+  //       location: "Rajendra Nagar",
+  //       contactPerson: "Ravi Kumar",
+  //       phone: "9876543210",
+  //       email: "ravi.kumar@example.com",
+  //       address: "Sector 45, Gurugram",
+  //       city: "Gurugram",
+  //       pincode: "122003",
+  //       totalJobsPosted: 25,
+  //       activeJobs: 7,
+  //       jobDetails: [
+  //         {
+  //           id: "J001",
+  //           title: "Plumbing Work",
+  //           type: "Maintenance",
+  //           postedDate: "2024-06-15",
+  //           status: "Completed",
+  //           assignedVendor: "Suresh Patel",
+  //           price: 4000,
+  //         },
+  //         {
+  //           id: "J002",
+  //           title: "Electrical Issue Fix",
+  //           type: "Repair",
+  //           postedDate: "2024-06-18",
+  //           status: "Active",
+  //           assignedVendor: "Amit Singh",
+  //           price: 2500,
+  //         },
+  //         {
+  //           id: "J003",
+  //           title: "Pest Control",
+  //           type: "Service",
+  //           postedDate: "2024-06-20",
+  //           status: "Pending",
+  //           assignedVendor: "Priya Sharma",
+  //           price: 1500,
+  //         },
+  //       ],
+  //     };
+  //     setSociety(data);
+  //     setLoading(false);
+  //   };
+
+  //   fetchSociety();
+  // }, [societyId]);
+
+  // if (loading) {
+  //   return (
+  //     <div className="flex flex-col justify-center items-center h-96 space-y-4">
+  //       <div className="relative">
+  //         <svg
+  //           className="animate-spin h-16 w-16 text-blue-600"
+  //           xmlns="http://www.w3.org/2000/svg"
+  //           fill="none"
+  //           viewBox="0 0 24 24"
+  //         >
+  //           <circle
+  //             className="opacity-25"
+  //             cx="12"
+  //             cy="12"
+  //             r="10"
+  //             stroke="currentColor"
+  //             strokeWidth="4"
+  //           />
+  //           <path
+  //             className="opacity-75"
+  //             fill="currentColor"
+  //             d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+  //           />
+  //         </svg>
+  //       </div>
+  //       <p className="text-gray-700 font-semibold text-xl">
+  //         Loading society details...
+  //       </p>
+  //     </div>
+  //   );
+  // }
+
+  // if (!society) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-96 space-y-4">
+  //       <div className="bg-red-50 border border-red-200 rounded-full p-4">
+  //         <CircleX className="w-12 h-12 text-red-500" />
+  //       </div>
+  //       <p className="text-xl font-semibold text-gray-800">Society not found</p>
+  //       <button
+  //         onClick={() => navigate("/societies")}
+  //         className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+  //       >
+  //         <ArrowLeft className="w-4 h-4" />
+  //         Back to Societies
+  //       </button>
+  //     </div>
+  //   );
+  // }
+
+  // if (society.status === "Pending" || society.status === "Rejected") {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-96 space-y-6">
+  //       <div className="bg-gray-50 border border-gray-200 rounded-full p-4">
+  //         {society.status === "Pending" ? (
+  //           <Clock className="w-12 h-12 text-amber-500" />
+  //         ) : (
+  //           <CircleX className="w-12 h-12 text-red-500" />
+  //         )}
+  //       </div>
+  //       <div className="text-center space-y-2">
+  //         <p className="text-xl font-semibold text-gray-800">Access Restricted</p>
+  //         <p className="text-gray-600">
+  //           Society profile is hidden as it is {society.status.toLowerCase()}.
+  //         </p>
+  //       </div>
+  //       <button
+  //         onClick={() => navigate("/societies")}
+  //         className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+  //       >
+  //         <ArrowLeft className="w-4 h-4" />
+  //         Back to Societies
+  //       </button>
+  //     </div>
+  //   );
+  // }
 
   const getStatusBadge = (status) => {
     const baseClasses =
@@ -246,19 +267,21 @@ const DetailProfile = () => {
     }
   };
 
-  const completedJobs = society.jobDetails.filter(
-    (job) => job.status === "Completed"
-  ).length;
+// ✅ Safe handling even if jobDetails or activeJobs is undefined
+const completedJobs = society?.jobDetails?.filter(
+  (job) => job.status === "Completed"
+)?.length || 0;
 
-  const completedPercent =
-    society.totalJobsPosted > 0
-      ? (completedJobs / society.totalJobsPosted) * 100
-      : 0;
+const completedPercent =
+  society?.totalJobsPosted > 0
+    ? (completedJobs / society.totalJobsPosted) * 100
+    : 0;
 
-  const activePercent =
-    society.totalJobsPosted > 0
-      ? (society.activeJobs / society.totalJobsPosted) * 100
-      : 0;
+const activePercent =
+  society?.totalJobsPosted > 0
+    ? ((society?.activeJobs || 0) / society.totalJobsPosted) * 100
+    : 0;
+
 
   const ProgressBar = ({ label, count, percent, colorClass, icon }) => (
     <div className="mb-6">
@@ -367,7 +390,7 @@ const DetailProfile = () => {
         <div className="flex flex-wrap border-b border-gray-200 bg-gray-50">
           {[
             { key: "basic info", label: "Basic Info", icon: <FileUser className="w-4 h-4" /> },
-            { key: "jobDetails", label: "Job Details", icon: <Briefcase className="w-4 h-4" /> },
+            // { key: "jobDetails", label: "Job Details", icon: <Briefcase className="w-4 h-4" /> },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -403,7 +426,7 @@ const DetailProfile = () => {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Contact Person</p>
-                      <p className="font-semibold text-gray-900">{society.contactPerson}</p>
+                      <p className="font-semibold text-gray-900">{society.contactPerson || "N/A"}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
@@ -412,7 +435,7 @@ const DetailProfile = () => {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Phone Number</p>
-                      <p className="font-semibold text-gray-900">{society.phone}</p>
+                      <p className="font-semibold text-gray-900">{society.phone || "N/A"}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
@@ -421,7 +444,7 @@ const DetailProfile = () => {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Email Address</p>
-                      <p className="font-semibold text-gray-900 break-all">{society.email}</p>
+                      <p className="font-semibold text-gray-900 break-all">{society.email || "N/A"}</p>
                     </div>
                   </div>
                 </div>
@@ -442,7 +465,7 @@ const DetailProfile = () => {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Street Address</p>
-                      <p className="font-semibold text-gray-900">{society.address}</p>
+                      <p className="font-semibold text-gray-900">{society.address || "N/A"}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 bg-white rounded-lg p-4 shadow-sm">
@@ -452,7 +475,7 @@ const DetailProfile = () => {
                     <div>
                       <p className="text-xs text-gray-500 mb-1">City & Pincode</p>
                       <p className="font-semibold text-gray-900">
-                        {society.city} - {society.pincode}
+                        {society.city || "N/A"} - {society.pincode || "N/A"}
                       </p>
                     </div>
                   </div>
@@ -481,8 +504,8 @@ const DetailProfile = () => {
                           className="text-left px-6 py-4 font-bold text-xs text-gray-700 uppercase tracking-wider border-b-2 border-gray-200"
                         >
                           <div className="flex items-center gap-2">
-                            {th.icon}
-                            {th.label}
+                            {th.icon || "N/A"}
+                            {th.label || "N/A"}
                           </div>
                         </th>
                       ))}
@@ -506,15 +529,15 @@ const DetailProfile = () => {
                           }`}
                         >
                           <td className="px-6 py-4 font-mono text-xs font-semibold text-gray-700">
-                            {job.id}
+                            {job.id || "N/A"}
                           </td>
-                          <td className="px-6 py-4 font-semibold text-gray-900">{job.title}</td>
+                          <td className="px-6 py-4 font-semibold text-gray-900">{job.title || "N/A"}</td>
                           <td className="px-6 py-4">
                             <span className="inline-flex items-center px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-xs font-medium border border-purple-200">
                               {job.type}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-gray-600">{job.postedDate}</td>
+                          <td className="px-6 py-4 text-gray-600">{job.postedDate || "N/A"}</td>
                           <td className="px-6 py-4">
                             <span
                               className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${statusClass}`}
@@ -522,7 +545,7 @@ const DetailProfile = () => {
                               {job.status}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-gray-700">{job.assignedVendor}</td>
+                          <td className="px-6 py-4 text-gray-700">{job.assignedVendor || "N/A"}</td>
                         </tr>
                       );
                     })}

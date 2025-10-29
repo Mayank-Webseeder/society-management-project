@@ -7,7 +7,10 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 
-import { FaBuilding, FaUsers, FaBriefcase, FaCheckCircle } from "react-icons/fa";
+
+import { FaRegBuilding,   FaRegCheckCircle } from "react-icons/fa";
+import { FiUsers, FiBriefcase } from "react-icons/fi";
+
 
 const mockReportData = {
   societies: [
@@ -230,10 +233,10 @@ const PerformanceReport = () => {
 
 <div className="flex flex-wrap gap-4 w-full">
   {[
-    { title: "Total Societies", count: totalSocieties, icon: FaBuilding, bgColor: "bg-blue-200" },
-    { title: "Total Vendors", count: totalVendors, icon: FaUsers, bgColor: "bg-green-200" },
-    { title: "Total Jobs Posted", count: totalJobs, icon: FaBriefcase, bgColor: "bg-yellow-200" },
-    { title: "Fulfillment Rate", count: `${fulfillmentRate}%`, icon: FaCheckCircle, bgColor: "bg-purple-200" },
+    { title: "Total Societies", count: totalSocieties, icon: FaRegBuilding, bgColor: "bg-blue-200" },
+    { title: "Total Vendors", count: totalVendors, icon: FiUsers, bgColor: "bg-green-200" },
+    { title: "Total Jobs Posted", count: totalJobs, icon: FiBriefcase, bgColor: "bg-yellow-200" },
+    { title: "Fulfillment Rate", count: `${fulfillmentRate}%`, icon:  FaRegCheckCircle, bgColor: "bg-purple-200" },
   ].map(({ title, count, icon, bgColor }, i) => (
     <div key={i} className="col-span-1 lg:col-span-2">
       <Card title={title} count={count} icon={icon} bgColor={bgColor} />

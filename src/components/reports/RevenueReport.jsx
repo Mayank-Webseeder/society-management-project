@@ -3,7 +3,6 @@ import { FaRegFileExcel, FaRegFilePdf } from "react-icons/fa6";
 import {
   FaUser,
   FaCalendarAlt,
-  FaRupeeSign,
   FaCheckCircle,
   FaClock,
   FaUndo,
@@ -11,7 +10,10 @@ import {
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
-import {  FaUndoAlt } from "react-icons/fa";
+import { FaRegClock } from "react-icons/fa";
+import { LiaRupeeSignSolid } from "react-icons/lia";
+import { FiRotateCcw } from "react-icons/fi";
+
 
 // ✅ Cleaned mock data — no planType now
 const mockPayments = [
@@ -193,7 +195,7 @@ const RevenueReport = () => {
     <Card
       title="Total Revenue"
       count={`₹${totalRevenue.toLocaleString()}`}
-      icon={FaRupeeSign}
+      icon={LiaRupeeSignSolid}
       bgColor="bg-blue-200"
     />
   </div>
@@ -202,16 +204,16 @@ const RevenueReport = () => {
     <Card
       title="Pending Payments"
       count={`₹${pendingPayments.toLocaleString()}`}
-      icon={FaClock}
+      icon={FaRegClock}
       bgColor="bg-yellow-200"
     />
   </div>
 
   <div className="col-span-1 lg:col-span-2">
     <Card
-      title="Refunds / Discounts"
+      title="Refunds Discounts"
       count={`₹${totalRefunds.toLocaleString()}`}
-      icon={FaUndoAlt}
+      icon={FiRotateCcw}
       bgColor="bg-red-200"
     />
   </div>
@@ -350,7 +352,8 @@ const RevenueReport = () => {
                 {p.paymentDate}
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-800">
-                <FaRupeeSign />₹{p.refundOrDiscount.toLocaleString()}
+  
+                < LiaRupeeSignSolid />₹{p.refundOrDiscount.toLocaleString()}
               </div>
             </div>
           ))

@@ -41,7 +41,7 @@ export const SocietyProvider = ({ children }) => {
           id: society._id,
           _id: society._id,
           username: society.username,
-          name: society.buildingName || society.username,
+          name: society.buildingName,
           location: society.location?.default || society.address || "Not provided",
           address: society.address,
           email: society.email,

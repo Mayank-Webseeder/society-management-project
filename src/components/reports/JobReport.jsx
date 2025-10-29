@@ -11,9 +11,9 @@ import { MdDateRange } from "react-icons/md";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { FaBriefcase,  FaFileAlt } from "react-icons/fa";
 import { LiaFileSignatureSolid } from "react-icons/lia";
-import { LuClipboardList } from "react-icons/lu";
+import { LuClipboardList,LuFileX } from "react-icons/lu";
+import { FiBriefcase } from "react-icons/fi";
 
 
 const mockJobs = [
@@ -232,7 +232,7 @@ const JobReport = () => {
   <Card
     title="Total Jobs"
     count={totalJobs}
-    icon={FaBriefcase}
+    icon={FiBriefcase}
     bgColor="bg-blue-200"
   />
 
@@ -253,7 +253,7 @@ const JobReport = () => {
   <Card
     title="No Quote"
     count={jobsWithoutQuotation}
-    icon={FaFileAlt}
+    icon={LuFileX}
     bgColor="bg-red-200"
   />
 </div>

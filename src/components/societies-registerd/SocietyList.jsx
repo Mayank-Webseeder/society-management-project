@@ -290,7 +290,7 @@ const SocietyList = () => {
           to={`/society-details/${soc._id || soc.id}`}
           className="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline"
         >
-          {soc.username}
+          {soc.name}
         </Link>
       </td>
 
