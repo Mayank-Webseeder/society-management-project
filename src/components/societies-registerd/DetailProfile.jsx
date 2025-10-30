@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSocietyContext } from "../../context/SocietyContext";
+import {  CheckCircle } from "lucide-react";
 
 const DetailProfile = () => {
   // const { societyId } = useParams();
@@ -333,16 +334,46 @@ const activePercent =
           </div>
 
           {/* Quick Stats */}
-          {/* <div className="flex gap-4">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-              <div className="text-2xl font-bold">{society.totalJobsPosted}</div>
-              <div className="text-xs text-black">Total Jobs</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-              <div className="text-2xl font-bold">{society.activeJobs}</div>
-              <div className="text-xs text-black">Active Jobs</div>
-            </div>
-          </div> */}
+
+
+<div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {[
+    {
+      label: "Total Jobs",
+      value: society.totalJobsPosted,
+      icon: Briefcase,
+      bg: "bg-blue-200",
+    },
+    {
+      label: "Pending Jobs",
+      value: society.activeJobs,
+      icon: Clock,
+      bg: "bg-amber-200",
+    },
+    {
+      label: "Completed Jobs",
+      value: completedJobs,
+      icon: CheckCircle,
+      bg: "bg-emerald-200",
+    },
+  ].map(({ label, value, icon: Icon, bg }, index) => (
+    <div
+      key={index}
+      className={`${bg} text-black w-[16vw]  rounded-2xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow`}
+    >
+      <div>
+        <p className="text-sm opacity-80">{label}</p>
+        <h3 className="text-2xl font-bold mt-1">{value}</h3>
+      </div>
+      <div className="bg-white p-3 rounded-full shadow-sm">
+        <Icon className="w-6 h-6 text-black" />
+      </div>
+    </div>
+  ))}
+</div>
+
+
+
               <div className="flex flex-wrap gap-3 justify-end">
         {getActionButtons().map(({ label, newStatus, color, icon }) => (
           <button
@@ -382,6 +413,7 @@ const activePercent =
         </div>
 
             {/* Action Buttons */}
+
   
       </div>
 
@@ -393,7 +425,7 @@ const activePercent =
           {[
             { key: "basic info", label: "Basic Info", icon: <FileUser className="w-4 h-4" /> },
             { key: "jobDetails", label: "Job Details", icon: <Briefcase className="w-4 h-4" /> },
-             { key: "jobStatus", label: "Job Status", icon: <Briefcase className="w-4 h-4" /> },
+            //  { key: "jobStatus", label: "Job Status", icon: <Briefcase className="w-4 h-4" /> },
             
           ].map((tab) => (
             <button
@@ -621,7 +653,7 @@ const activePercent =
               </div>
             </div>
           )}
-
+{/* 
           {activeTab === "jobStatus" && (
             <div className="max-w-3xl mx-auto">
               <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-lg p-8 border border-gray-200">
@@ -670,7 +702,7 @@ const activePercent =
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>
