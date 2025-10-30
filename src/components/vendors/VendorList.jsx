@@ -247,10 +247,10 @@ const VendorList = () => {
         ) : (
           <>
             {/* table view for big screen*/}
-           <div className="hidden md:block rounded-2xl  overflow-x-auto scrollbar-hide max-h-[55vh] border border-gray-200 shadow">
+           <div className="hidden md:block bg-white rounded-2xl  overflow-x-auto scrollbar-hide h-[55vh] border border-gray-200 shadow">
   <table className="min-w-full  text-sm">
     {/* --- Table Head --- */}
-    <thead className="bg-[#E5E7EB]">
+    <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
       <tr>
         <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Name</th>
         <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Location</th>

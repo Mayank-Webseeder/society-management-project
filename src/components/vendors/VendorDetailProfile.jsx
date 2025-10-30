@@ -22,44 +22,44 @@ import {
   AlertCircle
 } from "lucide-react";
 
-// const mockVendors = [
-//   {
-//     id: 1,
-//     name: "John Doe",
-//     subscription: {
-//       plan: "Premium",
-//       price: 999,
-//       startDate: "2024-04-01",
-//       endDate: "2025-03-31",
-//       paymentStatus: "Paid",
-//       renewalDue: false,
-//     },
-//   },
-//   {
-//     id: 2,
-//     name: "Priya Sharma",
-//     subscription: {
-//       plan: "Standard",
-//       price: 699,
-//       startDate: "2023-04-01",
-//       endDate: "2024-03-31",
-//       paymentStatus: "Paid",
-//       renewalDue: true,
-//     },
-//   },
-//   {
-//     id: 3,
-//     name: "Ravi Kumar",
-//     subscription: {
-//       plan: "Basic",
-//       price: 499,
-//       startDate: "2023-01-01",
-//       endDate: "2023-12-31",
-//       paymentStatus: "Paid",
-//       renewalDue: true,
-//     },
-//   },
-// ];
+const mockVendors = [
+  {
+    id: 1,
+    name: "John Doe",
+    subscription: {
+      plan: "Premium",
+      price: 999,
+      startDate: "2024-04-01",
+      endDate: "2025-03-31",
+      paymentStatus: "Paid",
+      renewalDue: false,
+    },
+  },
+  {
+    id: 2,
+    name: "Priya Sharma",
+    subscription: {
+      plan: "Standard",
+      price: 699,
+      startDate: "2023-04-01",
+      endDate: "2024-03-31",
+      paymentStatus: "Paid",
+      renewalDue: true,
+    },
+  },
+  {
+    id: 3,
+    name: "Ravi Kumar",
+    subscription: {
+      plan: "Basic",
+      price: 499,
+      startDate: "2023-01-01",
+      endDate: "2023-12-31",
+      paymentStatus: "Paid",
+      renewalDue: true,
+    },
+  },
+];
 
 const VendorDetailProfile = () => {
   const navigate = useNavigate();
@@ -434,7 +434,7 @@ const VendorDetailProfile = () => {
 
 <div className="overflow-x-auto min-h-[50vh]">
   <table className="min-w-full border-b border-gray-300">
-    <thead className="bg-gray-100">
+    <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
       <tr>
         <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Plan</th>
         {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Price</th> */}
@@ -449,7 +449,7 @@ const VendorDetailProfile = () => {
         const subscription = vendor.subscription || {};
         return (
           <tr key={vendor.id || vendor._id} className="hover:bg-gray-50 border-b border-gray-200">
-            <td className="px-6 py-4 font-medium text-gray-800">{subscription.plan || "N/A"}</td>
+            <td className="px-6 py-3 font-medium text-gray-800">{subscription.plan || "N/A"}</td>
             {/* <td className="px-6 py-4 font-semibold text-gray-900">
               {subscription.price ? `₹${subscription.price}` : "N/A"}
             </td> */}
@@ -473,9 +473,9 @@ const VendorDetailProfile = () => {
                 <span className="text-gray-400">N/A</span>
               )}
             </td> */}
-            <td className="px-6 py-4 text-gray-700">{subscription.startDate || "N/A"}</td>
-            <td className="px-6 py-4 text-gray-700">{subscription.endDate || "N/A"}</td>
-            <td className="px-6 py-4">
+            <td className="px-6 py-3 text-gray-700">{subscription.startDate || "N/A"}</td>
+            <td className="px-6 py-3 text-gray-700">{subscription.endDate || "N/A"}</td>
+            <td className="px-6 py-3">
               {subscription.renewalDue !== undefined ? (
                 <span
                   className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold ${
@@ -507,7 +507,7 @@ const VendorDetailProfile = () => {
                 <div className="mb-6">
 
   {/* Job Stats Grid */}
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-4">
   {[
     {
       label: "Total Jobs",
@@ -558,7 +558,7 @@ const VendorDetailProfile = () => {
                 
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
                       <tr>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Job ID</th>
                         <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>

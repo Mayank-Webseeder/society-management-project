@@ -241,9 +241,9 @@ const SocietyList = () => {
           ) : (
             <>
               {/* Desktop Table */}
-              <div className="hidden bg-white md:block overflow-x-auto rounded-2xl min-h-[50vh] border border-gray-200">
+              <div className="hidden bg-white md:block overflow-x-auto  rounded-2xl h-[55vh] border border-gray-200 scrollbar-hide">
                 <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-[#E5E7EB]">
+                  <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
                     <tr>
                       <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                         Society Name
