@@ -22,6 +22,7 @@ import {
   UserCheck,
   TrendingUp,
   Activity,
+  ChevronLeft
 } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSocietyContext } from "../../context/SocietyContext";
@@ -36,6 +37,7 @@ const DetailProfile = () => {
   const { id: societyId } = useParams();
   const { societies, loading } = useSocietyContext();
   const [society, setSociety] = useState(null);
+  
 
   useEffect(() => {
     if (societies.length > 0) {
@@ -309,8 +311,8 @@ const activePercent =
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-black font-medium text-sm  transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Back
+        <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            Back to Societies
         </button>
       {/* Header Card */}
       <div className="bg-white rounded-xl shadow p-4 text-black">
@@ -390,7 +392,9 @@ const activePercent =
         <div className="flex flex-wrap border-b border-gray-200 bg-gray-50">
           {[
             { key: "basic info", label: "Basic Info", icon: <FileUser className="w-4 h-4" /> },
-            // { key: "jobDetails", label: "Job Details", icon: <Briefcase className="w-4 h-4" /> },
+            { key: "jobDetails", label: "Job Details", icon: <Briefcase className="w-4 h-4" /> },
+             { key: "jobStatus", label: "Job Status", icon: <Briefcase className="w-4 h-4" /> },
+            
           ].map((tab) => (
             <button
               key={tab.key}
@@ -487,9 +491,9 @@ const activePercent =
           {activeTab === "jobDetails" && (
             <div>
               {/* Desktop Table */}
-              <div className="hidden md:block overflow-x-auto rounded-lg border border-gray-200">
+              <div className="hidden md:block overflow-x-auto h-[50vh] scrollbar-hide rounded-lg border border-gray-200">
                 <table className="min-w-full bg-white text-sm">
-                  <thead className="bg-gradient-to-r from-gray-100 to-gray-50">
+                  <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
                     <tr>
                       {[
                         { label: "Job ID", icon: <Activity className="w-3.5 h-3.5" /> },
@@ -504,7 +508,7 @@ const activePercent =
                           className="text-left px-6 py-4 font-bold text-xs text-gray-700 uppercase tracking-wider border-b-2 border-gray-200"
                         >
                           <div className="flex items-center gap-2">
-                            {th.icon || "N/A"}
+                            {/* {th.icon || "N/A"} */}
                             {th.label || "N/A"}
                           </div>
                         </th>
@@ -523,13 +527,13 @@ const activePercent =
 
                       return (
                         <tr 
-                          key={job.id} 
+                          key={job._id || index}
                           className={`hover:bg-blue-50 transition-colors ${
                             index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
                           }`}
                         >
                           <td className="px-6 py-4 font-mono text-xs font-semibold text-gray-700">
-                            {job.id || "N/A"}
+                             {`JOB${index + 1}`}
                           </td>
                           <td className="px-6 py-4 font-semibold text-gray-900">{job.title || "N/A"}</td>
                           <td className="px-6 py-4">
@@ -537,7 +541,16 @@ const activePercent =
                               {job.type}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-gray-600">{job.postedDate || "N/A"}</td>
+                         <td className="px-6 py-4 text-gray-600">
+  {job?.createdAt
+    ? new Date(job.createdAt).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    : "N/A"}
+</td>
+
                           <td className="px-6 py-4">
                             <span
                               className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full border ${statusClass}`}
@@ -591,10 +604,16 @@ const activePercent =
                           <p className="text-gray-500 text-xs mb-1">Vendor</p>
                           <p className="font-semibold text-gray-900">{job.assignedVendor}</p>
                         </div>
-                        <div>
-                          <p className="text-gray-500 text-xs mb-1">Price</p>
-                          <p className="font-bold text-emerald-600">₹{job.price.toLocaleString()}</p>
-                        </div>
+                     <td className="px-6 py-4 text-gray-600">
+  {job?.createdAt
+    ? new Date(job.createdAt).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    : "N/A"}
+</td>
+
                       </div>
                     </div>
                   );
@@ -603,7 +622,7 @@ const activePercent =
             </div>
           )}
 
-          {/* {activeTab === "jobStatus" && (
+          {activeTab === "jobStatus" && (
             <div className="max-w-3xl mx-auto">
               <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-lg p-8 border border-gray-200">
                 <h3 className="flex items-center gap-2 text-xl font-bold text-gray-800 mb-8">
@@ -651,7 +670,7 @@ const activePercent =
                 </div>
               </div>
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </div>
