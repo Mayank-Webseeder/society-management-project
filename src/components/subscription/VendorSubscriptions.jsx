@@ -231,19 +231,19 @@ const VendorSubscriptions = () => {
             <table className="min-w-full divide-y border  divide-slate-200">
               <thead>
                 <tr className="bg-[#E5E7EB] ">
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                     Vendor Name
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                     Duration
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                  {/* <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                     Payment
-                  </th>
-                  {/* <th className="px-6 py-4 text-left text-xs font-semibold text-emerald-900 uppercase tracking-wider">
-                    Status
                   </th> */}
-                  <th className="px-6 py-4 text-center text-xs font-semibold text-emerald-900 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -320,7 +320,6 @@ const VendorSubscriptions = () => {
         : "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
     }`}
   >
-    {/* Status Icon */}
     {sub.subscriptionStatus === "Active" && (
       <CheckCircle className="w-3 h-3 text-emerald-500 animate-pulse" />
     )}
@@ -331,7 +330,6 @@ const VendorSubscriptions = () => {
       <XCircle className="w-3 h-3 text-rose-500" />
     )}
 
-    {/* Status Text */}
     {sub.subscriptionStatus || "N/A"}
   </span>
 </td>

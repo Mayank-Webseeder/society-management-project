@@ -436,19 +436,19 @@ const VendorDetailProfile = () => {
   <table className="min-w-full border-b border-gray-300">
     <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
       <tr>
-        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Plan</th>
-        {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Price</th> */}
-        {/* <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Payment Status</th> */}
-        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Start Date</th>
-        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">End Date</th>
-        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase">Renewal Due</th>
+        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Plan</th>
+        {/* <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Price</th> */}
+        {/* <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Payment Status</th> */}
+        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Start Date</th>
+        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">End Date</th>
+        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Renewal Due</th>
       </tr>
     </thead>
     <tbody className="bg-white">
       {mockVendors.map((vendor) => {
         const subscription = vendor.subscription || {};
         return (
-          <tr key={vendor.id || vendor._id} className="hover:bg-gray-50 border-b border-gray-200">
+          <tr key={vendor.id || vendor._id} className="hover:bg-[#F0F6FC] border-b border-gray-200">
             <td className="px-6 py-3 font-medium text-gray-800">{subscription.plan || "N/A"}</td>
             {/* <td className="px-6 py-4 font-semibold text-gray-900">
               {subscription.price ? `₹${subscription.price}` : "N/A"}
@@ -475,21 +475,30 @@ const VendorDetailProfile = () => {
             </td> */}
             <td className="px-6 py-3 text-gray-700">{subscription.startDate || "N/A"}</td>
             <td className="px-6 py-3 text-gray-700">{subscription.endDate || "N/A"}</td>
-            <td className="px-6 py-3">
-              {subscription.renewalDue !== undefined ? (
-                <span
-                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold ${
-                    subscription.renewalDue
-                      ? "bg-amber-100 text-amber-700"
-                      : "bg-emerald-100 text-emerald-700"
-                  }`}
-                >
-                  {subscription.renewalDue ? "Yes" : "No"}
-                </span>
-              ) : (
-                <span className="text-gray-400">N/A</span>
-              )}
-            </td>
+          <td className="px-6 py-3">
+  {subscription.renewalDue !== undefined ? (
+    <span
+      className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full ${
+        subscription.renewalDue
+          ? "bg-blue-100 text-blue-700"
+          : "bg-gray-200 text-gray-600"
+      }`}
+    >
+      {subscription.renewalDue ? (
+        <>
+          <CheckCircle className="w-3 h-3" /> Yes
+        </>
+      ) : (
+        <>
+          <XCircle className="w-3 h-3" /> No
+        </>
+      )}
+    </span>
+  ) : (
+    <span className="text-gray-400 text-sm">N/A</span>
+  )}
+</td>
+
           </tr>
         );
       })}
@@ -560,15 +569,15 @@ const VendorDetailProfile = () => {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
                       <tr>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Job ID</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Job ID</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Title</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Type</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                       {vendor.jobHistory?.map((job) => (
-                        <tr key={job.id} className="hover:bg-gray-50 transition-colors">
+                        <tr key={job.id} className="hover:bg-[#F0F6FC] transition-colors">
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{job.id}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job.title}</td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.type}</td>

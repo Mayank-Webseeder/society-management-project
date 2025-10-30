@@ -34,9 +34,9 @@ const JobsList = () => {
 
   // Stats
   const totalJobs = jobs.length;
-  const openJobs = jobs.filter((j) => j.status === "Open").length;
-  const inProgressJobs = jobs.filter((j) => j.status === "In Progress").length;
-  const closedJobs = jobs.filter((j) => j.status === "Closed").length;
+  const openJobs = jobs.filter((j) => j.status === "Completed").length;
+  const inProgressJobs = jobs.filter((j) => j.status === "Pending").length;
+  const closedJobs = jobs.filter((j) => j.status === "Expired").length;
 
   return (
     <div className="space-y-6">
@@ -53,20 +53,20 @@ const JobsList = () => {
       bg: "bg-blue-200",
     },
     {
-      label: "Open",
-      value: jobs.filter((j) => j.status === "Open").length,
+      label: "Completed",
+      value: jobs.filter((j) => j.status === "Completed").length,
       icon: CheckCircle,
       bg: "bg-green-200",
     },
     {
-      label: "In Progress",
-      value: jobs.filter((j) => j.status === "In Progress").length,
+      label: "Pending",
+      value: jobs.filter((j) => j.status === "Pending").length,
       icon: Clock,
       bg: "bg-amber-200",
     },
     {
-      label: "Closed",
-      value: jobs.filter((j) => j.status === "Closed").length,
+      label: "Expired",
+      value: jobs.filter((j) => j.status === "Expired").length,
       icon: XCircle,
       bg: "bg-red-200",
     },
@@ -116,9 +116,9 @@ const JobsList = () => {
           className="w-full sm:w-40 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400"
         >
           <option value="">All Status</option>
-          <option value="Open">Open</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Closed">Closed</option>
+          <option value="Completed">Completed</option>
+          <option value="Pending">Pending</option>
+          <option value="Expired">Expired</option>
         </select>
 
         {/* Society Filter */}
@@ -155,7 +155,6 @@ const JobsList = () => {
         <th className="px-6 py-4 text-left">Title</th>
         <th className="px-6 py-4 text-left">Created</th>
         <th className="px-6 py-4 text-left">Status</th>
-        <th className="px-6 py-4 text-left">Stage</th>
         <th className="px-6 py-4 text-left">Quotation</th>
         <th className="px-6 py-4 text-center">Action</th>
       </tr>
@@ -199,26 +198,23 @@ const JobsList = () => {
           <td className="px-6 py-4">
             <span
               className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full ${
-                job.status === "Open"
+                job.status === "Completed"
                   ? "bg-green-100 text-green-700"
-                  : job.status === "In Progress"
+                  : job.status === "Pending"
                   ? "bg-yellow-100 text-yellow-700"
-                  : job.status === "Closed"
+                  : job.status === "Expired"
                   ? "bg-rose-100 text-rose-700"
                   : "bg-gray-200 text-gray-600"
               }`}
             >
-              {job.status === "Open" && <CheckCircle className="w-3 h-3" />}
-              {job.status === "In Progress" && <Clock className="w-3 h-3" />}
-              {job.status === "Closed" && <XCircle className="w-3 h-3" />}
+              {job.status === "Completed" && <CheckCircle className="w-3 h-3" />}
+              {job.status === "Pending" && <Clock className="w-3 h-3" />}
+              {job.status === "Expired" && <XCircle className="w-3 h-3" />}
               {job.status || "N/A"}
             </span>
           </td>
 
-          {/* Stage */}
-          <td className="px-6 py-4 capitalize text-gray-700 flex items-center gap-2">
-            {job.jobStage || <span className="text-gray-400 italic">N/A</span>}
-          </td>
+     
 
           {/* Quotation */}
           <td className="px-6 py-4">

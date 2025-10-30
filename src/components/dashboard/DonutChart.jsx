@@ -4,11 +4,11 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 const DonutChart = () => {
   const data = [
     { name: "Completed", value: 50 },
-    { name: "Active Progress", value: 30 },
-    { name: "Awaiting Response", value: 20 },
+    { name: "Pending", value: 30 },
+    { name: "Expired", value: 20 },
   ];
 
-  const COLORS = ["#10B981", "#3B82F6", "#F59E0B"];
+  const COLORS = ["#10B981", "#3B82F6", "#FF8F8F"];
   const total = data.reduce((acc, item) => acc + item.value, 0);
 
   const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, index }) => {

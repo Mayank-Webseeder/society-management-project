@@ -1,10 +1,10 @@
 import React, { useState, useEffect, } from "react";
 import { Search, Trash2, Star, Eye, Trash,   CircleCheckBig,Ban,
   CircleAlert,
-  CircleX,  } from "lucide-react";
+  CircleX,XCircle  } from "lucide-react";
 import { Link,useNavigate } from "react-router-dom";
 import { useVendorContext } from "../../context/VendorContext";
-import { Users, UserCheck, Clock, UserX, ShieldAlert } from "lucide-react";
+import { Users, UserCheck, Clock, UserX, ShieldAlert,CheckCircle } from "lucide-react";
 
 const VendorList = () => {
   const {
@@ -390,19 +390,30 @@ const VendorList = () => {
       </td> */}
 
       {/* Subscription */}
-      <td className="px-6 py-4">
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-            vendor.subscriptionStatus === "Active"
-              ? "text-black border-black"
-              : vendor.subscriptionStatus === "Expired"
-              ? "text-gray-500 border-gray-300"
-              : "text-gray-600 border-gray-200"
-          }`}
-        >
-          {vendor.subscriptionStatus || "N/A"}
-        </span>
-      </td>
+    <td className="px-6 py-4">
+  <span
+    className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full border ${
+      vendor.subscriptionStatus === "Active"
+        ? "bg-emerald-100 text-emerald-700 border-emerald-300"
+        : vendor.subscriptionStatus === "Expired"
+        ? "bg-rose-100 text-rose-700 border-rose-300"
+        : "bg-gray-100 text-gray-600 border-gray-300"
+    }`}
+  >
+    {vendor.subscriptionStatus === "Active" ? (
+      <>
+        <CheckCircle className="w-3 h-3" /> Active
+      </>
+    ) : vendor.subscriptionStatus === "Expired" ? (
+      <>
+        <XCircle className="w-3 h-3" /> Expired
+      </>
+    ) : (
+      <span>N/A</span>
+    )}
+  </span>
+</td>
+
 
       {/* Actions */}
       <td className="px-6 py-4 text-center flex  gap-4">
