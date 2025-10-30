@@ -14,6 +14,7 @@ import * as XLSX from "xlsx";
 import { LiaFileSignatureSolid } from "react-icons/lia";
 import { LuClipboardList,LuFileX } from "react-icons/lu";
 import { FiBriefcase } from "react-icons/fi";
+import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 
 const mockJobs = [
@@ -21,7 +22,7 @@ const mockJobs = [
     id: 1,
     society: "Green Residency",
     vendor: "Rahul Mehta",
-    status: "open",
+    status: "Completed",
     category: "Plumber",
     location: "Indore",
     quotationRequested: true,
@@ -31,7 +32,7 @@ const mockJobs = [
     id: 2,
     society: "Sunshine Society",
     vendor: "Vendor B",
-    status: "completed",
+    status: "Completed",
     category: "Electrician",
     location: "Bhopal",
     quotationRequested: false,
@@ -41,7 +42,7 @@ const mockJobs = [
     id: 3,
     society: "Green Residency",
     vendor: "Vendor C",
-    status: "in progress",
+    status: "Pending",
     category: "Cleaning",
     location: "Indore",
     quotationRequested: true,
@@ -51,7 +52,7 @@ const mockJobs = [
     id: 4,
     society: "Elite Towers",
     vendor: "Vendor D",
-    status: "cancelled",
+    status: "Expired",
     category: "Gardening",
     location: "Ujjain",
     quotationRequested: false,
@@ -61,7 +62,7 @@ const mockJobs = [
     id: 5,
     society: "Sunrise Apartments",
     vendor: "Vendor E",
-    status: "in progress",
+    status: "Pending",
     category: "Pest Control",
     location: "Bhopal",
     quotationRequested: true,
@@ -71,7 +72,7 @@ const mockJobs = [
     id: 6,
     society: "Elite Towers",
     vendor: "Vendor F",
-    status: "completed",
+    status: "Completed",
     category: "Electrician",
     location: "Indore",
     quotationRequested: true,
@@ -117,7 +118,7 @@ const JobReport = () => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
 
   const totalJobs = filteredJobs.length;
-  const openJobs = filteredJobs.filter((job) => job.status === "open").length;
+  const openJobs = filteredJobs.filter((job) => job.status === "Completed").length;
   const jobsWithQuotation = filteredJobs.filter(
     (job) => job.quotationRequested
   ).length;
@@ -126,10 +127,9 @@ const JobReport = () => {
   ).length;
 
   const statusCounts = {
-    open: 0,
-    "in progress": 0,
-    completed: 0,
-    cancelled: 0,
+      Completed: 0,
+    Pending: 0,
+    Expired: 0,
   };
   const categoryCounts = {};
   const locationCounts = {};
@@ -237,7 +237,7 @@ const JobReport = () => {
   />
 
   <Card
-    title="Open Jobs"
+    title="Completed Jobs"
     count={openJobs}
     icon={LuClipboardList}
     bgColor="bg-green-200"
@@ -385,36 +385,49 @@ const JobReport = () => {
                 {job.society}
               </td>
               <td className="px-5 py-4 text-gray-700">{job.vendor}</td>
-              <td className="px-5 py-4 capitalize">
-                <span
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
-                    job.status === "open"
-                      ? "bg-green-100 text-green-700"
-                      : job.status === "in progress"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : job.status === "completed"
-                      ? "bg-blue-100 text-blue-700"
-                      : job.status === "cancelled"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-gray-100 text-gray-700"
-                  }`}
-                >
-                  {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
-                </span>
-              </td>
+ <td className="px-6 py-4">
+  <span
+    className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full border
+      ${
+        job?.status === "Completed"
+          ? "bg-emerald-100 text-emerald-700 border-emerald-300"
+          : job?.status === "Pending"
+          ? "bg-yellow-100 text-yellow-700"
+          : job?.status === "Expired"
+          ? "bg-rose-100 text-rose-700 border-rose-300"
+          : "bg-gray-100 text-gray-600 border-gray-300"
+      }`}
+  >
+    {job?.status === "Completed" && <CheckCircle className="w-3.5 h-3.5" />}
+    {job?.status === "Pending" && <Clock className="w-3.5 h-3.5" />}
+    {job?.status === "Expired" && <XCircle className="w-3.5 h-3.5" />}
+    {job?.status || "N/A"}
+  </span>
+</td>
               <td className="px-5 py-4 text-gray-700">{job.category}</td>
               <td className="px-5 py-4 text-gray-700">{job.location}</td>
-              <td className="px-5 py-4">
-                <span
-                  className={`text-xs font-semibold px-2 py-1 rounded-md ${
-                    job.quotationRequested
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {job.quotationRequested ? "Yes" : "No"}
-                </span>
-              </td>
+           <td className="px-6 py-4">
+  <span
+    className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full border
+      ${
+        job?.quotationRequested
+          ? "bg-blue-100 text-blue-700 border-blue-300"
+          : "bg-gray-100 text-gray-600 border-gray-300"
+      }`}
+  >
+    {job?.quotationRequested ? (
+      <>
+        <CheckCircle className="w-3.5 h-3.5" />
+        Yes
+      </>
+    ) : (
+      <>
+        <XCircle className="w-3.5 h-3.5" />
+        No
+      </>
+    )}
+  </span>
+</td>
               <td className="px-5 py-4 text-gray-600">{job.createdAt}</td>
             </tr>
           ))
@@ -462,11 +475,11 @@ const JobReport = () => {
                     className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                       job.status === "open"
                         ? "bg-green-100 text-green-700"
-                        : job.status === "in progress"
+                        : job.status === "Pending"
                         ? "bg-yellow-100 text-yellow-700"
                         : job.status === "completed"
                         ? "bg-blue-100 text-blue-700"
-                        : job.status === "cancelled"
+                        : job.status === "Expired"
                         ? "bg-red-100 text-red-700"
                         : "bg-gray-100 text-gray-700"
                     }`}
