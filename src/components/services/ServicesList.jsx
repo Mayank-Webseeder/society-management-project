@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Pencil, Trash2, Wrench } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,29 +10,18 @@ const ServicesList = () => {
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentEditId, setCurrentEditId] = useState(null);
-
-  const [formData, setFormData] = useState({
-    name: "",
-    category: "",
-    status: "Active",
-    vendorsCount: "",
-  });
-
+  const [formData, setFormData] = useState({ name: "", category: "", status: "Active" });
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
 
   const navigate = useNavigate();
 
-  // 🔹 Mock Data
-  const mockServices = [
-    { id: 1, name: "Plumber", category: "Home Services", vendorsCount: 12 },
-    { id: 2, name: "Electrician", category: "Home Services", vendorsCount: 8 },
-    { id: 3, name: "Carpenter", category: "Home Services", vendorsCount: 9 },
-    { id: 4, name: "CCTV Installation", category: "Security Services", vendorsCount: 4 },
-    { id: 5, name: "Maid Services", category: "Cleaning Services", vendorsCount: 11 },
-    { id: 6, name: "Driver on Demand", category: "Transport Services", vendorsCount: 5 },
-    { id: 7, name: "Gardening", category: "Outdoor Services", vendorsCount: 7 },
-  ];
+  // 🔗 Real API Endpoints
+  const API_BASE_URL = "https://api.mysocietyneeds.com"; // Replace with import.meta.env if needed
+
+  const GET_SERVICES_API = `${API_BASE_URL}/api/admin/services`;
+  const ADD_SERVICE_API = `${API_BASE_URL}/api/admin/add-service`;
+  const DELETE_SERVICE_API = `${API_BASE_URL}/api/admin/delete-services`; // ✅ Updated (uses POST with {names: []})
 
   const categories = [
     "Home Services",
@@ -41,29 +31,48 @@ const ServicesList = () => {
     "Outdoor Services",
   ];
 
-  // 🧠 Load mock data
-  useEffect(() => {
-    setTimeout(() => {
-      setServices(mockServices);
-      setFilteredServices(mockServices);
+  // ✅ Fetch Services (with Token)
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+
+      const { data } = await axios.get(GET_SERVICES_API, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const mapped = data.services.map((s) => ({
+        id: s._id,
+        name: s.name,
+        category: "General Services",
+        isActive: s.isActive,
+        createdAt: new Date(s.createdAt).toLocaleDateString(),
+      }));
+
+      setServices(mapped);
+      setFilteredServices(mapped);
+    } catch (error) {
+      console.error("❌ Error fetching services:", error);
+    } finally {
       setLoading(false);
-    }, 500);
+    }
+  };
+
+  useEffect(() => {
+    fetchServices();
   }, []);
 
-  // 🧮 Filtering logic
+  // 🔍 Filter Services
   useEffect(() => {
     let filtered = [...services];
-
     if (filterCategory !== "All") {
       filtered = filtered.filter((s) => s.category === filterCategory);
     }
-
     if (searchTerm.trim() !== "") {
       filtered = filtered.filter((s) =>
         s.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
     setFilteredServices(filtered);
   }, [filterCategory, searchTerm, services]);
 
@@ -73,12 +82,7 @@ const ServicesList = () => {
 
   const openAddModal = () => {
     setIsEditMode(false);
-    setFormData({
-      name: "",
-      category: "",
-      status: "Active",
-      vendorsCount: "",
-    });
+    setFormData({ name: "", category: "", status: "Active" });
     setShowModal(true);
   };
 
@@ -88,45 +92,55 @@ const ServicesList = () => {
     setFormData({
       name: service.name,
       category: service.category,
-      status: service.status,
-      vendorsCount: service.vendorsCount,
+      status: service.isActive ? "Active" : "Inactive",
     });
     setShowModal(true);
   };
 
-  const handleFormSubmit = () => {
-    if (!formData.name || !formData.category || !formData.vendorsCount) {
-      alert("Please fill all fields.");
+  // ✅ Add Service API
+  const handleFormSubmit = async () => {
+    if (!formData.name) {
+      alert("Please enter a service name.");
       return;
     }
 
-    if (isEditMode) {
-      setServices((prev) =>
-        prev.map((item) =>
-          item.id === currentEditId
-            ? { ...item, ...formData, vendorsCount: parseInt(formData.vendorsCount) }
-            : item
-        )
-      );
-    } else {
-      const newService = {
-        ...formData,
-        id: services.length + 1,
-        vendorsCount: parseInt(formData.vendorsCount),
-      };
-      setServices([...services, newService]);
-    }
+    const token = localStorage.getItem("token");
 
-    setShowModal(false);
-    setFormData({ name: "", category: "", status: "Active", vendorsCount: "" });
-    setIsEditMode(false);
-    setCurrentEditId(null);
+    try {
+      await axios.post(
+        ADD_SERVICE_API,
+        { name: formData.name },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      alert("✅ Service added successfully!");
+      await fetchServices();
+      setShowModal(false);
+    } catch (error) {
+      console.error("❌ Error adding service:", error);
+      alert("Failed to add service.");
+    }
   };
 
-  const handleDelete = (id) => {
-    const confirmDelete = window.confirm("Do you really want to delete this item?");
-    if (confirmDelete) {
-      setServices(services.filter((serv) => serv.id !== id));
+  // ✅ Delete Service API
+  const handleDelete = async (name) => {
+    const confirmDelete = window.confirm(`Are you sure you want to delete "${name}"?`);
+    if (!confirmDelete) return;
+
+    const token = localStorage.getItem("token");
+
+    try {
+      await axios.post(
+        DELETE_SERVICE_API,
+        { names: [name] },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      alert("🗑️ Service deleted successfully!");
+      await fetchServices();
+    } catch (error) {
+      console.error("❌ Error deleting service:", error);
+      alert("Failed to delete service.");
     }
   };
 
@@ -163,9 +177,7 @@ const ServicesList = () => {
   return (
     <div className="bg-white rounded-lg shadow h-screen">
       <div className="px-4 py-4 border-b border-gray-200">
-        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-3 mb-4">
-          {/* Filters */}
           <div className="flex flex-wrap items-center gap-2">
             <input
               type="text"
@@ -180,10 +192,8 @@ const ServicesList = () => {
               className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00809D]"
             >
               <option value="All">All Categories</option>
-              {categories.map((cat, index) => (
-                <option key={index} value={cat}>
-                  {cat}
-                </option>
+              {categories.map((cat) => (
+                <option key={cat}>{cat}</option>
               ))}
             </select>
           </div>
@@ -196,7 +206,7 @@ const ServicesList = () => {
           </button>
         </div>
 
-        {/* Services List */}
+        {/* ✅ Services List */}
         <div className="space-y-4 max-h-[75vh] overflow-y-auto scrollbar-hide">
           {filteredServices.length > 0 ? (
             filteredServices.map((service) => (
@@ -209,7 +219,7 @@ const ServicesList = () => {
                     <Wrench size={20} />
                   </div>
                   <div>
-                    <h3 className="text-[16px] font-semibold text-[#2E2E2E] leading-snug">
+                    <h3 className="text-[16px] font-semibold text-[#2E2E2E]">
                       {service.name}
                     </h3>
                     <p className="text-sm text-gray-500">{service.category}</p>
@@ -220,21 +230,19 @@ const ServicesList = () => {
                   onClick={() => handleVendorClick(service.name)}
                   className="w-full sm:w-1/3 text-md md:text-sm font-semibold text-slate-600 cursor-pointer hover:underline hover:text-[#00809D] text-left sm:text-center"
                 >
-                  {service.vendorsCount} Vendors
+                  View Vendors
                 </div>
 
                 <div className="w-full sm:w-1/3 flex justify-end gap-2">
                   <button
                     className="p-2 rounded-md text-gray-600 transition hover:bg-green-100 hover:text-green-700"
-                    title="Edit"
                     onClick={() => handleEditClick(service)}
                   >
                     <Pencil size={18} />
                   </button>
                   <button
                     className="p-2 rounded-md text-red-600 transition hover:bg-red-100 hover:text-red-700"
-                    title="Delete"
-                    onClick={() => handleDelete(service.id)}
+                    onClick={() => handleDelete(service.name)}
                   >
                     <Trash2 size={18} />
                   </button>
@@ -247,73 +255,46 @@ const ServicesList = () => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* ✅ Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-[2px] flex items-center justify-center z-50 px-6">
-          <div className="bg-white w-full max-w-lg p-8 rounded-xl shadow-2xl border border-gray-100 ring-1 ring-gray-200">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+            <h2 className="text-lg font-semibold mb-4">
               {isEditMode ? "Edit Service" : "Add New Service"}
-            </h3>
+            </h2>
 
             <div className="space-y-3">
               <input
                 type="text"
                 placeholder="Service Name"
-                className="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00809D]"
+                className="border border-gray-300 rounded-md w-full px-3 py-2"
                 value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
-
-              {/* 🔽 Select category instead of text input */}
               <select
+                className="border border-gray-300 rounded-md w-full px-3 py-2"
                 value={formData.category}
-                onChange={(e) =>
-                  setFormData({ ...formData, category: e.target.value })
-                }
-                className="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00809D]"
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               >
                 <option value="">Select Category</option>
-                {categories.map((cat, idx) => (
-                  <option key={idx} value={cat}>
-                    {cat}
-                  </option>
+                {categories.map((cat) => (
+                  <option key={cat}>{cat}</option>
                 ))}
               </select>
-
-              {/* <input
-                type="number"
-                placeholder="Vendors Count"
-                className="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00809D]"
-                value={formData.vendorsCount}
-                onChange={(e) =>
-                  setFormData({ ...formData, vendorsCount: e.target.value })
-                }
-              /> */}
             </div>
 
-            <div className="flex justify-end gap-3 mt-5">
+            <div className="flex justify-end gap-2 mt-5">
               <button
-                onClick={() => {
-                  setShowModal(false);
-                  setIsEditMode(false);
-                  setFormData({
-                    name: "",
-                    category: "",
-                    status: "Active",
-                    vendorsCount: "",
-                  });
-                }}
-                className="px-4 py-2 rounded-md text-sm text-gray-900 bg-gray-200 hover:bg-gray-300"
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
               >
                 Cancel
               </button>
               <button
                 onClick={handleFormSubmit}
-                className="px-4 py-2 rounded-md text-sm text-white bg-[#00809D] hover:bg-[#006f86]"
+                className="px-4 py-2 bg-[#00809D] text-white rounded-md hover:bg-[#006f86]"
               >
-                {isEditMode ? "Update Service" : "Add Service"}
+                {isEditMode ? "Update" : "Add"}
               </button>
             </div>
           </div>

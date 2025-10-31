@@ -23,6 +23,7 @@ import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const SUBSCRIPTIONS_API = `${API_BASE_URL}/api/admin/all-subscriptions`;
+const SUBSCRIPTION_HISTORY = `${API_BASE_URL}/api/admin/vendor-subscription-history`;
 const VendorSubscriptions = () => {
    const [loading, setLoading] = useState(true);
    const [subscriptions, setSubscriptions] = useState([]);
@@ -89,27 +90,27 @@ const VendorSubscriptions = () => {
     setStats({ total, active, cancelled });
   }, [subscriptions]);
 
-  const fetchSubscriptionHistory = async (vendorId) => {
-    // Mock history data
-    return [
-      {
-        _id: "hist1",
-        price: "5000",
-        subscriptionStatus: "Active",
-        paymentStatus: "Paid",
-        startDate: "2024-01-01",
-        endDate: "2024-12-31",
+
+
+
+ const fetchSubscriptionHistory = async (vendorId) => {
+  try {
+    const token = getToken(); // your stored JWT token
+
+    const response = await axios.get(`${SUBSCRIPTION_HISTORY}/${vendorId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-      {
-        _id: "hist2",
-        price: "4500",
-        subscriptionStatus: "Cancelled",
-        paymentStatus: "Paid",
-        startDate: "2023-01-01",
-        endDate: "2023-12-31",
-      },
-    ];
-  };
+    });
+
+    // Assuming your API returns data like: { history: [...] }
+    return response.data.history || [];
+  } catch (error) {
+    console.error("Error fetching subscription history:", error);
+    return [];
+  }
+};
+
 
   const handleCancel = (id) => {
     if (window.confirm("Are you sure you want to cancel this subscription?")) {
@@ -252,16 +253,16 @@ const VendorSubscriptions = () => {
                 {subscriptions.map((sub, index) => (
                   <tr
                     key={sub._id + "-" + index}
-        //             onClick={async () => {
-        //   const vendorId = sub.vendorId || sub.vendor || sub._id;
-        //   const historyData = await fetchSubscriptionHistory(vendorId);
-        //   setPaymentModal({
-        //     open: true,
-        //     payment: sub.paymentDetails,
-        //     vendorInfo: { vendorName: sub.vendor?.name || sub.vendorName },
-        //     history: historyData,
-        //   });
-        // }}
+                    onClick={async () => {
+          const vendorId = sub.vendorId || sub.vendor || sub._id;
+          const historyData = await fetchSubscriptionHistory(vendorId);
+          setPaymentModal({
+            open: true,
+            payment: sub.paymentDetails,
+            vendorInfo: { vendorName: sub.vendor?.name || sub.vendorName },
+            history: historyData,
+          });
+        }}
                     className="hover:bg-gradient-to-r  hover:from-slate-50 hover:to-emerald-50/30 transition-all duration-200 group"
                   >
                     <td className="px-6 py-4">
@@ -517,7 +518,7 @@ const VendorSubscriptions = () => {
                       <div>
                         <p className="text-xs text-slate-600 font-medium">Amount</p>
                         <p className="text-lg font-bold text-slate-900">
-                          {paymentModal.payment.amount}
+                          {/* {paymentModal.payment.amount} */}
                         </p>
                       </div>
                     </div>
@@ -529,7 +530,7 @@ const VendorSubscriptions = () => {
                       <div>
                         <p className="text-xs text-slate-600 font-medium">Payment Method</p>
                         <p className="text-lg font-bold text-slate-900">
-                          {paymentModal.payment.method}
+                          {/* {paymentModal.payment.method} */}
                         </p>
                       </div>
                     </div>
@@ -541,13 +542,13 @@ const VendorSubscriptions = () => {
                       <div>
                         <p className="text-xs text-slate-600 font-medium">Date & Time</p>
                         <p className="text-sm font-semibold text-slate-900">
-                          {paymentModal.payment.dateTime}
+                          {/* {paymentModal.payment.dateTime} */}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex items-start gap-3">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                      {/* <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
                         paymentModal.payment.status === "Paid"
                           ? "bg-emerald-100"
                           : paymentModal.payment.status === "Pending"
@@ -555,9 +556,9 @@ const VendorSubscriptions = () => {
                           : "bg-rose-100"
                       }`}>
                         {getPaymentStatusIcon(paymentModal.payment.status)}
-                      </div>
+                      </div> */}
                       <div>
-                        <p className="text-xs text-slate-600 font-medium">Status</p>
+                        {/* <p className="text-xs text-slate-600 font-medium">Status</p>
                         <p className={`text-sm font-bold ${
                           paymentModal.payment.status === "Paid"
                             ? "text-emerald-700"
@@ -566,7 +567,7 @@ const VendorSubscriptions = () => {
                             : "text-rose-700"
                         }`}>
                           {paymentModal.payment.status}
-                        </p>
+                        </p> */}
                       </div>
                     </div>
                   </div>
@@ -574,7 +575,7 @@ const VendorSubscriptions = () => {
                   <div className="pt-3 border-t border-slate-200">
                     <p className="text-xs text-slate-600 font-medium mb-1">Transaction ID</p>
                     <p className="text-sm font-mono font-semibold text-slate-900 bg-white px-3 py-2 rounded-lg border border-slate-200">
-                      {paymentModal.payment.transactionId}
+                      {/* {paymentModal.payment.transactionId} */}
                     </p>
                   </div>
                 </div>

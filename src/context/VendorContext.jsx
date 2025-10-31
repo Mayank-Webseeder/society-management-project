@@ -127,7 +127,7 @@ const VendorProvider = ({ children }) => {
 
         // All Vendors API
         const allRes = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/admin/all-vendors`,
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/all-vendors-profiles`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         let allVendors = allRes.data || [];
