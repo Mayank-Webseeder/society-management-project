@@ -35,7 +35,7 @@ const JobsList = () => {
   // Stats
   const totalJobs = jobs.length;
   const openJobs = jobs.filter((j) => j.status === "Completed").length;
-  const inProgressJobs = jobs.filter((j) => j.status === "Pending").length;
+  const inProgressJobs = jobs.filter((j) => j.status === "New").length;
   const closedJobs = jobs.filter((j) => j.status === "Expired").length;
 
   return (
@@ -59,8 +59,8 @@ const JobsList = () => {
       bg: "bg-green-200",
     },
     {
-      label: "Pending",
-      value: jobs.filter((j) => j.status === "Pending").length,
+      label: "New",
+      value: jobs.filter((j) => j.status === "New").length,
       icon: Clock,
       bg: "bg-amber-200",
     },
@@ -117,7 +117,7 @@ const JobsList = () => {
         >
           <option value="">All Status</option>
           <option value="Completed">Completed</option>
-          <option value="Pending">Pending</option>
+          <option value="New">New</option>
           <option value="Expired">Expired</option>
         </select>
 
@@ -200,7 +200,7 @@ const JobsList = () => {
               className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full ${
                 job.status === "Completed"
                   ? "bg-green-100 text-green-700"
-                  : job.status === "Pending"
+                  : job.status === "New"
                   ? "bg-yellow-100 text-yellow-700"
                   : job.status === "Expired"
                   ? "bg-rose-100 text-rose-700"
@@ -208,7 +208,7 @@ const JobsList = () => {
               }`}
             >
               {job.status === "Completed" && <CheckCircle className="w-3 h-3" />}
-              {job.status === "Pending" && <Clock className="w-3 h-3" />}
+              {job.status === "New" && <Clock className="w-3 h-3" />}
               {job.status === "Expired" && <XCircle className="w-3 h-3" />}
               {job.status || "N/A"}
             </span>

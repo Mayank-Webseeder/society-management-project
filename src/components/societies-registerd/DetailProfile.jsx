@@ -420,8 +420,7 @@ const activePercent =
   
 
       {/* Tabs */}
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        <div className="flex flex-wrap border-b border-gray-200 bg-gray-50">
+         <div className="flex flex-wrap border-b border-gray-200 bg-white p-3 rounded-xl">
           {[
             { key: "basic info", label: "Basic Info", icon: <FileUser className="w-4 h-4" /> },
             { key: "jobDetails", label: "Job Details", icon: <Briefcase className="w-4 h-4" /> },
@@ -431,10 +430,10 @@ const activePercent =
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 px-6 py-4 text-sm font-semibold transition-colors ${
+              className={`flex items-center gap-2 px-4 py-2.5 font-medium capitalize text-sm rounded-lg transition-all ${
                 activeTab === tab.key
-                  ? "border-b-2 border-blue-600 text-blue-600 bg-white"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                ? "bg-blue-600 text-white shadow-md"
+                        : "text-gray-600 hover:bg-gray-50"
               }`}
             >
               {tab.icon}
@@ -442,6 +441,8 @@ const activePercent =
             </button>
           ))}
         </div>
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+     
 
         {/* Tab Content */}
         <div className="p-6">

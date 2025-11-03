@@ -8,7 +8,7 @@ const TopVendors = () => {
   const { totalJobs } = useJobContext();
 
   const topVendors = [...vendors]
-    .sort((a, b) => b.totalJobsApplied - a.totalJobsApplied)
+    .sort((a, b) => (b.totalJobsApplied || 0) - (a.totalJobsApplied || 0))
     .slice(0, 3);
 
   return (
@@ -29,7 +29,7 @@ const TopVendors = () => {
             </div>
           </div>
           <span className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-cyan-500 select-none tabular-nums">
-            {totalJobs}
+            {totalJobs || 0}
           </span>
         </div>
       </div>
@@ -47,7 +47,7 @@ const TopVendors = () => {
         ) : (
           topVendors.map((vendor, index) => (
             <div
-              key={vendor.id || vendor._id || index} 
+              key={vendor.id || vendor._id || index}
               className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition duration-300"
             >
               <div className="flex items-center gap-4 w-full sm:w-auto">
@@ -56,20 +56,22 @@ const TopVendors = () => {
                 </div>
                 <div>
                   <p className="text-sm sm:text-base font-semibold text-gray-900">
-                    {vendor.name}
+                    {vendor.name || "Unnamed Vendor"}
                   </p>
-                  <p className="text-xs text-gray-500">{vendor.location}</p>
+                  <p className="text-xs text-gray-500">
+                    {vendor.location?.formattedAddress || "No address available"}
+                  </p>
                 </div>
               </div>
 
               <div className="flex flex-col items-end text-sm">
                 <p className="font-semibold text-gray-800">
-                  {vendor.totalJobsApplied} Jobs
+                  {(vendor.totalJobsApplied || 0) + " Jobs"}
                 </p>
                 <div className="flex items-center gap-1 text-yellow-400">
                   <Star className="w-4 h-4 fill-yellow-400" />
                   <span className="font-medium text-xs sm:text-sm text-gray-800">
-                    {vendor.rating.toFixed(1)}
+                    {Number(vendor.averageRating || 0).toFixed(1)}
                   </span>
                 </div>
               </div>

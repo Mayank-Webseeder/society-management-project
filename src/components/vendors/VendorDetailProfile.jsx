@@ -22,42 +22,15 @@ import {
   AlertCircle
 } from "lucide-react";
 
-const mockVendors = [
+const mockSubscriptions = [
   {
-    id: 1,
-    name: "John Doe",
-    subscription: {
-      plan: "Premium",
-      price: 999,
-      startDate: "2024-04-01",
-      endDate: "2025-03-31",
-      paymentStatus: "Paid",
-      renewalDue: false,
-    },
-  },
-  {
-    id: 2,
-    name: "Priya Sharma",
-    subscription: {
-      plan: "Standard",
-      price: 699,
-      startDate: "2023-04-01",
-      endDate: "2024-03-31",
-      paymentStatus: "Paid",
-      renewalDue: true,
-    },
-  },
-  {
-    id: 3,
-    name: "Ravi Kumar",
-    subscription: {
-      plan: "Basic",
-      price: 499,
-      startDate: "2023-01-01",
-      endDate: "2023-12-31",
-      paymentStatus: "Paid",
-      renewalDue: true,
-    },
+    vendorId: "68e3a79c1936f27d2976063e",
+    plan: "Premium",
+    price: 999,
+    startDate: "2024-04-01",
+    endDate: "2025-03-31",
+    paymentStatus: "Paid",
+    renewalDue: false,
   },
 ];
 
@@ -149,12 +122,65 @@ const VendorDetailProfile = () => {
     }
   };
 
+  // Transform API response to match component structure
+  const transformVendorData = (apiVendor) => {
+    // Determine status based on API flags
+    let status = "Active";
+    if (apiVendor.isBlacklisted) {
+      status = "Blacklisted";
+    } else if (!apiVendor.isApproved) {
+      status = "Pending";
+    }
+
+    // Format location from address
+    const location = `${apiVendor.address.city}, ${apiVendor.address.state}`;
+
+    // Transform to component structure
+    return {
+      id: apiVendor._id,
+      name: apiVendor.name,
+      businessName: apiVendor.businessName,
+      phone: apiVendor.contactNumber,
+      email: apiVendor.email || "N/A",
+      location: location,
+      status: status,
+      servicesProvided: apiVendor.services || [],
+      rating: apiVendor.averageRating || 0,
+      totalRatings: apiVendor.totalRatings || 0,
+      experience: apiVendor.experience || "N/A",
+      profilePicture: apiVendor.profilePicture,
+      address: {
+        buildingNumber: apiVendor.address.buildingNumber,
+        locality: apiVendor.address.locality,
+        landmark: apiVendor.address.landmark,
+        city: apiVendor.address.city,
+        state: apiVendor.address.state,
+        pincode: apiVendor.address.pincode,
+      },
+      documents: [
+        {
+          name: "ID Proof",
+          type: "PDF Document",
+          status: apiVendor.idProof ? "Verified" : "Pending",
+          uploadedOn: apiVendor.idProof ? new Date().toLocaleDateString() : "--",
+          url: apiVendor.idProof,
+        },
+      ],
+      totalJobsApplied: 0,
+      completedJobs: 0,
+      ongoingJobs: 0,
+      cancelledJobs: 0,
+      jobHistory: [],
+    };
+  };
+
   useEffect(() => {
     setLoading(true);
-    const foundVendor = vendors.find((v) => String(v.id) === String(vendorId));
+    const foundVendor = vendors.find((v) => String(v._id || v.id) === String(vendorId));
 
     if (foundVendor) {
-      setVendor(foundVendor);
+      const transformedVendor = transformVendorData(foundVendor);
+      setVendor(transformedVendor);
     } else {
       setVendor(null);
     }
@@ -208,8 +234,11 @@ const VendorDetailProfile = () => {
   const isProfileHidden =
     vendor.status === "Pending" || vendor.status === "Rejected";
 
+  // Filter subscription for current vendor
+  const vendorSubscription = mockSubscriptions.filter(sub => sub.vendorId === vendor.id);
+
   return (
-    <div >
+    <div>
       {/* Header */}
       <div className="">
         <div className="">
@@ -224,7 +253,7 @@ const VendorDetailProfile = () => {
       </div>
 
       {isProfileHidden ? (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
             <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <FileText className="w-10 h-10 text-gray-400" />
@@ -234,29 +263,29 @@ const VendorDetailProfile = () => {
           </div>
         </div>
       ) : (
-        <div className=" py-4 space-y-6">
+        <div className="py-4 space-y-6">
           {/* Vendor Header Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="bg-gradient-to-r  h-24"></div>
+            <div className=" h-20"></div>
             <div className="px-6 pb-6 -mt-16">
               <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
                 <div className="flex items-end gap-4">
-                  <div className="w-24 h-24 rounded-2xl bg-white shadow-lg border-4 border-white flex items-center justify-center text-3xl font-bold text-blue-600">
-                    {vendor.name.charAt(0) || "N/A"}
+                  <div className="w-24 h-24 rounded-2xl bg-white shadow border-4 border-white flex items-center justify-center text-3xl font-bold text-blue-600">
+                    {vendor.name?.charAt(0) || "N"}
                   </div>
                   <div className="pb-2">
                     <div className="flex items-center gap-3 flex-wrap mb-2">
-                      <h1 className="text-2xl font-bold text-gray-900">{vendor.name || "N/A"}</h1>
-                      {getStatusBadge(vendor.status || "N/A")}
+                      <h1 className="text-2xl font-bold text-gray-900">{vendor.name}</h1>
+                      {getStatusBadge(vendor.status)}
                     </div>
                     <div className="flex items-center gap-4 text-sm text-gray-600">
                       <span className="flex items-center gap-1.5">
                         <MapPin className="w-4 h-4" />
-                        {vendor.location || "N/A"}
+                        {vendor.location}
                       </span>
                       <span className="flex items-center gap-1.5">
                         <Briefcase className="w-4 h-4" />
-                        ID: {vendor.id || "N/A"}
+                        {vendor.businessName}
                       </span>
                     </div>
                   </div>
@@ -290,7 +319,7 @@ const VendorDetailProfile = () => {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-2">
             <div className="flex flex-wrap gap-1">
               {[
-                { id: "vendor info", icon: BadgeCheck },    
+                { id: "vendor info", icon: BadgeCheck },
                 { id: "subscription", icon: CreditCard },
                 { id: "job history", icon: Briefcase },
               ].map((tab) => {
@@ -306,7 +335,7 @@ const VendorDetailProfile = () => {
                     }`}
                   >
                     <Icon className="w-4 h-4" />
-                    <span className="hidden sm:inline">{tab.id || "N/A"}</span>
+                    <span className="hidden sm:inline">{tab.id}</span>
                   </button>
                 );
               })}
@@ -316,296 +345,235 @@ const VendorDetailProfile = () => {
           {/* Content */}
           <div>
             {activeTab === "vendor info" && (
-          
               <div>
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Contact Info */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <PhoneCall className="w-4 h-4 text-blue-600" />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Contact Info */}
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <PhoneCall className="w-4 h-4 text-blue-600" />
+                      </div>
+                      Contact Information
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <PhoneCall className="w-5 h-5 text-gray-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-0.5">Phone</p>
+                          <p className="font-medium text-gray-900">{vendor.phone}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Mail className="w-5 h-5 text-gray-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-0.5">Email</p>
+                          <p className="font-medium text-gray-900 break-all">{vendor.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <MapPin className="w-5 h-5 text-gray-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-0.5">Full Address</p>
+                          <p className="font-medium text-gray-900">
+                            {vendor.address.buildingNumber}, {vendor.address.locality}, {vendor.address.landmark}, {vendor.address.city}, {vendor.address.state} - {vendor.address.pincode}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Briefcase className="w-5 h-5 text-gray-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 mb-0.5">Experience</p>
+                          <p className="font-medium text-gray-900">{vendor.experience}</p>
+                        </div>
+                      </div>
                     </div>
-                    Contact Information
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <PhoneCall className="w-5 h-5 text-gray-600" />
+                  </div>
+
+                  {/* Services */}
+                  <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <BadgeCheck className="w-4 h-4 text-emerald-600" />
                       </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-0.5">Phone</p>
-                        <p className="font-medium text-gray-900">{vendor.phone || "N/A"}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Mail className="w-5 h-5 text-gray-600" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-0.5">Email</p>
-                        <p className="font-medium text-gray-900 break-all">{vendor.email || "N/A"}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <MapPin className="w-5 h-5 text-gray-600" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500 mb-0.5">Location</p>
-                        <p className="font-medium text-gray-900">{vendor.location || "N/A"}</p>
-                      </div>
+                      Services Offered
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {vendor.servicesProvided?.map((service, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-2 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100"
+                        >
+                          <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                          <span className="font-medium text-gray-800 text-sm">{service}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
 
-                {/* Services */}
-                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-                      <BadgeCheck className="w-4 h-4 text-emerald-600" />
-                    </div>
-                    Services Offered
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {vendor.servicesProvided?.map((service, idx) => (
+                <div>
+                  <div className="grid grid-cols-1 gap-4 py-4">
+                    {vendor.documents?.map((doc, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100"
+                        className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all"
                       >
-                        <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                        <span className="font-medium text-gray-800 text-sm">{service || "N/A"}</span>
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                          <div className="flex items-start gap-4">
+                            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                              <FileText className="w-6 h-6 text-blue-600" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-900 mb-1">{doc.name}</h4>
+                              <p className="text-sm text-gray-500">{doc.type}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4 sm:flex-row-reverse">
+                            <span
+                              className={`px-3 py-1.5 text-xs font-semibold rounded-lg ${
+                                doc.status === "Verified"
+                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                  : "bg-amber-50 text-amber-700 border border-amber-200"
+                              }`}
+                            >
+                              {doc.status}
+                            </span>
+                            <span className="text-sm text-gray-600">
+                              {doc.uploadedOn !== "--" ? doc.uploadedOn : "Not Uploaded"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
-             
-
-              <div>
-
-                       <div className="grid grid-cols-1 gap-4 py-4">
-                {vendor.documents?.map((doc, idx) => (
-                  <div
-                    key={idx}
-                    className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                          <FileText className="w-6 h-6 text-blue-600" />
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-1">{doc.name || "N/A"}</h4>
-                          <p className="text-sm text-gray-500">{doc.type || "N/A"}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4 sm:flex-row-reverse">
-                        <span
-                          className={`px-3 py-1.5 text-xs font-semibold rounded-lg ${
-                            doc.status === "Verified"
-                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                              : "bg-amber-50 text-amber-700 border border-amber-200"
-                          }`}
-                        >
-                          {doc.status || "N/A"}
-                        </span>
-                        <span className="text-sm text-gray-600">
-                          {doc.uploadedOn !== "--" ? doc.uploadedOn : "Not Uploaded"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              </div>
-              </div>
             )}
 
-    
-
-{activeTab === "subscription" && (
-  <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
-    {/* <div className="flex items-center gap-3 mb-6">
-      <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-        <CreditCard className="w-6 h-6 text-blue-600" />
-      </div>
-      <h2 className="text-2xl font-bold text-gray-900">Subscription Details</h2>
-    </div> */}
-
-<div className="overflow-x-auto min-h-[50vh]">
-  <table className="min-w-full border-b border-gray-300">
-    <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
-      <tr>
-        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Plan</th>
-        {/* <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Price</th> */}
-        {/* <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Payment Status</th> */}
-        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Start Date</th>
-        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">End Date</th>
-        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Renewal Due</th>
-      </tr>
-    </thead>
-    <tbody className="bg-white">
-      {mockVendors.map((vendor) => {
-        const subscription = vendor.subscription || {};
-        return (
-          <tr key={vendor.id || vendor._id} className="hover:bg-[#F0F6FC] border-b border-gray-200">
-            <td className="px-6 py-3 font-medium text-gray-800">{subscription.plan || "N/A"}</td>
-            {/* <td className="px-6 py-4 font-semibold text-gray-900">
-              {subscription.price ? `₹${subscription.price}` : "N/A"}
-            </td> */}
-            {/* <td className="px-6 py-4">
-              {subscription.paymentStatus ? (
-                <span
-                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-semibold ${
-                    subscription.paymentStatus === "Paid"
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-rose-100 text-rose-700"
-                  }`}
-                >
-                  {subscription.paymentStatus === "Paid" ? (
-                    <CheckCircle className="w-4 h-4" />
-                  ) : (
-                    <AlertCircle className="w-4 h-4" />
-                  )}
-                  {subscription.paymentStatus}
-                </span>
-              ) : (
-                <span className="text-gray-400">N/A</span>
-              )}
-            </td> */}
-            <td className="px-6 py-3 text-gray-700">{subscription.startDate || "N/A"}</td>
-            <td className="px-6 py-3 text-gray-700">{subscription.endDate || "N/A"}</td>
-          <td className="px-6 py-3">
-  {subscription.renewalDue !== undefined ? (
-    <span
-      className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full ${
-        subscription.renewalDue
-          ? "bg-blue-100 text-blue-700"
-          : "bg-gray-200 text-gray-600"
-      }`}
-    >
-      {subscription.renewalDue ? (
-        <>
-          <CheckCircle className="w-3 h-3" /> Yes
-        </>
-      ) : (
-        <>
-          <XCircle className="w-3 h-3" /> No
-        </>
-      )}
-    </span>
-  ) : (
-    <span className="text-gray-400 text-sm">N/A</span>
-  )}
-</td>
-
-          </tr>
-        );
-      })}
-    </tbody>
-  </table>
-</div>
-
-  </div>
-)}
-
-
-            {activeTab === "job history" && (
-           
-              <div>
-                <div className="mb-6">
-
-  {/* Job Stats Grid */}
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-4">
-  {[
-    {
-      label: "Total Jobs",
-      value: vendor.totalJobsApplied,
-      icon: Briefcase,
-      bg: "bg-blue-200",
-    },
-    // {
-    //   label: "Completed",
-    //   value: vendor.completedJobs,
-    //   icon: CheckCircle2,
-    //   bg: "bg-green-200",
-    // },
-    // {
-    //   label: "Ongoing",
-    //   value: vendor.ongoingJobs,
-    //   icon: Clock,
-    //   bg: "bg-amber-200",
-    // },
-    // {
-    //   label: "Cancelled",
-    //   value: vendor.cancelledJobs || 0,
-    //   icon: XCircle,
-    //   bg: "bg-red-200",
-    // },
-  ].map(({ label, value, icon: Icon, bg }, index) => (
-    <div
-      key={index}
-      className={`${bg} text-black rounded-2xl p-4 flex items-center justify-between`}
-    >
-      <div>
-        <p className="text-sm opacity-90">{label}</p>
-        <h3 className="text-3xl font-bold mt-1">{value}</h3>
-      </div>
-      <div className="bg-gray-50 p-3 rounded-full">
-        <Icon className="w-6 h-6 text-black" />
-      </div>
-    </div>
-  ))}
-</div>
-
-
-
-
-</div>
-
-                   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
+            {activeTab === "subscription" && (
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200">
+                <div className="overflow-x-auto min-h-[50vh]">
+                  <table className="min-w-full border-b border-gray-300">
                     <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
                       <tr>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Job ID</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Title</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Type</th>
-                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Plan</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Start Date</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">End Date</th>
+                        <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Renewal Due</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
-                      {vendor.jobHistory?.map((job) => (
-                        <tr key={job.id} className="hover:bg-[#F0F6FC] transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{job.id}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job.title}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.type}</td>
-                          {/* <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">₹{job.price}</td> */}
-                          {/* <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-lg ${
-                                job.status === "Completed"
-                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                  : job.status === "Ongoing"
-                                  ? "bg-amber-50 text-amber-700 border border-amber-200"
-                                  : "bg-gray-50 text-gray-700 border border-gray-200"
-                              }`}
-                            >
-                              {job.status}
-                            </span>
-                          </td> */}
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.date}</td>
+                    <tbody className="bg-white">
+                      {vendorSubscription.length > 0 ? (
+                        vendorSubscription.map((subscription, index) => (
+                          <tr key={index} className="hover:bg-[#F0F6FC] border-b border-gray-200">
+                            <td className="px-6 py-3 font-medium text-gray-800">{subscription.plan}</td>
+                            <td className="px-6 py-3 text-gray-700">{subscription.startDate}</td>
+                            <td className="px-6 py-3 text-gray-700">{subscription.endDate}</td>
+                            <td className="px-6 py-3">
+                              <span
+                                className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full ${
+                                  subscription.renewalDue
+                                    ? "bg-blue-100 text-blue-700"
+                                    : "bg-gray-200 text-gray-600"
+                                }`}
+                              >
+                                {subscription.renewalDue ? (
+                                  <>
+                                    <CheckCircle className="w-3 h-3" /> Yes
+                                  </>
+                                ) : (
+                                  <>
+                                    <XCircle className="w-3 h-3" /> No
+                                  </>
+                                )}
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
+                            No subscription data available
+                          </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                 </div>
               </div>
+            )}
 
+            {activeTab === "job history" && (
+              <div>
+                <div className="mb-6">
+                  {/* Job Stats Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-4">
+                    {[
+                      {
+                        label: "Total Jobs",
+                        value: vendor.totalJobsApplied,
+                        icon: Briefcase,
+                        bg: "bg-blue-200",
+                      },
+                    ].map(({ label, value, icon: Icon, bg }, index) => (
+                      <div
+                        key={index}
+                        className={`${bg} text-black rounded-2xl p-4 flex items-center justify-between`}
+                      >
+                        <div>
+                          <p className="text-sm opacity-90">{label}</p>
+                          <h3 className="text-3xl font-bold mt-1">{value}</h3>
+                        </div>
+                        <div className="bg-gray-50 p-3 rounded-full">
+                          <Icon className="w-6 h-6 text-black" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-100 sticky top-0 z-10 text-gray-700 uppercase text-xs font-bold tracking-wider">
+                        <tr>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Job ID</th>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Title</th>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Type</th>
+                          <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200">
+                        {vendor.jobHistory?.length > 0 ? (
+                          vendor.jobHistory.map((job) => (
+                            <tr key={job.id} className="hover:bg-[#F0F6FC] transition-colors">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{job.id}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{job.title}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.type}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{job.date}</td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
+                              No job history available
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             )}
-        
           </div>
         </div>
       )}
