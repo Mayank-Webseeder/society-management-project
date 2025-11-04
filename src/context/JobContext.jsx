@@ -40,7 +40,7 @@ const JobProvider = ({ children }) => {
     }
   };
 
-  // ✅ Fetch a single job by ID
+  // ✅ Fetch single job by ID
   const fetchJobById = async (jobId) => {
     setLoading(true);
     setError(null);
@@ -70,8 +70,33 @@ const JobProvider = ({ children }) => {
     }
   };
 
+  // 🗑️ Delete job by ID
+const deleteJob = async (jobId) => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
+
+    await axios.delete(
+      `${import.meta.env.VITE_API_BASE_URL}/api/admin/delete-job/${jobId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    // Update local state after successful deletion
+    setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
+  } catch (err) {
+    console.error("Error deleting job:", err);
+    alert("Failed to delete job. Please try again.");
+  }
+};
+
+
   useEffect(() => {
-    fetchAllJobs(); // Auto-fetch all jobs on mount
+    fetchAllJobs();
   }, []);
 
   const totalJobs = jobs?.length || 0;
@@ -85,7 +110,8 @@ const JobProvider = ({ children }) => {
         loading,
         error,
         fetchAllJobs,
-        fetchJobById, // 👈 Exposed to use in components
+        fetchJobById,
+        deleteJob, // 👈 Added here
       }}
     >
       {children}

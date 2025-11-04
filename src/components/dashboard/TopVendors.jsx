@@ -13,7 +13,6 @@ const TopVendors = () => {
 
   return (
     <div className="w-full bg-white rounded-2xl shadow p-4 sm:p-6 md:p-8 flex flex-col gap-6">
-      {/* Total Jobs */}
       <div className="space-y-3">
         <h2 className="text-base sm:text-lg font-semibold text-gray-900">
           Total Jobs Posted

@@ -447,7 +447,6 @@ const JobReport = () => {
 </div>
 
 
-        {/* Card View for sm and md */}
         <div className="md:hidden space-y-4">
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job) => (
@@ -520,7 +519,6 @@ const JobReport = () => {
           )}
         </div>
       </div>
-      {/* Export Buttons */}
    
     </div>
   );

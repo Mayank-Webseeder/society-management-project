@@ -134,7 +134,7 @@ useEffect(() => {
     try {
       const token = getToken();
       await axios.patch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/admin//blacklist-vendor/${vendorId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/blacklist-vendor/${vendorId}`,
         { reason: "Fraudulent activity" },
         { headers: { Authorization: `Bearer ${token}` } }
       );

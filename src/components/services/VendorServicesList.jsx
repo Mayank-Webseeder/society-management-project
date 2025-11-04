@@ -46,14 +46,12 @@ const VendorServicesList = () => {
         <div className="shrink-0 w-[60px] hidden md:block" />
       </div>
 
-      {/* No Vendors */}
       {serviceVendors.length === 0 ? (
         <div className="text-center text-gray-500 text-lg py-24 italic">
           No vendors found for this service.
         </div>
       ) : (
         <>
-          {/* Large Screens Table*/}
           <div className="hidden md:block rounded-2xl overflow-x-auto shadow-md border border-gray-200">
             <table className="w-full bg-white text-md table-auto">
               <thead>
@@ -141,7 +139,6 @@ const VendorServicesList = () => {
             </table>
           </div>
 
-          {/* Small Screen: Card View */}
           <div className="md:hidden space-y-5">
             {serviceVendors.map((vendor) => (
               <div
@@ -156,7 +153,6 @@ const VendorServicesList = () => {
                   <p className="text-sm text-gray-500">{vendor.location}</p>
                 </div>
 
-                {/* Rating & Status */}
                 <div className="flex items-center justify-between flex-wrap gap-3 mb-4 text-sm">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1 px-2 py-1 bg-[#fcfdfe] border border-gray-200 rounded-md font-medium text-[#2E2E2E]">

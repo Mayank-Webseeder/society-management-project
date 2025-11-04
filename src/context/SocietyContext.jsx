@@ -14,7 +14,6 @@ export const SocietyProvider = ({ children }) => {
       const token = getToken();
 
       try {
-        // Step 1️⃣ — Fetch Pending + Approved Societies
         const [pendingRes, approvedRes] = await Promise.all([
           axios.get(
             `${import.meta.env.VITE_API_BASE_URL}/api/admin/pending-societies`,
@@ -56,7 +55,6 @@ export const SocietyProvider = ({ children }) => {
           })
         );
 
-        // Step 3️⃣ — Normalize Data
         const normalizedSocieties = societiesWithJobs.map((society) => ({
           id: society._id,
           _id: society._id,
@@ -88,7 +86,6 @@ export const SocietyProvider = ({ children }) => {
     fetchSocieties();
   }, []);
 
-  // --- Management Functions ---
   const handleApprove = async (societyId) => {
     const token = getToken();
 

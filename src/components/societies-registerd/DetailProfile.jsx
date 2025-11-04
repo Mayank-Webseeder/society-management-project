@@ -394,7 +394,7 @@ const activePercent =
           Edit Profile
         </button>
 
-        {/* <button
+        <button
           onClick={() => {
             if (
               window.confirm(
@@ -408,7 +408,7 @@ const activePercent =
         >
           <Trash2 className="w-4 h-4" />
           Delete Society
-        </button> */}
+        </button>
       </div>
         </div>
 

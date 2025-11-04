@@ -210,7 +210,6 @@ const SocietyList = () => {
               </div>
             </div>
 
-            {/* Filter and Count */}
             <div className="flex items-center gap-4 flex-wrap">
               <select
                 value={statusFilter}
@@ -230,7 +229,6 @@ const SocietyList = () => {
           </div>
         </div>
 
-        {/* Table Content */}
         <div className="">
           {filterSocieties.length === 0 ? (
             <div className="text-center py-16">
@@ -401,14 +399,12 @@ const SocietyList = () => {
                 </table>
               </div>
 
-              {/* Mobile Card View */}
               <div className="space-y-4 md:hidden">
                 {filterSocieties.map((soc) => (
                   <div
                     key={soc._id || soc.id}
                     className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow p-5"
                   >
-                    {/* Header */}
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
                         <Link

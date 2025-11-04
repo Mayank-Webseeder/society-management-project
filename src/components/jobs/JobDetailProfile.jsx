@@ -205,7 +205,7 @@ const JobDetailProfile = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-gray-50 rounded-xl">
                   <span className="text-sm text-gray-600 block mb-1">Society Name</span>
-                  <span className="font-semibold text-gray-900">{job.societyName}</span>
+                  <span className="font-semibold text-gray-900">{job.society.buildingName}</span>
                 </div>
                 <div className="p-4 bg-gray-50 rounded-xl">
                   <span className="text-sm text-gray-600 block mb-1">Job Title</span>

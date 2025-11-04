@@ -8,13 +8,14 @@ const JobsList = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [societyFilter, setSocietyFilter] = useState("");
-  const { jobs, setJobs } = useJobContext();
+  // const { jobs, setJobs } = useJobContext();
+    const { jobs, deleteJob, loading } = useJobContext();
   const navigate = useNavigate();
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this job?");
     if (confirmDelete) {
-      setJobs((prevJobs) => prevJobs.filter((job) => job._id !== id));
+      await deleteJob(id); // ✅ Call context API
     }
   };
 
@@ -179,7 +180,7 @@ const JobsList = () => {
         >
           {/* Society */}
           <td className="px-6 py-4 font-medium text-blue-600 flex items-center gap-2">
-            {job.societyName || <span className="text-gray-400">N/A</span>}
+            {job.society?.buildingName || <span className="text-gray-400">N/A</span>}
           </td>
 
           {/* Title */}
@@ -201,7 +202,7 @@ const JobsList = () => {
                 job.status === "Completed"
                   ? "bg-green-100 text-green-700"
                   : job.status === "New"
-                  ? "bg-yellow-100 text-yellow-700"
+                  ? "bg-blue-100 text-blue-700"
                   : job.status === "Expired"
                   ? "bg-rose-100 text-rose-700"
                   : "bg-gray-200 text-gray-600"
