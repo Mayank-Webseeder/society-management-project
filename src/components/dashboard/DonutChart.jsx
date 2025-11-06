@@ -1,23 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const DonutChart = () => {
+  const [jobStats, setJobStats] = useState({
+    completed: 0,
+    new: 0,
+    expired: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchJobStats = async () => {
+      try {
+        const token = localStorage.getItem("token"); // ✅ get token from localStorage
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/dashboard-stats`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          const jobs = response.data.stats.jobs;
+          setJobStats({
+            completed: jobs.completed,
+            new: jobs.new,
+            expired: jobs.expired,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching job stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobStats();
+  }, []);
+
   const data = [
-    { name: "Completed", value: 50 },
-    { name: "Pending", value: 30 },
-    { name: "Expired", value: 20 },
+    { name: "Completed", value: jobStats.completed },
+    { name: "New", value: jobStats.new },
+    { name: "Expired", value: jobStats.expired },
   ];
 
   const COLORS = ["#10B981", "#3B82F6", "#FF8F8F"];
   const total = data.reduce((acc, item) => acc + item.value, 0);
 
-  const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, index }) => {
+  const renderCustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    index,
+  }) => {
     const RADIAN = Math.PI / 180;
     const radius = outerRadius + 25;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
     const name = data[index].name;
-    const words = name.split(' ');
+    const words = name.split(" ");
 
     return (
       <text
@@ -28,7 +74,7 @@ const DonutChart = () => {
         fontWeight="600"
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline="middle"
-         className="hidden sm:block"
+        className="hidden sm:block"
       >
         {words.map((word, i) => (
           <tspan x={x} dy={i === 0 ? 0 : 12} key={i}>
@@ -38,6 +84,14 @@ const DonutChart = () => {
       </text>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="bg-white p-6 rounded-2xl shadow flex items-center justify-center text-gray-500">
+        Loading chart...
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white p-4 sm:p-6 rounded-2xl shadow flex flex-col items-center w-full">
@@ -69,16 +123,26 @@ const DonutChart = () => {
         {/* Center Total */}
         <div className="absolute flex flex-col items-center justify-center text-center">
           <span className="text-lg sm:text-xl font-bold text-gray-800">{total}</span>
-          <span className="text-[11px] sm:text-sm text-gray-500 font-medium">Total Jobs</span>
+          <span className="text-[11px] sm:text-sm text-gray-500 font-medium">
+            Total Jobs
+          </span>
         </div>
       </div>
 
       {/* Legend */}
       <div className="flex flex-wrap justify-center gap-3 mt-5 w-full">
         {data.map((item, index) => (
-          <div key={index} className="flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-700">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
-            <span>{item.name}: {item.value}</span>
+          <div
+            key={index}
+            className="flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-700"
+          >
+            <div
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: COLORS[index % COLORS.length] }}
+            ></div>
+            <span>
+              {item.name}: {item.value}
+            </span>
           </div>
         ))}
       </div>
