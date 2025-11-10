@@ -51,6 +51,7 @@ const NavBar = ({ setIsLoggedIn }) => {
       "/ratings": "Vendor Ratings & Feedback",
       "/admin-settings": "Admin Controls",
       "/reports": "Reports Dashboard",
+       "/support": "Support Requests",
     };
 
     return map[path] || "Admin Dashboard";

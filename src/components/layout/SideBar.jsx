@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import { removeToken } from "../../utils/Token";
+ import { BiSupport } from "react-icons/bi";
 
 const SideBarLink = ({ to, icon, label, active, expanded }) => (
   <Link
@@ -222,6 +223,15 @@ const SideBar = () => {
         </svg>
       ),
       label: "Reports",
+    },
+
+      {
+      to: "/support",
+      icon: (
+      
+       <BiSupport />
+      ),
+      label: "Support",
     },
   ];
 

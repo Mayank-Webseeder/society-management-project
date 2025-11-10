@@ -21,6 +21,7 @@ import Setting from "./components/adminSettting/Setting";
 import Reports from "./components/reports/Reports";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Support from "./components/support/Support";
 
 function App() {
   const { token } = useAuth();
@@ -193,6 +194,17 @@ function App() {
             <PrivateRoute>
               <AppLayout>
                 <Reports />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/support"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Support></Support>
               </AppLayout>
             </PrivateRoute>
           }
